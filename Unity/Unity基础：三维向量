@@ -4,7 +4,7 @@
   <!-- 元数据 -->
   <meta charset="utf-8">
   <link rel="icon" href="">
-  <title>Unity基础：GameObject | MoeWolf的博客</title>
+  <title>Unity基础：三维向量 | MoeWolf的博客</title>
   <meta name="author" content="MoeWolf" />
   <meta http-equiv="Cache-Control" content="no-transform" />
   <meta http-equiv="Cache-Control" content="no-siteapp" />
@@ -15,16 +15,16 @@
   
     <meta name="keywords" content="开发" />
   
-  <meta name="description" content="在Unity中每个节点就是一个GameObject的对象">
+  <meta name="description" content="游戏中的每个物体，都有属于它的坐标">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Unity基础：GameObject">
-<meta property="og:url" content="https://moewolf.me/Unity/Unity%E5%9F%BA%E7%A1%80%EF%BC%9AGameObject">
+<meta property="og:title" content="Unity基础：三维向量">
+<meta property="og:url" content="https://moewolf.me/Unity/Unity%E5%9F%BA%E7%A1%80%EF%BC%9A%E4%B8%89%E7%BB%B4%E5%90%91%E9%87%8F">
 <meta property="og:site_name" content="MoeWolf的博客">
-<meta property="og:description" content="在Unity中每个节点就是一个GameObject的对象">
+<meta property="og:description" content="游戏中的每个物体，都有属于它的坐标">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://moewolf.me/null">
-<meta property="article:published_time" content="2022-01-06T10:35:30.000Z">
-<meta property="article:modified_time" content="2022-01-06T13:32:55.919Z">
+<meta property="article:published_time" content="2022-01-08T12:29:23.000Z">
+<meta property="article:modified_time" content="2022-01-08T14:32:00.391Z">
 <meta property="article:author" content="MoeWolf">
 <meta property="article:tag" content="开发">
 <meta name="twitter:card" content="summary">
@@ -161,17 +161,17 @@
     <div class="kratos-hentry kratos-post-inner clearfix">
         <header class="kratos-entry-header">
             
-                <h1 class="kratos-entry-title text-center">Unity基础：GameObject</h1>
+                <h1 class="kratos-entry-title text-center">Unity基础：三维向量</h1>
             
             
             <ul class="kratos-post-meta text-center">
-                <li><i class="fa fa-calendar"></i> 2022-01-06</li>
+                <li><i class="fa fa-calendar"></i> 2022-01-08</li>
                 <li><i class="fa fa-user"></i> 作者 MoeWolf</li>
                 <li>
                     <i class="fa fa-edit"></i> 
                     
                     
-                        ~2.23K
+                        ~2.22K
                     
                     字
                 </li>
@@ -180,44 +180,95 @@
         </header>
         <div class="kratos-post-content">
             <div id="expire-alert" class="alert alert-warning hidden" role="alert">
-                本文最后编辑于 <time datetime="1641475975919"></time> 前，其中的内容可能需要更新。
+                本文最后编辑于 <time datetime="1641652320391"></time> 前，其中的内容可能需要更新。
             </div>
             
                 <div class="kratos-post-inner-toc">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%95%E4%B8%BAGameObject"><span class="toc-number">1.</span> <span class="toc-text">何为GameObject</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B1%BB%E4%B8%8E%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">2.</span> <span class="toc-text">类与对象的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%87%BD%E6%95%B0%E5%92%8C%E5%85%B6%E6%88%90%E5%91%98%E5%8F%98%E9%87%8F"><span class="toc-number">2.1.</span> <span class="toc-text">对象的函数和其成员变量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B1%BB%E7%9A%84%E5%87%BD%E6%95%B0"><span class="toc-number">2.2.</span> <span class="toc-text">类的函数</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E7%BB%B4%E5%90%91%E9%87%8F"><span class="toc-number">1.</span> <span class="toc-text">三维向量</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Transform"><span class="toc-number">2.</span> <span class="toc-text">Transform</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Vector3"><span class="toc-number">3.</span> <span class="toc-text">Vector3</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Vector3%E7%9A%84%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0"><span class="toc-number">3.1.</span> <span class="toc-text">Vector3的常用函数</span></a></li></ol></li></ol>
                 </div>
             
             <hr />
-            <p>在Unity中每个节点就是一个GameObject的对象</p>
+            <p>游戏中的每个物体，都有属于它的坐标</p>
 <span id="more"></span>
-<h1 id="何为GameObject"><a href="#何为GameObject" class="headerlink" title="何为GameObject"></a>何为GameObject</h1><p>当我们在Unity中左侧的Hierarchy中点击右键，就可以新建很多东西，比如各种物体、灯光以及照相机之类的，它们都是一个GameObject，准确来说，是一个GameObject的对象，我们也可以叫它节点，又或者是游戏对象。不管怎么说，它们都是组成我们游戏的各种东西，就像房子的砖块一样。而真正的GameObject，它是一个类，或者是是一种类型。</p>
+
+<h1 id="三维向量"><a href="#三维向量" class="headerlink" title="三维向量"></a>三维向量</h1><p>向量的概念，相信大家都不陌生，在高中我们都学过，它是一个有大小，有方向的量，在Unity中亦是如此，比如用一个物体的三维向量做计算时，又或者写一个控制玩家移动的脚本时，时常会用到。但是对于每个物体的三维向量，若要考虑到以前所学，未免有点复杂，我们不妨就叫它坐标！</p>
 <hr>
-<h1 id="类与对象的区别"><a href="#类与对象的区别" class="headerlink" title="类与对象的区别"></a>类与对象的区别</h1><p>GameObject是一个类，类有属于他的静态函数，可以实现一些逻辑与功能，而它实例化的对象，也就是游戏中的种种物品，也有属于它们的一些函数，初学者可能很容易混淆两者区别，不妨让我们按下<code>F12</code>进入这个类一探究竟</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">public sealed class Game0bject : Object&#123;</span><br><span class="line">    public GameObject() ;</span><br><span class="line">    public GameObject(string name);</span><br><span class="line">    public Game0bject(string name，params Type[] components);</span><br><span class="line">    public Component particleSystem &#123; get; &#125;</span><br><span class="line">    public Transform transform &#123; get; &#125;</span><br><span class="line">    ... ...</span><br><span class="line"></span><br><span class="line">    public static GameObject CreatePrimitive(PrimitiveType type);</span><br><span class="line">    public static GameObject Find(string name);</span><br><span class="line">    public static GameObject[] FindGameObjectsWithTag(string tag);</span><br><span class="line">    public static GameObject FindGameObjectWithTag(string tag);</span><br><span class="line">    public static Game0bject FindWithTag(string tag);</span><br><span class="line">    public T AddComponent&lt;T&gt;() where T : Component;</span><br><span class="line">    public Component AddComponent(string className) ;</span><br><span class="line">    public Component AddComponent(Type componentType);</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="对象的函数和其成员变量"><a href="#对象的函数和其成员变量" class="headerlink" title="对象的函数和其成员变量"></a>对象的函数和其成员变量</h2><p>看到上面的这个封装类，这是Unity的官方代码，当我们使用GameObject类型的变量时，就相当于将这个类实例化，我们用<code>gameObject</code>来表明他是一个对象。<br>常用的对象函数或者一些类的成员变量有以下这些：</p>
+<h1 id="Transform"><a href="#Transform" class="headerlink" title="Transform"></a>Transform</h1><p>在Unity中所有的物体，在右边的Inspector区域内必不可少的会有这么一个组件，它的名字叫<code>Transform</code>（如图）。</p>
+<p><img src="https://s3.bmp.ovh/imgs/2022/01/aa1eb627929b7659.png"></p>
+<p>不妨就把它当作这个物体的一些在空间上的属性，它下辖三个子属性<code>Position</code>（位置坐标）、<code>Rotation</code>（旋转角度）和<code>Scale</code>（缩放比例），今天，我们研究的三维向量和这个组件的<code>Position</code>有关，我们之前说过，一个物体的三维向量是这个物体的坐标，每一个坐标都是一个三维向量。对于这个<code>Transform</code>组件的详细内容，我在后面的博客里会讲到。</p>
+<hr>
+<h1 id="Vector3"><a href="#Vector3" class="headerlink" title="Vector3"></a>Vector3</h1><p>那我们如何去表示一个物体的坐标呢？答案是使用<code>Vector3</code>，和<code>GameObject</code>一样，每个游戏物体都是一个<code>GameObject</code>的对象，那么每一个物体的坐标也可以类比，它是一个<code>Vector3</code>的对象。Unity采用的是左手坐标系，即Z为前进方向，X为左右方向，Y为上下方向。要注意的是，Unity与Direct<em>X</em>的渲染都是左手坐标系，而OpenGL是右手坐标系。</p>
+<p>要想了解一个类的作用，读源码是最快捷的方式，同样的让我们按下<code>F12</code>进入看看</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public struct Vector3 : IEquatable&lt;Vector3&gt;&#123;</span><br><span class="line">	public const float kEpsilon = 1E-O5F;</span><br><span class="line">	public const float kEpsilonNormalSqrt = 1E-15F;</span><br><span class="line">	public float x;</span><br><span class="line">	public float y;</span><br><span class="line">	public float z;</span><br><span class="line">	</span><br><span class="line">	public Vector3(float x,float y);</span><br><span class="line">	public Vector3(float x,float y,float z);</span><br><span class="line">	public float this[int index] </span><br><span class="line">	public static Vector3 right &#123; get; &#125;.</span><br><span class="line">	public static Vector3 left &#123; get; &#125;</span><br><span class="line">	public static Vector3 up &#123; get; &#125;</span><br><span class="line">	public static Vector3 back &#123; get; &#125;</span><br><span class="line">	public static Vector3 forward &#123; get; &#125;</span><br><span class="line">	public static Vector3 one &#123; get; &#125;</span><br><span class="line">	public static Vector3 zero &#123; get; &#125;</span><br><span class="line">	... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，这个<code>Vector3</code>是一个结构体，首先结构体有什么特点呢</p>
 <ul>
-<li><code>gameObject.activeInHierarchy</code>:是否在Scene中可见。</li>
-<li><code>gameObject.Self</code>:自节点是否可见。<div class="alert alert-warning"><p>注意以上两个是只读类型，返回false或者true</p>
-</div></li>
-<li><code>gameObject.transform.SetParent()</code>:设置父节点</li>
-<li><code>gameObject.SetActive()</code>:设置其是否可见（参数为true或者false）。</li>
-<li><code>gameObject.tag = &quot;[name]&quot;</code>:设置其节点的tag。</li>
-<li><code>gameObject.layer = [int]</code>:设置其层次（int型）。</li>
-<li><code>gameObject.layer = Layer.NameToLayer(&quot;[name]&quot;)</code>: 设置其层次（字符串型）。</li>
-<li><code>gameObject.name</code>:设置其名称。</li>
-<li><code>gameObject.transform.position = new Vector3([],[],[])</code>:设置其坐标。</li>
-<li><code>gameObject.GetComponent&lt;[name]&gt;</code>:获取一个名为<code>name</code>的组件</li>
-<li><code>gameObject.AddComponent&lt;[name]&gt;</code>:添加一个名为<code>name</code>的组件</li>
+<li>结构可带有方法、字段、索引、属性、运算符方法和事件。</li>
+<li>结构可定义构造函数，但不能定义析构函数。但是不能为结构定义无参构造函数。无参构造函数(默认)是自动定义的，且不能被改变。</li>
+<li>与类不同，结构不能继承其他的结构或类。</li>
+<li>结构不能作为其他结构或类的基础结构。</li>
+<li>结构可实现一个或多个接口。</li>
+<li>结构成员不能指定为 abstract、virtual 或 protected。</li>
+<li>当使用 <strong>New</strong> 操作符创建一个结构对象时，会调用适当的构造函数来创建结构。与类不同，结构可以不使用 New 操作符即可被实例化。</li>
+<li>如果不使用 New 操作符，只有在所有的字段都被初始化之后，字段才被赋值，对象才被使用。</li>
 </ul>
-<h2 id="类的函数"><a href="#类的函数" class="headerlink" title="类的函数"></a>类的函数</h2><p>我们用<code>GameObject</code>来表示它是一个类，我们可以直接使用这些函数，这些都是静态函数，表明这些函数只属于GameObject，而它的对象<code>gameObject</code>中无法调用这些函数。</p>
-<ul>
-<li><code>GameObject.CreatePrimitive(PrimitiveType.[Type]])</code>:创建一个<code>Type</code>类型的节点。</li>
-<li><code>GameObject.Destroy()</code>:删除一个节点/组件/资源</li>
-<li><code>GameObject.Find(&quot;[name]&quot;)</code>:找到一个名为<code>name</code>的游戏对象。</li>
-<li><code>GameObject.FindWithTag(&quot;[name]&quot;)</code>:找到一个tag为<code>name</code>的游戏对象。</li>
-<li><code>GameObject.FindGameObjectWithTag(&quot;[name]&quot;)</code>:<br>找到一些tag为<code>name</code>的游戏对象（返回值是一个列表）。</li>
-<li><code>GameObject.Instantiate([name])</code>:克隆一个名为<code>name</code>游戏对象，会连模板的脚本一起克隆，（这一般用于需要大量生成的对象，如子弹之类的）。</li>
-</ul>
+<p>然后我们看到，<code>Vector3</code>有三个<code>float</code>型变量<code>x</code>,<code>y</code>,<code>z</code>，然后有两个构造函数，一个是三个参数的<code>x</code>,<code>y</code>,<code>z</code>，一个是两个参数的<code>x</code>,<code>y</code>,下面定义了它的一些静态函数，也就是我们一般用于三维向量计算的一些函数。</p>
+<h2 id="Vector3的常用函数"><a href="#Vector3的常用函数" class="headerlink" title="Vector3的常用函数"></a>Vector3的常用函数</h2><table>
+<thead>
+<tr>
+<th align="left">函数</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Vector3.SqrMagnitude(Vector3 vector)</td>
+<td>向量模的平方</td>
+</tr>
+<tr>
+<td align="left">Vector3.Magnitude(Vector3 vector)</td>
+<td>向量的模</td>
+</tr>
+<tr>
+<td align="left">Vector3.Distance(Vector3 a,Vector3 b)</td>
+<td>两个向量的距离</td>
+</tr>
+<tr>
+<td align="left">Vector3.right</td>
+<td>X(1,0,0)</td>
+</tr>
+<tr>
+<td align="left">Vector3.up</td>
+<td>y(0,1,0)</td>
+</tr>
+<tr>
+<td align="left">Vector3.forward</td>
+<td>z(0,0,1)</td>
+</tr>
+<tr>
+<td align="left">Vector3.Lerp(Vector3 a,Vector3 b,float t)</td>
+<td>两个向量的插值，t取值0~1，可以看作是两点间的一点</td>
+</tr>
+<tr>
+<td align="left">Vector3.Normalize(Vector3 vector)</td>
+<td>将一个向量化为单位向量</td>
+</tr>
+<tr>
+<td align="left">Vector3.Angle(Vector3 a,Vector3 b)</td>
+<td>两个向量的夹角</td>
+</tr>
+<tr>
+<td align="left">Vector3.zero</td>
+<td>零向量</td>
+</tr>
+<tr>
+<td align="left">Vector3.Dot(Vector3 a,Vector3 b)</td>
+<td>两向量点乘</td>
+</tr>
+<tr>
+<td align="left">Vector3.Cross(Vector3 a,Vector3 b)</td>
+<td>两向量叉乘</td>
+</tr>
+</tbody></table>
 
         </div>
         
@@ -271,7 +322,7 @@
     <script type="text/javascript">
         $(()=>{
             new QRCode("wechat-qr", {
-                text: "https://moewolf.me/Unity/Unity%E5%9F%BA%E7%A1%80%EF%BC%9AGameObject",
+                text: "https://moewolf.me/Unity/Unity%E5%9F%BA%E7%A1%80%EF%BC%9A%E4%B8%89%E7%BB%B4%E5%90%91%E9%87%8F",
                 width: 150,
                 height: 150,
                 correctLevel : QRCode.CorrectLevel.H
@@ -283,9 +334,9 @@
             const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
             const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
             const twitterBase   = "https://twitter.com/intent/tweet?";
-            const hostUrl       = "https://moewolf.me/Unity/Unity%E5%9F%BA%E7%A1%80%EF%BC%9AGameObject";
-            const title         = "「Unity基础：GameObject」";
-            const excerpt       = `在Unity中每个节点就是一个GameObject的对象`;
+            const hostUrl       = "https://moewolf.me/Unity/Unity%E5%9F%BA%E7%A1%80%EF%BC%9A%E4%B8%89%E7%BB%B4%E5%90%91%E9%87%8F";
+            const title         = "「Unity基础：三维向量」";
+            const excerpt       = `游戏中的每个物体，都有属于它的坐标`;
             let _URL;
             switch (dest) {
                 case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
@@ -307,7 +358,7 @@
                     <a class="tag-none-link" href="/tags/%E5%BC%80%E5%8F%91/" rel="tag">开发</a>
                 </div>
                 <div class="pull-date">
-                <span>最后编辑：2022-01-06</span>
+                <span>最后编辑：2022-01-08</span>
                 </div>
             </div>
         </footer>
@@ -316,13 +367,9 @@
         <nav class="navigation post-navigation clearfix" role="navigation">
             
             <div class="nav-previous clearfix">
-                <a title=" Unity基础：生命周期函数" href="/Unity/Unity基础：生命周期函数">&lt; 上一篇</a>
+                <a title=" Unity基础：GameObject" href="/Unity/Unity基础：GameObject">&lt; 上一篇</a>
             </div>
             
-            
-            <div class="nav-next clearfix">
-                <a title=" Unity基础：三维向量" href="/Unity/Unity基础：三维向量">下一篇 &gt;</a>
-            </div>
             
         </nav>
     
@@ -364,7 +411,7 @@
         <span class="toc-progress-bar"></span>
     </h4>
     <div class="textwidget">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%95%E4%B8%BAGameObject"><span class="toc-text">何为GameObject</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B1%BB%E4%B8%8E%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-text">类与对象的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%87%BD%E6%95%B0%E5%92%8C%E5%85%B6%E6%88%90%E5%91%98%E5%8F%98%E9%87%8F"><span class="toc-text">对象的函数和其成员变量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B1%BB%E7%9A%84%E5%87%BD%E6%95%B0"><span class="toc-text">类的函数</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E7%BB%B4%E5%90%91%E9%87%8F"><span class="toc-text">三维向量</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Transform"><span class="toc-text">Transform</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Vector3"><span class="toc-text">Vector3</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Vector3%E7%9A%84%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0"><span class="toc-text">Vector3的常用函数</span></a></li></ol></li></ol>
     </div>
 </aside>
                 
