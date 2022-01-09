@@ -3,7 +3,7 @@
     <head>
   <!-- 元数据 -->
   <meta charset="utf-8">
-  <link rel="icon" href="">
+  <link rel="icon" href="/images/webicon.jpg">
   <title>Unity基础：三维向量 | MoeWolf的博客</title>
   <meta name="author" content="MoeWolf" />
   <meta http-equiv="Cache-Control" content="no-transform" />
@@ -18,17 +18,17 @@
   <meta name="description" content="游戏中的每个物体，都有属于它的坐标">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Unity基础：三维向量">
-<meta property="og:url" content="https://moewolf.me/Unity/Unity%E5%9F%BA%E7%A1%80%EF%BC%9A%E4%B8%89%E7%BB%B4%E5%90%91%E9%87%8F">
+<meta property="og:url" content="https://moewolf.me/Unity/unity%E5%9F%BA%E7%A1%80%EF%BC%9A%E4%B8%89%E7%BB%B4%E5%90%91%E9%87%8F">
 <meta property="og:site_name" content="MoeWolf的博客">
 <meta property="og:description" content="游戏中的每个物体，都有属于它的坐标">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://moewolf.me/null">
+<meta property="og:image" content="https://moewolf.me/images/webicon.jpg">
 <meta property="article:published_time" content="2022-01-08T12:29:23.000Z">
 <meta property="article:modified_time" content="2022-01-08T14:32:00.391Z">
 <meta property="article:author" content="MoeWolf">
 <meta property="article:tag" content="开发">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://moewolf.me/null">
+<meta name="twitter:image" content="https://moewolf.me/images/webicon.jpg">
 <meta name="twitter:site" content="@null">
   
   <!-- 站点验证相关 -->
@@ -107,7 +107,7 @@
                                                     
                                                 
                                                     
-                                                        <li><a target="_blank" rel="noopener" href="https://Dai-MoeWolf.github.io">博客</a></li>
+                                                        <li><a href="https://moewolf.me">博客</a></li>
                                                     
                                                 
                                                     
@@ -140,7 +140,7 @@
                 <div class="desc desc2 animate-box">
                     <a href="/">
                         <h2>MoeWolf的博客</h2> <br />
-                        <span>What’s past is prologue.</span>
+                        <span>𝓦𝓱𝓪𝓽’𝓼 𝓹𝓪𝓼𝓽 𝓲𝓼 𝓹𝓻𝓸𝓵𝓸𝓰𝓾𝓮.</span>
                     </a>
                 </div>
             </div>
@@ -322,7 +322,7 @@
     <script type="text/javascript">
         $(()=>{
             new QRCode("wechat-qr", {
-                text: "https://moewolf.me/Unity/Unity%E5%9F%BA%E7%A1%80%EF%BC%9A%E4%B8%89%E7%BB%B4%E5%90%91%E9%87%8F",
+                text: "https://moewolf.me/Unity/unity%E5%9F%BA%E7%A1%80%EF%BC%9A%E4%B8%89%E7%BB%B4%E5%90%91%E9%87%8F",
                 width: 150,
                 height: 150,
                 correctLevel : QRCode.CorrectLevel.H
@@ -334,7 +334,7 @@
             const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
             const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
             const twitterBase   = "https://twitter.com/intent/tweet?";
-            const hostUrl       = "https://moewolf.me/Unity/Unity%E5%9F%BA%E7%A1%80%EF%BC%9A%E4%B8%89%E7%BB%B4%E5%90%91%E9%87%8F";
+            const hostUrl       = "https://moewolf.me/Unity/unity%E5%9F%BA%E7%A1%80%EF%BC%9A%E4%B8%89%E7%BB%B4%E5%90%91%E9%87%8F";
             const title         = "「Unity基础：三维向量」";
             const excerpt       = `游戏中的每个物体，都有属于它的坐标`;
             let _URL;
@@ -367,7 +367,7 @@
         <nav class="navigation post-navigation clearfix" role="navigation">
             
             <div class="nav-previous clearfix">
-                <a title=" Unity基础：GameObject" href="/Unity/Unity基础：GameObject">&lt; 上一篇</a>
+                <a title=" Unity基础：GameObject" href="/Unity/unity基础：gameobject">&lt; 上一篇</a>
             </div>
             
             
@@ -397,7 +397,7 @@
         </div>
     </div>
     <div class="textwidget">
-        <p class="text-center"></p>
+        <p class="text-center">生如夏花之绚烂，死如秋叶之静美</p>
     </div>
 </aside>
             
@@ -441,19 +441,19 @@
         
           
           
-            <a class="list-group-item" href="/Unity/Unity%E5%9F%BA%E7%A1%80%EF%BC%9A%E4%B8%89%E7%BB%B4%E5%90%91%E9%87%8F"><i class="fa  fa-book"></i> Unity基础：三维向量</a>
+            <a class="list-group-item" href="/Unity/unity%E5%9F%BA%E7%A1%80%EF%BC%9A%E4%B8%89%E7%BB%B4%E5%90%91%E9%87%8F"><i class="fa  fa-book"></i> Unity基础：三维向量</a>
             
           
         
           
           
-            <a class="list-group-item" href="/Unity/Unity%E5%9F%BA%E7%A1%80%EF%BC%9AGameObject"><i class="fa  fa-book"></i> Unity基础：GameObject</a>
+            <a class="list-group-item" href="/Unity/unity%E5%9F%BA%E7%A1%80%EF%BC%9Agameobject"><i class="fa  fa-book"></i> Unity基础：GameObject</a>
             
           
         
           
           
-            <a class="list-group-item" href="/Unity/Unity%E5%9F%BA%E7%A1%80%EF%BC%9A%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%87%BD%E6%95%B0"><i class="fa  fa-book"></i> Unity基础：生命周期函数</a>
+            <a class="list-group-item" href="/Unity/unity%E5%9F%BA%E7%A1%80%EF%BC%9A%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%87%BD%E6%95%B0"><i class="fa  fa-book"></i> Unity基础：生命周期函数</a>
             
           
         
