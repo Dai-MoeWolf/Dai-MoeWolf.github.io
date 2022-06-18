@@ -18,13 +18,13 @@
   <meta name="description" content="数据持久化">
 <meta property="og:type" content="article">
 <meta property="og:title" content="游戏存档系统">
-<meta property="og:url" content="https://moewolf.me/Unity%E5%8A%9F%E8%83%BD/%E6%B8%B8%E6%88%8F%E5%AD%98%E6%A1%A3%E7%B3%BB%E7%BB%9F/index.html">
+<meta property="og:url" content="https://moewolf.me/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E6%B8%B8%E6%88%8F%E5%AD%98%E6%A1%A3%E7%B3%BB%E7%BB%9F/index.html">
 <meta property="og:site_name" content="MoeWolf的博客">
 <meta property="og:description" content="数据持久化">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://moewolf.me/images/webicon.jpg">
 <meta property="article:published_time" content="2022-06-17T08:21:25.000Z">
-<meta property="article:modified_time" content="2022-06-17T08:41:44.514Z">
+<meta property="article:modified_time" content="2022-06-18T12:45:09.687Z">
 <meta property="article:author" content="MoeWolf">
 <meta property="article:tag" content="Unity">
 <meta name="twitter:card" content="summary">
@@ -95,29 +95,6 @@
                                         <li><a href="/archives/"><i class="fa fa-file"></i>档案馆</a></li>
                                     
                                 
-                                    
-                                        <li><a href="/friends/"><i class="fa fa-paw"></i>建设中ing</a></li>
-                                    
-                                
-                                    
-                                        <li>
-                                            <a><i class="fa fa-link"></i>链接</a>
-                                            <ul class="sub-menu">
-                                                
-                                                    
-                                                
-                                                    
-                                                        <li><a href="https://moewolf.me">博客</a></li>
-                                                    
-                                                
-                                                    
-                                                        <li><a target="_blank" rel="noopener" href="https://bilibili.com">B站</a></li>
-                                                    
-                                                
-                                            </ul>
-                                        </li>
-                                    
-                                
                             </ul>
                         </nav>
                     </div>
@@ -171,7 +148,7 @@
                     <i class="fa fa-edit"></i> 
                     
                     
-                        ~10.00K
+                        ~10.01K
                     
                     字
                 </li>
@@ -180,7 +157,7 @@
         </header>
         <div class="kratos-post-content">
             <div id="expire-alert" class="alert alert-warning hidden" role="alert">
-                本文最后编辑于 <time datetime="1655455304514"></time> 前，其中的内容可能需要更新。
+                本文最后编辑于 <time datetime="1655556309687"></time> 前，其中的内容可能需要更新。
             </div>
             
                 <div class="kratos-post-inner-toc">
@@ -228,7 +205,7 @@
 </li>
 </ul>
 <p>使用PlayerPerfs，数据存储在注册表中</p>
-<p><img src="/Unity%E5%8A%9F%E8%83%BD/%E6%B8%B8%E6%88%8F%E5%AD%98%E6%A1%A3%E7%B3%BB%E7%BB%9F/PlayerPrefs.png"></p>
+<p><img src="/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E6%B8%B8%E6%88%8F%E5%AD%98%E6%A1%A3%E7%B3%BB%E7%BB%9F/PlayerPrefs.png"></p>
 <h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">void SaveByPlayerPrefs()</span><br><span class="line">&#123;</span><br><span class="line">    //存储玩家名称</span><br><span class="line">    PlayerPrefs.SetString(&quot;PlayerName&quot;,playerName);</span><br><span class="line">    //存储玩家等级和金币</span><br><span class="line">    PlayerPrefs.SetInt(&quot;Level&quot;,level);</span><br><span class="line">    PlayerPrefs.SetInt(&quot;Coin&quot;,coin);</span><br><span class="line">    //存储玩家位置</span><br><span class="line">    var position = transform.position;</span><br><span class="line">    PlayerPrefs.SetFloat(&quot;PositionX&quot;,position.x);</span><br><span class="line">    PlayerPrefs.SetFloat(&quot;PositionY&quot;,position.y);</span><br><span class="line">    PlayerPrefs.SetFloat(&quot;PositionZ&quot;,position.z);</span><br><span class="line">    //写入磁盘</span><br><span class="line">    PlayerPrefs.Save();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void LoaddByPlayerPrefs()</span><br><span class="line">&#123;</span><br><span class="line">    //获取存档</span><br><span class="line">    playerName =  PlayerPrefs.GetString(&quot;PlayerName&quot;);</span><br><span class="line">    level = PlayerPrefs.GetInt(&quot;Level&quot;);</span><br><span class="line">    coin = PlayerPrefs.GetInt(&quot;Coin&quot;);</span><br><span class="line">    Vector3 position = new Vector3(PlayerPrefs.GetFloat(&quot;PositionX&quot;),</span><br><span class="line">        PlayerPrefs.GetFloat(&quot;PositionY&quot;), PlayerPrefs.GetFloat(&quot;PositionZ&quot;));</span><br><span class="line">    transform.position = position;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>如果玩家没有点击过Save，就点击Load，可以返回一个默认值</p>
@@ -283,7 +260,7 @@
 
 <h3 id="FormJsonOverwrite"><a href="#FormJsonOverwrite" class="headerlink" title="FormJsonOverwrite"></a>FormJsonOverwrite</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">//通过json生成的对象实例,将第二个参数objectToOverwrite替换掉</span><br><span class="line">//用于数据存档覆盖</span><br><span class="line">JsonUntility.FromJsonOverwrite (string json, object objectToOverwrite);</span><br></pre></td></tr></table></figure>
 
-<h3 id="基于Json的存档系统"><a href="#基于Json的存档系统" class="headerlink" title="基于Json的存档系统"></a>基于Json的存档系统</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">using System;</span><br><span class="line">using System.IO;</span><br><span class="line">using System.Text;</span><br><span class="line">using UnityEngine;</span><br><span class="line"></span><br><span class="line">namespace SaveSystemTutorial</span><br><span class="line">&#123;</span><br><span class="line">    public static class SaveSystem</span><br><span class="line">    &#123;</span><br><span class="line">        //参数：1.保存的文件名  2. 游戏数据</span><br><span class="line">        public static void SavaByJson(string saveFileName, object data)</span><br><span class="line">        &#123;</span><br><span class="line">            var json = JsonUtility.ToJson(data);</span><br><span class="line">            //Path.Combine()路径合并函数，将多个路径合并成一个路径</span><br><span class="line">            //Application.persistentDataPath 根据不同的发布平台自动设置路径</span><br><span class="line">            var path = Path.Combine(Application.persistentDataPath, saveFileName);</span><br><span class="line">            try</span><br><span class="line">            &#123;</span><br><span class="line">                File.WriteAllText(path, json);</span><br><span class="line">            &#125;</span><br><span class="line">            catch (System.Exception exception)</span><br><span class="line">            &#123;</span><br><span class="line">                //存档失败则打印路径和异常</span><br><span class="line">                #if UNITY_EDITOR</span><br><span class="line">                Debug.LogError($&quot;Failed to save data to &#123;path&#125;. \n&#123;exception&#125;&quot;);</span><br><span class="line">                #endif</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        //使用泛型读取任意类型数据</span><br><span class="line">        public static T LoadByJson&lt;T&gt;(string saveFileName)</span><br><span class="line">        &#123;</span><br><span class="line">            var path = Path.Combine(Application.persistentDataPath, saveFileName);</span><br><span class="line">            try</span><br><span class="line">            &#123;</span><br><span class="line">                var json = File.ReadAllText(path);</span><br><span class="line">                T data = JsonUtility.FromJson&lt;T&gt;(json);</span><br><span class="line">                return data;</span><br><span class="line">            &#125;</span><br><span class="line">            catch (System.Exception exception)</span><br><span class="line">            &#123;</span><br><span class="line">                //存档失败则打印路径和异常</span><br><span class="line">                #if UNITY_EDITOR</span><br><span class="line">                Debug.LogError($&quot;Failed to load data form &#123;path&#125;. \n&#123;exception&#125;&quot;);</span><br><span class="line">                #endif</span><br><span class="line">                return default;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        //删除存档</span><br><span class="line">        public static void DeleteSaveFile(string saveFileName)</span><br><span class="line">        &#123;</span><br><span class="line">            try</span><br><span class="line">            &#123;</span><br><span class="line">                var path = Path.Combine(Application.persistentDataPath, saveFileName);</span><br><span class="line">                File.Delete(path);</span><br><span class="line">            &#125;</span><br><span class="line">            catch (Exception e)</span><br><span class="line">            &#123;</span><br><span class="line">                #if UNITY_EDITOR</span><br><span class="line">                Debug.LogError($&quot;Failed to delete file form &#123;path&#125;. \n&#123;exception&#125;&quot;);</span><br><span class="line">                #endif</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="基于Json的存档系统"><a href="#基于Json的存档系统" class="headerlink" title="基于Json的存档系统"></a>基于Json的存档系统</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">using System;</span><br><span class="line">using System.IO;</span><br><span class="line">using System.Text;</span><br><span class="line">using UnityEngine;</span><br><span class="line"></span><br><span class="line">namespace SaveSystemTutorial</span><br><span class="line">&#123;</span><br><span class="line">    public static class SaveSystem</span><br><span class="line">    &#123;</span><br><span class="line">        //参数：1.保存的文件名  2. 游戏数据</span><br><span class="line">        public static void SavaByJson(string saveFileName, object data)</span><br><span class="line">        &#123;</span><br><span class="line">            var json = JsonUtility.ToJson(data);</span><br><span class="line">            //Path.Combine()路径合并函数，将多个路径合并成一个路径</span><br><span class="line">            //Application.persistentDataPath 根据不同的发布平台自动设置路径</span><br><span class="line">            var path = Path.Combine(Application.persistentDataPath, saveFileName);</span><br><span class="line">            try</span><br><span class="line">            &#123;</span><br><span class="line">                File.WriteAllText(path, json);</span><br><span class="line">            &#125;</span><br><span class="line">            catch (System.Exception exception)</span><br><span class="line">            &#123;</span><br><span class="line">                //存档失败则打印路径和异常</span><br><span class="line">                #if UNITY_EDITOR</span><br><span class="line">                Debug.LogError($&quot;Failed to save data to &#123;path&#125;. \n&#123;exception&#125;&quot;);</span><br><span class="line">                #endif</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        //使用泛型读取任意类型数据</span><br><span class="line">        public static T LoadByJson&lt;T&gt;(string saveFileName)</span><br><span class="line">        &#123;</span><br><span class="line">            var path = Path.Combine(Application.persistentDataPath, saveFileName);</span><br><span class="line">            try</span><br><span class="line">            &#123;</span><br><span class="line">                var json = File.ReadAllText(path);</span><br><span class="line">                T data = JsonUtility.FromJson&lt;T&gt;(json);</span><br><span class="line">                return data;</span><br><span class="line">            &#125;</span><br><span class="line">            catch (System.Exception exception)</span><br><span class="line">            &#123;</span><br><span class="line">                //存档失败则打印路径和异常</span><br><span class="line">                #if UNITY_EDITOR</span><br><span class="line">                Debug.LogError($&quot;Failed to load data form &#123;path&#125;. \n&#123;exception&#125;&quot;);</span><br><span class="line">                #endif</span><br><span class="line">                return default;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        //删除存档</span><br><span class="line">        public static void DeleteSaveFile(string saveFileName)</span><br><span class="line">        &#123;</span><br><span class="line">            try</span><br><span class="line">            &#123;</span><br><span class="line">                var path = Path.Combine(Application.persistentDataPath, saveFileName);</span><br><span class="line">                File.Delete(path);</span><br><span class="line">            &#125;</span><br><span class="line">            catch (Exception exception)</span><br><span class="line">            &#123;</span><br><span class="line">                #if UNITY_EDITOR</span><br><span class="line">                Debug.LogError($&quot;Failed to delete file form &#123;path&#125;. \n&#123;exception&#125;&quot;);</span><br><span class="line">                #endif</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>PlayerData类</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line">using UnityEngine;</span><br><span class="line"></span><br><span class="line">namespace SaveSystemTutorial</span><br><span class="line">&#123;    </span><br><span class="line">    public class PlayerData : MonoBehaviour</span><br><span class="line">    &#123;</span><br><span class="line">        [SerializeField] string playerName = &quot;Player Name&quot;;</span><br><span class="line">        [SerializeField] int level = 0;</span><br><span class="line">        [SerializeField] int coin = 0;</span><br><span class="line">        </span><br><span class="line">        //可序列化特性</span><br><span class="line">        [System.Serializable]class SaveData</span><br><span class="line">        &#123;</span><br><span class="line">            public string playerName;</span><br><span class="line">            public int level;</span><br><span class="line">            public int coin;</span><br><span class="line">            public Vector3 playerPosition;</span><br><span class="line">            </span><br><span class="line">            public SaveData(string playerName, int level, int coin, Vector3 playerPosition)</span><br><span class="line">            &#123;</span><br><span class="line">                this.playerName = playerName;</span><br><span class="line">                this.level = level;</span><br><span class="line">                this.coin = coin;</span><br><span class="line">                this.playerPosition = playerPosition;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        public string Name =&gt; playerName;</span><br><span class="line">        public int Level =&gt; level;</span><br><span class="line">        public int Coin =&gt; coin;</span><br><span class="line">        public Vector3 Position =&gt; transform.position;</span><br><span class="line">		</span><br><span class="line">        //将存档文件名设置为常量</span><br><span class="line">        public const string PLAYER_DATA_FILE_NAME = &quot;playerData.sav&quot;;</span><br><span class="line">        public void Save()</span><br><span class="line">        &#123;</span><br><span class="line">            SaveByJson();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public void Load()</span><br><span class="line">        &#123;</span><br><span class="line">            LoadByJson();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        void SaveByJson()</span><br><span class="line">        &#123;</span><br><span class="line">            SaveData saveData = new SaveData(playerName,level,coin,transform.position);</span><br><span class="line">            SaveSystem.SavaByJson(PLAYER_DATA_FILE_NAME,saveData);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        void LoadByJson()</span><br><span class="line">        &#123;</span><br><span class="line">            SaveData saveData = SaveSystem.LoadByJson&lt;SaveData&gt;(PLAYER_DATA_FILE_NAME);</span><br><span class="line">            playerName = saveData.playerName;</span><br><span class="line">            level = saveData.level;</span><br><span class="line">            coin = saveData.coin;</span><br><span class="line">            transform.position = saveData.playerPosition;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        [UnityEditor.MenuItem(&quot;Developer/Delete Player Data Files&quot;)]</span><br><span class="line">        public static void DeletePlayerDataSaveFile()</span><br><span class="line">        &#123;</span><br><span class="line">            SaveSystem.DeleteSaveFile(PLAYER_DATA_FILE_NAME);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -343,7 +320,7 @@
     <script type="text/javascript">
         $(()=>{
             new QRCode("wechat-qr", {
-                text: "https://moewolf.me/Unity%E5%8A%9F%E8%83%BD/%E6%B8%B8%E6%88%8F%E5%AD%98%E6%A1%A3%E7%B3%BB%E7%BB%9F/",
+                text: "https://moewolf.me/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E6%B8%B8%E6%88%8F%E5%AD%98%E6%A1%A3%E7%B3%BB%E7%BB%9F/",
                 width: 150,
                 height: 150,
                 correctLevel : QRCode.CorrectLevel.H
@@ -355,7 +332,7 @@
             const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
             const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
             const twitterBase   = "https://twitter.com/intent/tweet?";
-            const hostUrl       = "https://moewolf.me/Unity%E5%8A%9F%E8%83%BD/%E6%B8%B8%E6%88%8F%E5%AD%98%E6%A1%A3%E7%B3%BB%E7%BB%9F/";
+            const hostUrl       = "https://moewolf.me/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E6%B8%B8%E6%88%8F%E5%AD%98%E6%A1%A3%E7%B3%BB%E7%BB%9F/";
             const title         = "「游戏存档系统」";
             const excerpt       = `数据持久化`;
             let _URL;
@@ -379,7 +356,7 @@
                     <a class="tag-none-link" href="/tags/Unity/" rel="tag">Unity</a>
                 </div>
                 <div class="pull-date">
-                <span>最后编辑：2022-06-17</span>
+                <span>最后编辑：2022-06-18</span>
                 </div>
             </div>
         </footer>
@@ -391,6 +368,10 @@
                 <a title=" 多线程" href="/C/多线程/">&lt; 上一篇</a>
             </div>
             
+            
+            <div class="nav-next clearfix">
+                <a title=" 背包系统" href="/功能实现/背包系统/">下一篇 &gt;</a>
+            </div>
             
         </nav>
     
@@ -439,7 +420,7 @@
                 
   <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
     <h4 class="widget-title"><i class="fa fa-folder"></i>分类目录</h4>
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C#</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Unity%E5%8A%9F%E8%83%BD/">Unity功能</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E5%B8%B8/">日常</a><span class="category-list-count">1</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C#</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/">功能实现</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E5%B8%B8/">日常</a><span class="category-list-count">1</span></li></ul>
   </aside>
 
 
@@ -448,7 +429,7 @@
   <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
     <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
       <div class="tag-clouds">
-        <a href="/tags/C-%E9%AB%98%E9%98%B6/" style="font-size: 0.8em;">C#高阶</a> <a href="/tags/Unity/" style="font-size: 0.6em;">Unity</a> <a href="/tags/%E6%97%A5%E5%B8%B8/" style="font-size: 0.6em;">日常</a>
+        <a href="/tags/C-%E9%AB%98%E9%98%B6/" style="font-size: 0.8em;">C#高阶</a> <a href="/tags/Unity/" style="font-size: 0.7em;">Unity</a> <a href="/tags/%E6%97%A5%E5%B8%B8/" style="font-size: 0.6em;">日常</a>
       </div>
   </aside>
 
@@ -462,7 +443,13 @@
         
           
           
-            <a class="list-group-item" href="/Unity%E5%8A%9F%E8%83%BD/%E6%B8%B8%E6%88%8F%E5%AD%98%E6%A1%A3%E7%B3%BB%E7%BB%9F/"><i class="fa  fa-book"></i> 游戏存档系统</a>
+            <a class="list-group-item" href="/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F/"><i class="fa  fa-book"></i> 背包系统</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E6%B8%B8%E6%88%8F%E5%AD%98%E6%A1%A3%E7%B3%BB%E7%BB%9F/"><i class="fa  fa-book"></i> 游戏存档系统</a>
             
           
         
@@ -485,11 +472,7 @@
           
         
           
-          
-            <a class="list-group-item" href="/%E6%97%A5%E5%B8%B8/%E5%A4%A7%E5%AE%B6%E5%A5%BD%EF%BC%81%EF%BC%81/"><i class="fa  fa-book"></i> 大家好！！</a>
             
-          
-        
       </ul>
   </div>
   </aside>
