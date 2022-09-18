@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  <link rel="icon" href="/images/webicon.jpg">
+  <title>利用反射制作PlayerPrefs数据管理类 | MoeWolf的博客</title>
+  <meta name="author" content="MoeWolf" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="Unity" />
+  
+  <meta name="description" content="利用反射机制封装PlayerPrefs，支持更多类型数据存储">
+<meta property="og:type" content="article">
+<meta property="og:title" content="利用反射制作PlayerPrefs数据管理类">
+<meta property="og:url" content="https://moewolf.me/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E5%88%A9%E7%94%A8%E5%8F%8D%E5%B0%84%E5%88%B6%E4%BD%9Cplayerprefs%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86%E7%B1%BB/index.html">
+<meta property="og:site_name" content="MoeWolf的博客">
+<meta property="og:description" content="利用反射机制封装PlayerPrefs，支持更多类型数据存储">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://moewolf.me/images/webicon.jpg">
+<meta property="article:published_time" content="2022-07-12T08:36:25.000Z">
+<meta property="article:modified_time" content="2022-07-12T08:40:54.708Z">
+<meta property="article:author" content="MoeWolf">
+<meta property="article:tag" content="Unity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://moewolf.me/images/webicon.jpg">
+<meta name="twitter:site" content="@null">
+  
+  <!-- 站点验证相关 -->
+  
+    
+    
+    
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kratosr.min.css" type="text/css" media="all">
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/night-eighties.min.css" type="text/css" media="all">
+  
+  
+  <link rel="stylesheet" id="fontawe-css" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" type="text/css" media="all">
+  <link rel="stylesheet" id="nprogress-css" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css" type="text/css" media="all">
+  
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+  
+  
+    <link rel="stylesheet" id="darkmode-css" href="/css/kr-dark.min.css" type="text/css" media="all">
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  
+    <script src="https://cdn.jsdelivr.net/npm/qrcode_js@1.0.0/qrcode.min.js"></script>
+  
+  
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/holo_banner.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/holo_bg.png');
+        }
+      }
+    
+  </style>
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    
+                                        <li><a href="/"><i class="fa fa-home"></i>首页</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/archives/"><i class="fa fa-file"></i>档案馆</a></li>
+                                    
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">MoeWolf的博客</a></div>
+                    <div class="nav-toggle">
+                        <a class="kratos-nav-toggle js-kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>MoeWolf的博客</h2> <br />
+                        <span>𝓦𝓱𝓪𝓽’𝓼 𝓹𝓪𝓼𝓽 𝓲𝓼 𝓹𝓻𝓸𝓵𝓸𝓰𝓾𝓮.</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+                    
+
+        
+
+            <section class="col-md-8">
+
+        
+
+            <article>
+    <div class="kratos-hentry kratos-post-inner clearfix">
+        <header class="kratos-entry-header">
+            
+                <h1 class="kratos-entry-title text-center">利用反射制作PlayerPrefs数据管理类</h1>
+            
+            
+            <ul class="kratos-post-meta text-center">
+                <li><i class="fa fa-calendar"></i> 2022-07-12</li>
+                <li><i class="fa fa-user"></i> 作者 MoeWolf</li>
+                <li>
+                    <i class="fa fa-edit"></i> 
+                    
+                    
+                        ~7.36K
+                    
+                    字
+                </li>
+                
+            </ul>
+        </header>
+        <div class="kratos-post-content">
+            <div id="expire-alert" class="alert alert-warning hidden" role="alert">
+                本文最后编辑于 <time datetime="1657615254708"></time> 前，其中的内容可能需要更新。
+            </div>
+            
+                <div class="kratos-post-inner-toc">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E5%8F%8D%E5%B0%84%E5%88%B6%E4%BD%9CPlayerPrefs%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86%E7%B1%BB"><span class="toc-number">1.</span> <span class="toc-text">利用反射制作PlayerPrefs数据管理类</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B1%BB%E7%9A%84%E6%A1%86%E6%9E%B6"><span class="toc-number">1.1.</span> <span class="toc-text">类的框架</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E6%99%AE%E9%80%9A%E7%B1%BB%E5%9E%8B%E5%AD%98%E5%82%A8"><span class="toc-number">1.2.</span> <span class="toc-text">实现普通类型存储</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0List%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AD%98%E5%82%A8"><span class="toc-number">1.3.</span> <span class="toc-text">实现List数据类型存储</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0Dictionary%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AD%98%E5%82%A8"><span class="toc-number">1.4.</span> <span class="toc-text">实现Dictionary数据类型存储</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B%E5%AD%98%E5%82%A8"><span class="toc-number">1.5.</span> <span class="toc-text">实现自定义类型存储</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BB%E5%8F%96%E6%99%AE%E9%80%9A%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.6.</span> <span class="toc-text">读取普通数据类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BB%E5%8F%96List%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.7.</span> <span class="toc-text">读取List数据类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BB%E5%8F%96Dictionary%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.8.</span> <span class="toc-text">读取Dictionary数据类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BB%E5%8F%96%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.9.</span> <span class="toc-text">读取自定义类型</span></a></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <p>利用反射机制封装PlayerPrefs，支持更多类型数据存储</p>
+<span id="more"></span>
+
+<h1 id="利用反射制作PlayerPrefs数据管理类"><a href="#利用反射制作PlayerPrefs数据管理类" class="headerlink" title="利用反射制作PlayerPrefs数据管理类"></a>利用反射制作PlayerPrefs数据管理类</h1><h2 id="类的框架"><a href="#类的框架" class="headerlink" title="类的框架"></a>类的框架</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">using System;</span><br><span class="line">using System.Collections;</span><br><span class="line">using System.Collections.Generic;</span><br><span class="line">using System.Reflection;</span><br><span class="line">using UnityEngine;</span><br><span class="line">using Object = UnityEngine.Object;</span><br><span class="line"></span><br><span class="line">public class PlayerPrefsDataMgr</span><br><span class="line">&#123;</span><br><span class="line">    //单例模式</span><br><span class="line">    private static PlayerPrefs instance = new PlayerPrefs();</span><br><span class="line">    public static PlayerPrefs Instance =&gt; instance;</span><br><span class="line">    </span><br><span class="line">    private PlayerPrefsDataMgr()&#123;&#125;</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 存储数据</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    /// &lt;param name=&quot;data&quot;&gt;数据对象，使用Object装箱&lt;/param&gt;</span><br><span class="line">    /// &lt;param name=&quot;keyName&quot;&gt;数据对象的唯一Key 自己控制&lt;/param&gt;</span><br><span class="line">    public void SaveData(object data, string keyName)</span><br><span class="line">    &#123;</span><br><span class="line">        //通过Type 得到传入对象的所有字段 然后结合PlayerPrefs 进行存储</span><br><span class="line">        </span><br><span class="line">        //第一步：获取传入数据对象的所有字段</span><br><span class="line">        </span><br><span class="line">        //第二步：定义Key规则 进行数据存储</span><br><span class="line">        // KeyName_数据类型_字段类型_字段名</span><br><span class="line">        </span><br><span class="line">        //第三步：遍历字段 进行数据存储</span><br><span class="line">        //SaveValue(参数);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 读取数据</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    /// &lt;param name=&quot;type&quot;&gt;想要读取的数据 数据类型&lt;/param&gt;</span><br><span class="line">    /// &lt;param name=&quot;keyName&quot;&gt;数据对象唯一的Key 自己控制&lt;/param&gt;</span><br><span class="line">    /// &lt;returns&gt;&lt;/returns&gt;</span><br><span class="line">    public object LoadDate( Type type ,string keyName)</span><br><span class="line">    &#123;</span><br><span class="line">        /*</span><br><span class="line">         不用Object对象传入 使用Type传入</span><br><span class="line">         主要是Object 类型需要先new 一个对象才能传入，这样写可以节省一行代码</span><br><span class="line">         现在只需要传入一个 Type typeof(类名) 在内部动态创建一个对象返回就行 </span><br><span class="line">        */</span><br><span class="line"></span><br><span class="line">        //根据传入的类型 和 keyName 依据存储的 拼接规则读取</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="实现普通类型存储"><a href="#实现普通类型存储" class="headerlink" title="实现普通类型存储"></a>实现普通类型存储</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">/// &lt;summary&gt;</span><br><span class="line">/// 存储数据</span><br><span class="line">/// &lt;/summary&gt;</span><br><span class="line">/// &lt;param name=&quot;data&quot;&gt;数据对象，使用Object装箱&lt;/param&gt;</span><br><span class="line">/// &lt;param name=&quot;keyName&quot;&gt;数据对象的唯一Key 自己控制&lt;/param&gt;</span><br><span class="line">public void SaveData(object data, string keyName)</span><br><span class="line">&#123;</span><br><span class="line">    //通过Type 得到传入对象的所有字段 然后结合PlayerPrefs 进行存储</span><br><span class="line">    </span><br><span class="line">    //第一步：获取传入数据对象的所有字段</span><br><span class="line">    Type dateType = data.GetType();</span><br><span class="line">    FieldInfo[] fieldInfos = dateType.GetFields();</span><br><span class="line">    </span><br><span class="line">    //第二步：定义Key规则 进行数据存储</span><br><span class="line">    // KeyName_数据类型_字段类型_字段名</span><br><span class="line">    string saveKeyName = &quot;&quot;;</span><br><span class="line">    </span><br><span class="line">    //第三步：遍历字段 进行数据存储</span><br><span class="line">    FieldInfo info;</span><br><span class="line">    for (int i = 0; i &lt; fieldInfos.Length; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        //通过FieldInfo可以直接 获取 字段类型 和 字段名</span><br><span class="line">        //字段类型：info.FieldType.Name</span><br><span class="line">        //字段名：info.Name</span><br><span class="line">        info = fieldInfos[i];</span><br><span class="line">        saveKeyName = $&quot;&#123;keyName&#125;_&#123;dateType.Name&#125;_&#123;info.FieldType.Name&#125;_&#123;info.Name&#125;&quot;;</span><br><span class="line">        SaveValue(info.GetValue(data), saveKeyName);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private void SaveValue(object value, string keyName)</span><br><span class="line">&#123;</span><br><span class="line">    //通过PlayerPrefs来进行存储</span><br><span class="line">    /*</span><br><span class="line">     由于只支持三种类型 判断 数据类型 是什么类型 </span><br><span class="line">     然后具体调用某个方法来存储</span><br><span class="line">    */</span><br><span class="line">    Type fieldType = value.GetType();</span><br><span class="line">    </span><br><span class="line">    //类型判断</span><br><span class="line">    if (fieldType == typeof(int))</span><br><span class="line">    &#123;</span><br><span class="line">        PlayerPrefs.SetInt(keyName,(int) value);</span><br><span class="line">    &#125;</span><br><span class="line">    if (fieldType == typeof(float))</span><br><span class="line">    &#123;</span><br><span class="line">        PlayerPrefs.SetFloat(keyName,(float) value);</span><br><span class="line">    &#125;</span><br><span class="line">    if (fieldType == typeof(string))</span><br><span class="line">    &#123;</span><br><span class="line">        PlayerPrefs.SetString(keyName,value.ToString());</span><br><span class="line">    &#125;</span><br><span class="line">    if (fieldType == typeof(bool))</span><br><span class="line">    &#123;</span><br><span class="line">        PlayerPrefs.SetInt(keyName,(bool) value ? 1:0); //自定规则</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="实现List数据类型存储"><a href="#实现List数据类型存储" class="headerlink" title="实现List数据类型存储"></a>实现List数据类型存储</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">//如何判断 泛型类型</span><br><span class="line">//通过反射 判断父子关系  IList 是List&lt;&gt;的父类</span><br><span class="line">else if (typeof(IList).IsAssignableFrom(fieldType))</span><br><span class="line">&#123;</span><br><span class="line">    //父类装子类</span><br><span class="line">    IList list = value as IList;</span><br><span class="line">    //先存储数量</span><br><span class="line">    PlayerPrefs.SetInt(keyName,list.Count);</span><br><span class="line">    </span><br><span class="line">    //递归调用，再次判断类型 因为不知道泛型的类型是什么</span><br><span class="line">    int index = 0;</span><br><span class="line">    foreach (var obj in list)</span><br><span class="line">    &#123;</span><br><span class="line">        //存储具体的值</span><br><span class="line">        SaveValue(obj,keyName+index);</span><br><span class="line">        index++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="实现Dictionary数据类型存储"><a href="#实现Dictionary数据类型存储" class="headerlink" title="实现Dictionary数据类型存储"></a>实现Dictionary数据类型存储</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">//存储 Dictionary  找到泛型 的父类IDictionary</span><br><span class="line">else if (typeof(IDictionary).IsAssignableFrom(fieldType))</span><br><span class="line">&#123;</span><br><span class="line">    //一样的套路，父类装子类</span><br><span class="line">    IDictionary dictionary = value as IDictionary;</span><br><span class="line">    //先存储字典长度</span><br><span class="line">    PlayerPrefs.SetInt(keyName,dictionary.Count);</span><br><span class="line"></span><br><span class="line">    //递归调用</span><br><span class="line">    int index = 0;</span><br><span class="line">    foreach (var key in dictionary.Keys)</span><br><span class="line">    &#123;</span><br><span class="line">        SaveValue(key,$&quot;&#123;keyName&#125;_key_&#123;index&#125;&quot;);</span><br><span class="line">        SaveValue(dictionary[key],$&quot;&#123;keyName&#125;_Value_&#123;index&#125;&quot;);</span><br><span class="line">        index++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="实现自定义类型存储"><a href="#实现自定义类型存储" class="headerlink" title="实现自定义类型存储"></a>实现自定义类型存储</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">      //自定义类型</span><br><span class="line">      else</span><br><span class="line">      &#123;</span><br><span class="line">          //再次调用SavaData 将自定义类分解为基础类型字段</span><br><span class="line">          SaveData(value,keyName);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">//上面只是存入内存，最后要存入硬盘</span><br><span class="line">PlayerPrefs.Save();</span><br></pre></td></tr></table></figure>
+
+<h2 id="读取普通数据类型"><a href="#读取普通数据类型" class="headerlink" title="读取普通数据类型"></a>读取普通数据类型</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">/// &lt;summary&gt;</span><br><span class="line">/// 读取数据</span><br><span class="line">/// &lt;/summary&gt;</span><br><span class="line">/// &lt;param name=&quot;type&quot;&gt;想要读取的数据 数据类型&lt;/param&gt;</span><br><span class="line">/// &lt;param name=&quot;keyName&quot;&gt;数据对象唯一的Key 自己控制&lt;/param&gt;</span><br><span class="line">/// &lt;returns&gt;&lt;/returns&gt;</span><br><span class="line">public object LoadDate( Type type ,string keyName)</span><br><span class="line">&#123;</span><br><span class="line">    /*</span><br><span class="line">     不用Object对象传入 使用Type传入</span><br><span class="line">     主要是Object 类型需要先new 一个对象才能传入，这样写可以节省一行代码</span><br><span class="line">     现在只需要传入一个 Type typeof(类名) 在内部动态创建一个对象返回就行 </span><br><span class="line">    */</span><br><span class="line"></span><br><span class="line">    //根据传入的类型 和 keyName 依据存储的 拼接规则读取</span><br><span class="line">    //根据传入的Type 创建一个对象</span><br><span class="line">    object data = Activator.CreateInstance(type);</span><br><span class="line">    //往这个对象种填充数据 ，得到所有字段</span><br><span class="line">    FieldInfo[] infos = type.GetFields();</span><br><span class="line">    //用于拼接Key的字符串</span><br><span class="line">    string loadKeyName = &quot;&quot;;</span><br><span class="line">    //用于存储 单个字段消息的 对象</span><br><span class="line">    FieldInfo info;</span><br><span class="line">    for (int i = 0; i &lt; infos.Length; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        info = infos[i];</span><br><span class="line">        loadKeyName = $&quot;&#123;keyName&#125;_&#123;type.Name&#125;_&#123;info.FieldType.Name&#125;_&#123;info.Name&#125;&quot;;</span><br><span class="line">        //有key就可以得到值,填充数据到data中</span><br><span class="line">        info.SetValue(data,LoadValue(info.FieldType,loadKeyName));</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return data;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/// &lt;summary&gt;</span><br><span class="line">/// 得到单个数据的方法</span><br><span class="line">/// &lt;/summary&gt;</span><br><span class="line">/// &lt;param name=&quot;fieldType&quot;&gt;&lt;/param&gt;</span><br><span class="line">/// &lt;param name=&quot;keyName&quot;&gt;&lt;/param&gt;</span><br><span class="line">/// &lt;returns&gt;&lt;/returns&gt;</span><br><span class="line">private object LoadValue(Type fieldType, string keyName)</span><br><span class="line">&#123;</span><br><span class="line">    //根据字段类型 判断用哪一个API</span><br><span class="line">    if (fieldType == typeof(int))</span><br><span class="line">    &#123;</span><br><span class="line">        return PlayerPrefs.GetInt(keyName);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (fieldType == typeof(float))</span><br><span class="line">    &#123;</span><br><span class="line">        return PlayerPrefs.GetFloat(keyName);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (fieldType == typeof(int))</span><br><span class="line">    &#123;</span><br><span class="line">        return PlayerPrefs.GetString(keyName);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (fieldType == typeof(bool))</span><br><span class="line">    &#123;</span><br><span class="line">        return (PlayerPrefs.GetInt(keyName) == 1 ? true:false) ;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return null;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="读取List数据类型"><a href="#读取List数据类型" class="headerlink" title="读取List数据类型"></a>读取List数据类型</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">else if (typeof(IList).IsAssignableFrom(fieldType))</span><br><span class="line">&#123;</span><br><span class="line">    //先得到长度</span><br><span class="line">    int count = PlayerPrefs.GetInt(keyName,0);</span><br><span class="line">    //实例化一个List对象 来进行赋值 使用反射的Activator快速实例化</span><br><span class="line">    IList list = Activator.CreateInstance(fieldType) as IList;</span><br><span class="line">    for (int i = 0; i &lt; count; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        //得到 List泛型中的类型</span><br><span class="line">        list.Add(LoadValue( fieldType.GetGenericArguments()[0],keyName + i));</span><br><span class="line">        return list;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="读取Dictionary数据类型"><a href="#读取Dictionary数据类型" class="headerlink" title="读取Dictionary数据类型"></a>读取Dictionary数据类型</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">else if (typeof(IDictionary).IsAssignableFrom(fieldType))</span><br><span class="line">&#123;</span><br><span class="line">    //先得到长度</span><br><span class="line">    int count = PlayerPrefs.GetInt(keyName, 0);</span><br><span class="line">    //实例化一个Dictionary对象 </span><br><span class="line">    IDictionary dictionary = Activator.CreateInstance(fieldType) as IDictionary;</span><br><span class="line">    //获取泛型类型</span><br><span class="line">    Type[] gType = fieldType.GetGenericArguments();</span><br><span class="line">    for (int i = 0; i &lt; count; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        dictionary.Add(LoadValue(gType[0],$&quot;&#123;keyName&#125;_key_&#123;i&#125;&quot;),</span><br><span class="line">                       LoadValue(gType[1],$&quot;&#123;keyName&#125;_value_&#123;i&#125;&quot;));</span><br><span class="line">        return dictionary;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="读取自定义类型"><a href="#读取自定义类型" class="headerlink" title="读取自定义类型"></a>读取自定义类型</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">else</span><br><span class="line">&#123;</span><br><span class="line">    return LoadDate(fieldType, keyName);</span><br><span class="line">&#125;</span><br><span class="line">return null;</span><br></pre></td></tr></table></figure>
+
+
+        </div>
+        
+            <div class="kratos-copyright text-center clearfix">
+                <h5>本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</h5>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+                <div class="post-like-donate text-center clearfix" id="post-like-donate">
+                
+                
+                    <a class="share" href="javascript:;"><i class="fa fa-share-alt"></i> 分享</a>
+                    <div class="share-wrap" style="display: none;">
+    <div class="share-group">
+        <a href="javascript:;" class="share-plain qq" onclick="share('qq');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-qq"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain qzone" onclick="share('qzone');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-star"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weixin pop style-plain" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weixin"></i>
+            </div>
+            <div class="share-int">
+                <div class="qrcode" id="wechat-qr"></div>
+                <p>打开微信“扫一扫”，打开网页后点击屏幕右上角分享按钮</p>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weibo" onclick="share('weibo');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weibo"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain facebook style-plain" onclick="share('facebook');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-facebook"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain twitter style-plain" onclick="share('twitter');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-twitter"></i>
+            </div>
+        </a>
+    </div>
+    <script type="text/javascript">
+        $(()=>{
+            new QRCode("wechat-qr", {
+                text: "https://moewolf.me/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E5%88%A9%E7%94%A8%E5%8F%8D%E5%B0%84%E5%88%B6%E4%BD%9Cplayerprefs%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86%E7%B1%BB/",
+                width: 150,
+                height: 150,
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        });
+        function share(dest) {
+            const qqBase        = "https://connect.qq.com/widget/shareqq/index.html?";
+            const weiboBase     = "https://service.weibo.com/share/share.php?";
+            const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
+            const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
+            const twitterBase   = "https://twitter.com/intent/tweet?";
+            const hostUrl       = "https://moewolf.me/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E5%88%A9%E7%94%A8%E5%8F%8D%E5%B0%84%E5%88%B6%E4%BD%9Cplayerprefs%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86%E7%B1%BB/";
+            const title         = "「利用反射制作PlayerPrefs数据管理类」";
+            const excerpt       = `利用反射机制封装PlayerPrefs，支持更多类型数据存储`;
+            let _URL;
+            switch (dest) {
+                case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
+                case "weibo"    : _URL = weiboBase+"url="+hostUrl+"&title="+title+excerpt;                                 break;
+                case "qzone"    : _URL = qzoneBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";  break;
+                case "facebook" : _URL = facebookBase+"u="+hostUrl;                                                        break;
+                case "twitter"  : _URL = twitterBase+"text="+title+excerpt+"&url="+hostUrl;                                break;
+            }
+            window.open(_URL);
+        };
+    </script>
+</div>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/Unity/" rel="tag">Unity</a>
+                </div>
+                <div class="pull-date">
+                <span>最后编辑：2022-07-12</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" 背包系统" href="/功能实现/背包系统/">&lt; 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" 茉子的幻想乡奇遇（一）：PureMVC与主界面" href="/茉子的幻想乡奇遇/茉子的幻想乡奇遇（一）：puremvc与主界面/">下一篇 &gt;</a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+        
+
+                
+            
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/holo_avatar.png" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">生如夏花之绚烂，死如秋叶之静美</p>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix">
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar"></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E5%8F%8D%E5%B0%84%E5%88%B6%E4%BD%9CPlayerPrefs%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86%E7%B1%BB"><span class="toc-text">利用反射制作PlayerPrefs数据管理类</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B1%BB%E7%9A%84%E6%A1%86%E6%9E%B6"><span class="toc-text">类的框架</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E6%99%AE%E9%80%9A%E7%B1%BB%E5%9E%8B%E5%AD%98%E5%82%A8"><span class="toc-text">实现普通类型存储</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0List%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AD%98%E5%82%A8"><span class="toc-text">实现List数据类型存储</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0Dictionary%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AD%98%E5%82%A8"><span class="toc-text">实现Dictionary数据类型存储</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B%E5%AD%98%E5%82%A8"><span class="toc-text">实现自定义类型存储</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BB%E5%8F%96%E6%99%AE%E9%80%9A%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-text">读取普通数据类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BB%E5%8F%96List%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-text">读取List数据类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BB%E5%8F%96Dictionary%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-text">读取Dictionary数据类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BB%E5%8F%96%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B"><span class="toc-text">读取自定义类型</span></a></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类目录</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C#</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/">功能实现</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E5%B8%B8/">日常</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/">茉子的幻想乡奇遇</a><span class="category-list-count">3</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/C-%E9%AB%98%E9%98%B6/" style="font-size: 0.8em;">C#高阶</a> <a href="/tags/Unity/" style="font-size: 0.8em;">Unity</a> <a href="/tags/%E5%BC%80%E5%8F%91%E6%97%A5%E5%BF%97/" style="font-size: 0.8em;">开发日志</a> <a href="/tags/%E6%97%A5%E5%B8%B8/" style="font-size: 0.6em;">日常</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9Aexcel%E8%A1%A8%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E5%92%8C%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（三）：Excel表配置数据和背包系统</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E5%AF%B9%E8%AF%9D%E5%8A%9F%E8%83%BD%E7%9A%84%E5%AE%9E%E7%8E%B0/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（二）：对话功能的实现</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9Apuremvc%E4%B8%8E%E4%B8%BB%E7%95%8C%E9%9D%A2/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（一）：PureMVC与主界面</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E5%88%A9%E7%94%A8%E5%8F%8D%E5%B0%84%E5%88%B6%E4%BD%9Cplayerprefs%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86%E7%B1%BB/"><i class="fa  fa-book"></i> 利用反射制作PlayerPrefs数据管理类</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F/"><i class="fa  fa-book"></i> 背包系统</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+        
+        </div>
+    </div>
+</div>
+<footer>
+    <div id="footer"  >
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://t.me/LittleWolfHouse"><i class="fa fa-telegram"></i></a></li>
+                        
+                        
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://github.com/Dai-MoeWolf"><i class="fa fa-github"></i></a></li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2022 MoeWolf的博客 版权所有.</li>
+                            <li>本站已运行<span id="span_dt">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>Theme <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a></li>
+                            <li>Site built with&nbsp;<i class="fa fa-heart throb" style="color:#d43f57"></i>&nbsp;by MoeWolf.</li>
+                        </div>
+                        <div>
+                            <li>Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a></li>
+                            
+                        </div>
+                        <div>
+                            
+                            
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search/">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="box theme-box" id="darkmode-switch">
+                        <span class="fa fa-adjust"></span>
+                    </div>
+                
+                
+            </div>
+            <div class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.4/dist/js/bootstrap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js"></script>
+<script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+    <script async src="/js/candy.min.js"></script>
+
+
+
+
+    <script defer src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script>
+<script defer src="/js/kratosr.min.js"></script>
+<script defer src="/js/pjax.min.js"></script>
+
+
+    <script defer src="/js/kr-dark.min.js"></script>
+
+
+
+<!-- Extra support for third-party plguins  -->
+
+
+    </body>
+</html>

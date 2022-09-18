@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  <link rel="icon" href="/images/webicon.jpg">
+  <title>游戏存档系统 | MoeWolf的博客</title>
+  <meta name="author" content="MoeWolf" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="Unity" />
+  
+  <meta name="description" content="数据持久化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="游戏存档系统">
+<meta property="og:url" content="https://moewolf.me/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E6%B8%B8%E6%88%8F%E5%AD%98%E6%A1%A3%E7%B3%BB%E7%BB%9F/index.html">
+<meta property="og:site_name" content="MoeWolf的博客">
+<meta property="og:description" content="数据持久化">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://moewolf.me/images/webicon.jpg">
+<meta property="article:published_time" content="2022-06-17T08:21:25.000Z">
+<meta property="article:modified_time" content="2022-06-18T12:45:09.687Z">
+<meta property="article:author" content="MoeWolf">
+<meta property="article:tag" content="Unity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://moewolf.me/images/webicon.jpg">
+<meta name="twitter:site" content="@null">
+  
+  <!-- 站点验证相关 -->
+  
+    
+    
+    
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kratosr.min.css" type="text/css" media="all">
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/night-eighties.min.css" type="text/css" media="all">
+  
+  
+  <link rel="stylesheet" id="fontawe-css" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" type="text/css" media="all">
+  <link rel="stylesheet" id="nprogress-css" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css" type="text/css" media="all">
+  
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+  
+  
+    <link rel="stylesheet" id="darkmode-css" href="/css/kr-dark.min.css" type="text/css" media="all">
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  
+    <script src="https://cdn.jsdelivr.net/npm/qrcode_js@1.0.0/qrcode.min.js"></script>
+  
+  
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/holo_banner.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/holo_bg.png');
+        }
+      }
+    
+  </style>
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    
+                                        <li><a href="/"><i class="fa fa-home"></i>首页</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/archives/"><i class="fa fa-file"></i>档案馆</a></li>
+                                    
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">MoeWolf的博客</a></div>
+                    <div class="nav-toggle">
+                        <a class="kratos-nav-toggle js-kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>MoeWolf的博客</h2> <br />
+                        <span>𝓦𝓱𝓪𝓽’𝓼 𝓹𝓪𝓼𝓽 𝓲𝓼 𝓹𝓻𝓸𝓵𝓸𝓰𝓾𝓮.</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+                    
+
+        
+
+            <section class="col-md-8">
+
+        
+
+            <article>
+    <div class="kratos-hentry kratos-post-inner clearfix">
+        <header class="kratos-entry-header">
+            
+                <h1 class="kratos-entry-title text-center">游戏存档系统</h1>
+            
+            
+            <ul class="kratos-post-meta text-center">
+                <li><i class="fa fa-calendar"></i> 2022-06-17</li>
+                <li><i class="fa fa-user"></i> 作者 MoeWolf</li>
+                <li>
+                    <i class="fa fa-edit"></i> 
+                    
+                    
+                        ~10.01K
+                    
+                    字
+                </li>
+                
+            </ul>
+        </header>
+        <div class="kratos-post-content">
+            <div id="expire-alert" class="alert alert-warning hidden" role="alert">
+                本文最后编辑于 <time datetime="1655556309687"></time> 前，其中的内容可能需要更新。
+            </div>
+            
+                <div class="kratos-post-inner-toc">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AD%98%E6%A1%A3%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.</span> <span class="toc-text">存档系统</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#PlayerPrefs"><span class="toc-number">1.1.</span> <span class="toc-text">PlayerPrefs</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.1.1.</span> <span class="toc-text">实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PlayerPrefs%E7%9A%84%E6%8B%93%E5%B1%95"><span class="toc-number">1.1.2.</span> <span class="toc-text">PlayerPrefs的拓展</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JSON"><span class="toc-number">1.2.</span> <span class="toc-text">JSON</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ToJson"><span class="toc-number">1.2.1.</span> <span class="toc-text">ToJson</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FormJson"><span class="toc-number">1.2.2.</span> <span class="toc-text">FormJson</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FormJsonOverwrite"><span class="toc-number">1.2.3.</span> <span class="toc-text">FormJsonOverwrite</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8EJson%E7%9A%84%E5%AD%98%E6%A1%A3%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.2.4.</span> <span class="toc-text">基于Json的存档系统</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E5%AD%98%E6%A1%A3"><span class="toc-number">1.2.5.</span> <span class="toc-text">多存档</span></a></li></ol></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <p>数据持久化</p>
+<span id="more"></span>
+
+<h1 id="存档系统"><a href="#存档系统" class="headerlink" title="存档系统"></a>存档系统</h1><h2 id="PlayerPrefs"><a href="#PlayerPrefs" class="headerlink" title="PlayerPrefs"></a>PlayerPrefs</h2><p>“PlayerPrefs”是一个在游戏会话之间存储玩家首选项的类。它可以将字符串、浮点数和整数值存储到用户的平台注册表中。Unity 根据运行应用程序的操作系统以不同的方式存储“PlayerPrefs”数据。</p>
+<ol>
+<li><p>在macOS 上，PlayerPrefs 存储在 中。Unity 对编辑器和独立播放器中的项目使用相同的 .plist 文件。</p>
+</li>
+<li><p>在 Windows 上，PlayerPrefs 存储在 key 中。</p>
+</li>
+<li><p>在 Linux 上，PlayerPrefs 存储在 .</p>
+</li>
+<li><p>在 Windows 应用商店应用上，PlayerPrefs 存储在 中。</p>
+</li>
+<li><p>在 Windows Phone 8 上，Unity 将 PlayerPrefs 数据存储在应用程序的本地文件夹中。有关详细信息。</p>
+</li>
+<li><p>在 Android 上，PlayerPrefs 存储在 .Unity 将 PlayerPrefs 数据存储在设备上的“共享首选项”中。C#，JavaScript，Android Java和本机代码都可以访问PlayerPrefs数据。</p>
+</li>
+<li><p>在WebGL上，Unity使用浏览器的IndexedDB API存储PlayerPrefs数据。</p>
+</li>
+</ol>
+<ul>
+<li><p>优点：简单易用</p>
+</li>
+<li><p>缺点：</p>
+<ol>
+<li><p>能直接存储的数据类型有限</p>
+</li>
+<li><p>数据安全性低</p>
+</li>
+</ol>
+</li>
+<li><p>适用范围：适合存储暂时性数据</p>
+<ol>
+<li>玩家设定偏好（音量，全屏等）</li>
+<li>简单的数据（得分详情）</li>
+<li>游戏原型制作时暂时的存储方案</li>
+</ol>
+</li>
+</ul>
+<p>使用PlayerPerfs，数据存储在注册表中</p>
+<p><img src="/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E6%B8%B8%E6%88%8F%E5%AD%98%E6%A1%A3%E7%B3%BB%E7%BB%9F/PlayerPrefs.png"></p>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">void SaveByPlayerPrefs()</span><br><span class="line">&#123;</span><br><span class="line">    //存储玩家名称</span><br><span class="line">    PlayerPrefs.SetString(&quot;PlayerName&quot;,playerName);</span><br><span class="line">    //存储玩家等级和金币</span><br><span class="line">    PlayerPrefs.SetInt(&quot;Level&quot;,level);</span><br><span class="line">    PlayerPrefs.SetInt(&quot;Coin&quot;,coin);</span><br><span class="line">    //存储玩家位置</span><br><span class="line">    var position = transform.position;</span><br><span class="line">    PlayerPrefs.SetFloat(&quot;PositionX&quot;,position.x);</span><br><span class="line">    PlayerPrefs.SetFloat(&quot;PositionY&quot;,position.y);</span><br><span class="line">    PlayerPrefs.SetFloat(&quot;PositionZ&quot;,position.z);</span><br><span class="line">    //写入磁盘</span><br><span class="line">    PlayerPrefs.Save();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void LoaddByPlayerPrefs()</span><br><span class="line">&#123;</span><br><span class="line">    //获取存档</span><br><span class="line">    playerName =  PlayerPrefs.GetString(&quot;PlayerName&quot;);</span><br><span class="line">    level = PlayerPrefs.GetInt(&quot;Level&quot;);</span><br><span class="line">    coin = PlayerPrefs.GetInt(&quot;Coin&quot;);</span><br><span class="line">    Vector3 position = new Vector3(PlayerPrefs.GetFloat(&quot;PositionX&quot;),</span><br><span class="line">        PlayerPrefs.GetFloat(&quot;PositionY&quot;), PlayerPrefs.GetFloat(&quot;PositionZ&quot;));</span><br><span class="line">    transform.position = position;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果玩家没有点击过Save，就点击Load，可以返回一个默认值</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">playerName =  PlayerPrefs.GetString(&quot;PlayerName&quot;,&quot;未设置玩家名称&quot;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="PlayerPrefs的拓展"><a href="#PlayerPrefs的拓展" class="headerlink" title="PlayerPrefs的拓展"></a>PlayerPrefs的拓展</h3><ul>
+<li>PlayerPrefs只支持int,string,float三种数据类型存取</li>
+<li>可以使用JsonUntility来储存更复杂的数据</li>
+</ul>
+<p>Unity序列化程序支持的类 → JsonUtility.ToJson() → Json string / PlayerPrefs.SetString()</p>
+<p>自定义一个静态类，用于存档</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public static class SaveSystem</span><br><span class="line">&#123;</span><br><span class="line">    //使用object可以存储任意类型的数据</span><br><span class="line">    public static void SaveByPlayerPrefs(string key, object data)</span><br><span class="line">    &#123;</span><br><span class="line">        //将任意数据转化为Json String</span><br><span class="line">        var json = JsonUtility.ToJson(data);</span><br><span class="line">        PlayerPrefs.SetString(key,json);</span><br><span class="line">        PlayerPrefs.Save();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static string LoadByPlayerPrefs(string key)</span><br><span class="line">    &#123;</span><br><span class="line">        return PlayerPrefs.GetString(key, null);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不想将数据一条一条的存取，可以将数据打包成一个类</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line">using UnityEngine;</span><br><span class="line"></span><br><span class="line">namespace SaveSystemTutorial</span><br><span class="line">&#123;    </span><br><span class="line">    public class PlayerData : MonoBehaviour</span><br><span class="line">    &#123;</span><br><span class="line">        [SerializeField] string playerName = &quot;Player Name&quot;;</span><br><span class="line">        [SerializeField] int level = 0;</span><br><span class="line">        [SerializeField] int coin = 0;</span><br><span class="line">        </span><br><span class="line">        //可序列化特性</span><br><span class="line">        [System.Serializable]class SaveData</span><br><span class="line">        &#123;</span><br><span class="line">            public string playerName;</span><br><span class="line">            public int level;</span><br><span class="line">            public int coin;</span><br><span class="line">            public Vector3 playerPosition;</span><br><span class="line">            </span><br><span class="line">            public SaveData(string playerName, int level, int coin, Vector3 playerPosition)</span><br><span class="line">            &#123;</span><br><span class="line">                this.playerName = playerName;</span><br><span class="line">                this.level = level;</span><br><span class="line">                this.coin = coin;</span><br><span class="line">                this.playerPosition = playerPosition;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        public string Name =&gt; playerName;</span><br><span class="line">        public int Level =&gt; level;</span><br><span class="line">        public int Coin =&gt; coin;</span><br><span class="line"></span><br><span class="line">        public Vector3 Position =&gt; transform.position;</span><br><span class="line">        </span><br><span class="line">        public void Save()</span><br><span class="line">        &#123;</span><br><span class="line">            SaveByPlayerPrefs();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public void Load()</span><br><span class="line">        &#123;</span><br><span class="line">            LoaddByPlayerPrefs();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        void SaveByPlayerPrefs()</span><br><span class="line">        &#123;</span><br><span class="line">            //使用SavaData保存玩家数据</span><br><span class="line">            SaveData saveData = new SaveData(playerName,level,coin,transform.position);</span><br><span class="line">            //写入磁盘</span><br><span class="line">            SaveSystem.SaveByPlayerPrefs(&quot;PlayerData&quot;,saveData);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        void LoaddByPlayerPrefs()</span><br><span class="line">        &#123;</span><br><span class="line">            //读取到的是Json格式的string</span><br><span class="line">            var json = SaveSystem.LoadByPlayerPrefs(&quot;PlayerData&quot;);</span><br><span class="line">            //将json string转化为玩家数据</span><br><span class="line">            SaveData saveData = JsonUtility.FromJson&lt;SaveData&gt;(json);</span><br><span class="line">            //写回玩家数据</span><br><span class="line">            playerName = saveData.playerName;</span><br><span class="line">            level = saveData.level;</span><br><span class="line">            coin = saveData.coin;</span><br><span class="line">            transform.position = saveData.playerPosition;</span><br><span class="line">        &#125;</span><br><span class="line">		</span><br><span class="line">        //删除存档</span><br><span class="line">        //使用特性，在编辑器的菜单栏中添加一个参数指定的选项，用来调用这个函数，函数必须static才能生效</span><br><span class="line">        [UnityEditor.MenuItem(&quot;Develop/Delete Player Data Prefs&quot;)]</span><br><span class="line">        public static void DeletePlayerDataPrefs()</span><br><span class="line">        &#123;</span><br><span class="line">            //删除全部数据</span><br><span class="line">            PlayerPrefs.DeleteAll();</span><br><span class="line">            //PlayerPrefs.DeleteKey();  通过键来删除指定数据</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="JSON"><a href="#JSON" class="headerlink" title="JSON"></a>JSON</h2><ul>
+<li>优点<ol>
+<li>便于阅读与编写</li>
+<li>适用范围广泛，支持多种主流编程语言</li>
+<li>轻量级，易于网络传输与机器解析和生成</li>
+</ol>
+</li>
+<li>缺点<ol>
+<li>支持的数据类型有限（通过JsonUtility实现的系统）</li>
+<li>数据安全性低</li>
+</ol>
+</li>
+<li>适用范围<ol>
+<li>联网<ol>
+<li>优秀的网络数据交换载体</li>
+<li>云存档</li>
+</ol>
+</li>
+<li>本地存储<ol>
+<li>非敏感需要大量读取和修改的数据</li>
+<li>玩家偏好设置</li>
+</ol>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="ToJson"><a href="#ToJson" class="headerlink" title="ToJson"></a>ToJson</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//将数据转换为Json</span><br><span class="line">JsonUtility.ToJson (object obj);</span><br><span class="line">//第二个参数：是否转换成适合阅读模式</span><br><span class="line">JsonUtilityToJson(object obj, bool prettyPrint);</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意：</strong>原始类型字段不会被可序列化转换为Json，需要将数据封装在一个类中，并用可序列化特性标记类</p>
+<p>只有以下类型可以转换为Json（可以出现在Inspector中）:</p>
+<ul>
+<li>public 的普通字段（非static , readonly 或 const字段）</li>
+<li>[SerializeField]特性标记的字段包括（protected 和 private）</li>
+</ul>
+<h3 id="FormJson"><a href="#FormJson" class="headerlink" title="FormJson"></a>FormJson</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//从Json返回一个T类型对象实例</span><br><span class="line">var t = JsonUntility.FormJson&lt;T&gt;();</span><br></pre></td></tr></table></figure>
+
+<h3 id="FormJsonOverwrite"><a href="#FormJsonOverwrite" class="headerlink" title="FormJsonOverwrite"></a>FormJsonOverwrite</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">//通过json生成的对象实例,将第二个参数objectToOverwrite替换掉</span><br><span class="line">//用于数据存档覆盖</span><br><span class="line">JsonUntility.FromJsonOverwrite (string json, object objectToOverwrite);</span><br></pre></td></tr></table></figure>
+
+<h3 id="基于Json的存档系统"><a href="#基于Json的存档系统" class="headerlink" title="基于Json的存档系统"></a>基于Json的存档系统</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">using System;</span><br><span class="line">using System.IO;</span><br><span class="line">using System.Text;</span><br><span class="line">using UnityEngine;</span><br><span class="line"></span><br><span class="line">namespace SaveSystemTutorial</span><br><span class="line">&#123;</span><br><span class="line">    public static class SaveSystem</span><br><span class="line">    &#123;</span><br><span class="line">        //参数：1.保存的文件名  2. 游戏数据</span><br><span class="line">        public static void SavaByJson(string saveFileName, object data)</span><br><span class="line">        &#123;</span><br><span class="line">            var json = JsonUtility.ToJson(data);</span><br><span class="line">            //Path.Combine()路径合并函数，将多个路径合并成一个路径</span><br><span class="line">            //Application.persistentDataPath 根据不同的发布平台自动设置路径</span><br><span class="line">            var path = Path.Combine(Application.persistentDataPath, saveFileName);</span><br><span class="line">            try</span><br><span class="line">            &#123;</span><br><span class="line">                File.WriteAllText(path, json);</span><br><span class="line">            &#125;</span><br><span class="line">            catch (System.Exception exception)</span><br><span class="line">            &#123;</span><br><span class="line">                //存档失败则打印路径和异常</span><br><span class="line">                #if UNITY_EDITOR</span><br><span class="line">                Debug.LogError($&quot;Failed to save data to &#123;path&#125;. \n&#123;exception&#125;&quot;);</span><br><span class="line">                #endif</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        //使用泛型读取任意类型数据</span><br><span class="line">        public static T LoadByJson&lt;T&gt;(string saveFileName)</span><br><span class="line">        &#123;</span><br><span class="line">            var path = Path.Combine(Application.persistentDataPath, saveFileName);</span><br><span class="line">            try</span><br><span class="line">            &#123;</span><br><span class="line">                var json = File.ReadAllText(path);</span><br><span class="line">                T data = JsonUtility.FromJson&lt;T&gt;(json);</span><br><span class="line">                return data;</span><br><span class="line">            &#125;</span><br><span class="line">            catch (System.Exception exception)</span><br><span class="line">            &#123;</span><br><span class="line">                //存档失败则打印路径和异常</span><br><span class="line">                #if UNITY_EDITOR</span><br><span class="line">                Debug.LogError($&quot;Failed to load data form &#123;path&#125;. \n&#123;exception&#125;&quot;);</span><br><span class="line">                #endif</span><br><span class="line">                return default;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        //删除存档</span><br><span class="line">        public static void DeleteSaveFile(string saveFileName)</span><br><span class="line">        &#123;</span><br><span class="line">            try</span><br><span class="line">            &#123;</span><br><span class="line">                var path = Path.Combine(Application.persistentDataPath, saveFileName);</span><br><span class="line">                File.Delete(path);</span><br><span class="line">            &#125;</span><br><span class="line">            catch (Exception exception)</span><br><span class="line">            &#123;</span><br><span class="line">                #if UNITY_EDITOR</span><br><span class="line">                Debug.LogError($&quot;Failed to delete file form &#123;path&#125;. \n&#123;exception&#125;&quot;);</span><br><span class="line">                #endif</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>PlayerData类</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line">using UnityEngine;</span><br><span class="line"></span><br><span class="line">namespace SaveSystemTutorial</span><br><span class="line">&#123;    </span><br><span class="line">    public class PlayerData : MonoBehaviour</span><br><span class="line">    &#123;</span><br><span class="line">        [SerializeField] string playerName = &quot;Player Name&quot;;</span><br><span class="line">        [SerializeField] int level = 0;</span><br><span class="line">        [SerializeField] int coin = 0;</span><br><span class="line">        </span><br><span class="line">        //可序列化特性</span><br><span class="line">        [System.Serializable]class SaveData</span><br><span class="line">        &#123;</span><br><span class="line">            public string playerName;</span><br><span class="line">            public int level;</span><br><span class="line">            public int coin;</span><br><span class="line">            public Vector3 playerPosition;</span><br><span class="line">            </span><br><span class="line">            public SaveData(string playerName, int level, int coin, Vector3 playerPosition)</span><br><span class="line">            &#123;</span><br><span class="line">                this.playerName = playerName;</span><br><span class="line">                this.level = level;</span><br><span class="line">                this.coin = coin;</span><br><span class="line">                this.playerPosition = playerPosition;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        public string Name =&gt; playerName;</span><br><span class="line">        public int Level =&gt; level;</span><br><span class="line">        public int Coin =&gt; coin;</span><br><span class="line">        public Vector3 Position =&gt; transform.position;</span><br><span class="line">		</span><br><span class="line">        //将存档文件名设置为常量</span><br><span class="line">        public const string PLAYER_DATA_FILE_NAME = &quot;playerData.sav&quot;;</span><br><span class="line">        public void Save()</span><br><span class="line">        &#123;</span><br><span class="line">            SaveByJson();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public void Load()</span><br><span class="line">        &#123;</span><br><span class="line">            LoadByJson();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        void SaveByJson()</span><br><span class="line">        &#123;</span><br><span class="line">            SaveData saveData = new SaveData(playerName,level,coin,transform.position);</span><br><span class="line">            SaveSystem.SavaByJson(PLAYER_DATA_FILE_NAME,saveData);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        void LoadByJson()</span><br><span class="line">        &#123;</span><br><span class="line">            SaveData saveData = SaveSystem.LoadByJson&lt;SaveData&gt;(PLAYER_DATA_FILE_NAME);</span><br><span class="line">            playerName = saveData.playerName;</span><br><span class="line">            level = saveData.level;</span><br><span class="line">            coin = saveData.coin;</span><br><span class="line">            transform.position = saveData.playerPosition;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        [UnityEditor.MenuItem(&quot;Developer/Delete Player Data Files&quot;)]</span><br><span class="line">        public static void DeletePlayerDataSaveFile()</span><br><span class="line">        &#123;</span><br><span class="line">            SaveSystem.DeleteSaveFile(PLAYER_DATA_FILE_NAME);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="多存档"><a href="#多存档" class="headerlink" title="多存档"></a>多存档</h3><p>文件名加上时间，即可创建不同时间的多存档</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">void SaveByJson()</span><br><span class="line">&#123;</span><br><span class="line">    SaveData saveData = new SaveData(playerName,level,coin,transform.position);</span><br><span class="line">    SaveSystem.SavaByJson($&quot;&#123;System.DateTime.Now:yyyy.dd.m hh-mm-ss&#125;.sav&quot;,saveData);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+        </div>
+        
+            <div class="kratos-copyright text-center clearfix">
+                <h5>本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</h5>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+                <div class="post-like-donate text-center clearfix" id="post-like-donate">
+                
+                
+                    <a class="share" href="javascript:;"><i class="fa fa-share-alt"></i> 分享</a>
+                    <div class="share-wrap" style="display: none;">
+    <div class="share-group">
+        <a href="javascript:;" class="share-plain qq" onclick="share('qq');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-qq"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain qzone" onclick="share('qzone');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-star"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weixin pop style-plain" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weixin"></i>
+            </div>
+            <div class="share-int">
+                <div class="qrcode" id="wechat-qr"></div>
+                <p>打开微信“扫一扫”，打开网页后点击屏幕右上角分享按钮</p>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weibo" onclick="share('weibo');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weibo"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain facebook style-plain" onclick="share('facebook');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-facebook"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain twitter style-plain" onclick="share('twitter');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-twitter"></i>
+            </div>
+        </a>
+    </div>
+    <script type="text/javascript">
+        $(()=>{
+            new QRCode("wechat-qr", {
+                text: "https://moewolf.me/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E6%B8%B8%E6%88%8F%E5%AD%98%E6%A1%A3%E7%B3%BB%E7%BB%9F/",
+                width: 150,
+                height: 150,
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        });
+        function share(dest) {
+            const qqBase        = "https://connect.qq.com/widget/shareqq/index.html?";
+            const weiboBase     = "https://service.weibo.com/share/share.php?";
+            const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
+            const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
+            const twitterBase   = "https://twitter.com/intent/tweet?";
+            const hostUrl       = "https://moewolf.me/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E6%B8%B8%E6%88%8F%E5%AD%98%E6%A1%A3%E7%B3%BB%E7%BB%9F/";
+            const title         = "「游戏存档系统」";
+            const excerpt       = `数据持久化`;
+            let _URL;
+            switch (dest) {
+                case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
+                case "weibo"    : _URL = weiboBase+"url="+hostUrl+"&title="+title+excerpt;                                 break;
+                case "qzone"    : _URL = qzoneBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";  break;
+                case "facebook" : _URL = facebookBase+"u="+hostUrl;                                                        break;
+                case "twitter"  : _URL = twitterBase+"text="+title+excerpt+"&url="+hostUrl;                                break;
+            }
+            window.open(_URL);
+        };
+    </script>
+</div>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/Unity/" rel="tag">Unity</a>
+                </div>
+                <div class="pull-date">
+                <span>最后编辑：2022-06-18</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" 多线程" href="/C/多线程/">&lt; 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" 背包系统" href="/功能实现/背包系统/">下一篇 &gt;</a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+        
+
+                
+            
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/holo_avatar.png" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">生如夏花之绚烂，死如秋叶之静美</p>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix">
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar"></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AD%98%E6%A1%A3%E7%B3%BB%E7%BB%9F"><span class="toc-text">存档系统</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#PlayerPrefs"><span class="toc-text">PlayerPrefs</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0"><span class="toc-text">实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PlayerPrefs%E7%9A%84%E6%8B%93%E5%B1%95"><span class="toc-text">PlayerPrefs的拓展</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JSON"><span class="toc-text">JSON</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ToJson"><span class="toc-text">ToJson</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FormJson"><span class="toc-text">FormJson</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FormJsonOverwrite"><span class="toc-text">FormJsonOverwrite</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8EJson%E7%9A%84%E5%AD%98%E6%A1%A3%E7%B3%BB%E7%BB%9F"><span class="toc-text">基于Json的存档系统</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E5%AD%98%E6%A1%A3"><span class="toc-text">多存档</span></a></li></ol></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类目录</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C#</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/">功能实现</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E5%B8%B8/">日常</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/">茉子的幻想乡奇遇</a><span class="category-list-count">3</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/C-%E9%AB%98%E9%98%B6/" style="font-size: 0.8em;">C#高阶</a> <a href="/tags/Unity/" style="font-size: 0.8em;">Unity</a> <a href="/tags/%E5%BC%80%E5%8F%91%E6%97%A5%E5%BF%97/" style="font-size: 0.8em;">开发日志</a> <a href="/tags/%E6%97%A5%E5%B8%B8/" style="font-size: 0.6em;">日常</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9Aexcel%E8%A1%A8%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E5%92%8C%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（三）：Excel表配置数据和背包系统</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E5%AF%B9%E8%AF%9D%E5%8A%9F%E8%83%BD%E7%9A%84%E5%AE%9E%E7%8E%B0/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（二）：对话功能的实现</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9Apuremvc%E4%B8%8E%E4%B8%BB%E7%95%8C%E9%9D%A2/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（一）：PureMVC与主界面</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E5%88%A9%E7%94%A8%E5%8F%8D%E5%B0%84%E5%88%B6%E4%BD%9Cplayerprefs%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86%E7%B1%BB/"><i class="fa  fa-book"></i> 利用反射制作PlayerPrefs数据管理类</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F/"><i class="fa  fa-book"></i> 背包系统</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+        
+        </div>
+    </div>
+</div>
+<footer>
+    <div id="footer"  >
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://t.me/LittleWolfHouse"><i class="fa fa-telegram"></i></a></li>
+                        
+                        
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://github.com/Dai-MoeWolf"><i class="fa fa-github"></i></a></li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2022 MoeWolf的博客 版权所有.</li>
+                            <li>本站已运行<span id="span_dt">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>Theme <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a></li>
+                            <li>Site built with&nbsp;<i class="fa fa-heart throb" style="color:#d43f57"></i>&nbsp;by MoeWolf.</li>
+                        </div>
+                        <div>
+                            <li>Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a></li>
+                            
+                        </div>
+                        <div>
+                            
+                            
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search/">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="box theme-box" id="darkmode-switch">
+                        <span class="fa fa-adjust"></span>
+                    </div>
+                
+                
+            </div>
+            <div class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.4/dist/js/bootstrap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js"></script>
+<script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+    <script async src="/js/candy.min.js"></script>
+
+
+
+
+    <script defer src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script>
+<script defer src="/js/kratosr.min.js"></script>
+<script defer src="/js/pjax.min.js"></script>
+
+
+    <script defer src="/js/kr-dark.min.js"></script>
+
+
+
+<!-- Extra support for third-party plguins  -->
+
+
+    </body>
+</html>

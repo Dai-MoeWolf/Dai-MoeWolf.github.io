@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  <link rel="icon" href="/images/webicon.jpg">
+  <title>多线程 | MoeWolf的博客</title>
+  <meta name="author" content="MoeWolf" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="C#高阶" />
+  
+  <meta name="description" content="多线程使得并行编程实现，使用线程节省了 CPU 周期的浪费，同时提高了应用程序的效率。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="多线程">
+<meta property="og:url" content="https://moewolf.me/C/%E5%A4%9A%E7%BA%BF%E7%A8%8B/index.html">
+<meta property="og:site_name" content="MoeWolf的博客">
+<meta property="og:description" content="多线程使得并行编程实现，使用线程节省了 CPU 周期的浪费，同时提高了应用程序的效率。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://moewolf.me/images/webicon.jpg">
+<meta property="article:published_time" content="2022-06-06T15:33:39.000Z">
+<meta property="article:modified_time" content="2022-06-06T15:37:12.810Z">
+<meta property="article:author" content="MoeWolf">
+<meta property="article:tag" content="C#高阶">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://moewolf.me/images/webicon.jpg">
+<meta name="twitter:site" content="@null">
+  
+  <!-- 站点验证相关 -->
+  
+    
+    
+    
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kratosr.min.css" type="text/css" media="all">
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/night-eighties.min.css" type="text/css" media="all">
+  
+  
+  <link rel="stylesheet" id="fontawe-css" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" type="text/css" media="all">
+  <link rel="stylesheet" id="nprogress-css" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css" type="text/css" media="all">
+  
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+  
+  
+    <link rel="stylesheet" id="darkmode-css" href="/css/kr-dark.min.css" type="text/css" media="all">
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  
+    <script src="https://cdn.jsdelivr.net/npm/qrcode_js@1.0.0/qrcode.min.js"></script>
+  
+  
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/holo_banner.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/holo_bg.png');
+        }
+      }
+    
+  </style>
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    
+                                        <li><a href="/"><i class="fa fa-home"></i>首页</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/archives/"><i class="fa fa-file"></i>档案馆</a></li>
+                                    
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">MoeWolf的博客</a></div>
+                    <div class="nav-toggle">
+                        <a class="kratos-nav-toggle js-kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>MoeWolf的博客</h2> <br />
+                        <span>𝓦𝓱𝓪𝓽’𝓼 𝓹𝓪𝓼𝓽 𝓲𝓼 𝓹𝓻𝓸𝓵𝓸𝓰𝓾𝓮.</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+                    
+
+        
+
+            <section class="col-md-8">
+
+        
+
+            <article>
+    <div class="kratos-hentry kratos-post-inner clearfix">
+        <header class="kratos-entry-header">
+            
+                <h1 class="kratos-entry-title text-center">多线程</h1>
+            
+            
+            <ul class="kratos-post-meta text-center">
+                <li><i class="fa fa-calendar"></i> 2022-06-06</li>
+                <li><i class="fa fa-user"></i> 作者 MoeWolf</li>
+                <li>
+                    <i class="fa fa-edit"></i> 
+                    
+                    
+                        ~9.44K
+                    
+                    字
+                </li>
+                
+            </ul>
+        </header>
+        <div class="kratos-post-content">
+            <div id="expire-alert" class="alert alert-warning hidden" role="alert">
+                本文最后编辑于 <time datetime="1654529832810"></time> 前，其中的内容可能需要更新。
+            </div>
+            
+                <div class="kratos-post-inner-toc">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">线程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E5%BF%B5"><span class="toc-number">1.1.</span> <span class="toc-text">概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Thread%E7%B1%BB"><span class="toc-number">1.2.</span> <span class="toc-text">Thread类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%88%9B%E5%BB%BA%E6%96%B0%E7%BA%BF%E7%A8%8B"><span class="toc-number">1.2.1.</span> <span class="toc-text">使用Lambda表达式创建新线程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E7%BB%93%E6%9E%84%E4%BD%93%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE"><span class="toc-number">1.2.2.</span> <span class="toc-text">使用结构体传输数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE"><span class="toc-number">1.2.3.</span> <span class="toc-text">使用自定义类传输数据</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E5%8F%B0%E7%BA%BF%E7%A8%8B%E5%92%8C%E5%90%8E%E5%8F%B0%E7%BA%BF%E7%A8%8B"><span class="toc-number">1.3.</span> <span class="toc-text">前台线程和后台线程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E7%9A%84%E4%BC%98%E5%85%88%E7%BA%A7"><span class="toc-number">1.4.</span> <span class="toc-text">线程的优先级</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%8A%B6%E6%80%81"><span class="toc-number">1.5.</span> <span class="toc-text">线程的状态</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0"><span class="toc-number">1.6.</span> <span class="toc-text">线程池</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1"><span class="toc-number">2.</span> <span class="toc-text">任务</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9E%E7%BB%AD%E4%BB%BB%E5%8A%A1"><span class="toc-number">2.1.</span> <span class="toc-text">连续任务</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%B5%84%E6%BA%90%E5%86%B2%E7%AA%81"><span class="toc-number">3.</span> <span class="toc-text">资源冲突</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%AD%BB%E9%94%81"><span class="toc-number">3.1.</span> <span class="toc-text">死锁</span></a></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <p>多线程使得并行编程实现，使用线程节省了 CPU 周期的浪费，同时提高了应用程序的效率。</p>
+<span id="more"></span>
+
+<h1 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h1><h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>​        对于所有需要等待的操作，例如移动文件，数据库和网络访问都需要一定的时间，此时就可以启动一个新的线程，同时完成其他任务。一个进程的多个线程可以同时运行在单核CPU上或多核CPU的不同内核上。</p>
+<p>​        线程是程序中独立的指令流。在VS编辑器中输入代码的时候，系统会分析代码，用下划线标注遗漏的分号和其他语法错误，这就是用一个后台线程完成。Word文档需要一个线程等待用户输入，另一个线程进行后台搜索，第三个线程将写入的数据存储在临时文件中。运行在服务器上的应用程序中等待客户请求的线程成为侦听器线程。进程包含资源，如Window句柄，文件系统句柄或其他内核对象。每个进程都分配的虚拟内存。一个进程至少包含一个线程。<br>​        一个应用程序启动，会启动一个进程（应用程序运行的载体），然后进程启动多个线程。<br>​        <em><strong>程序 - &gt; 进程 - &gt; 线程</strong></em></p>
+<ul>
+<li>程序：我们写的代码 - 静态概念</li>
+<li>进程：正在运行中的程序（正在运行的）</li>
+</ul>
+<p>​        进程是操作系统启动起来<br>​        线程是在进程中启动起来</p>
+<h2 id="Thread类"><a href="#Thread类" class="headerlink" title="Thread类"></a>Thread类</h2><h3 id="使用Lambda表达式创建新线程"><a href="#使用Lambda表达式创建新线程" class="headerlink" title="使用Lambda表达式创建新线程"></a>使用Lambda表达式创建新线程</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">namespace 多线程;</span><br><span class="line"></span><br><span class="line">public class ThreadTest</span><br><span class="line">&#123;</span><br><span class="line">    static void Main(string[] args)</span><br><span class="line">    &#123;</span><br><span class="line">        Thread thread = new Thread(() =&gt;  Console.WriteLine(&quot;Lambda &quot;+Thread.CurrentThread.ManagedThreadId) );</span><br><span class="line">        thread.Start();</span><br><span class="line">        Console.WriteLine(&quot;Main   &quot; + Thread.CurrentThread.ManagedThreadId);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用结构体传输数据"><a href="#使用结构体传输数据" class="headerlink" title="使用结构体传输数据"></a>使用结构体传输数据</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">namespace 多线程;</span><br><span class="line"></span><br><span class="line">public struct Data</span><br><span class="line">&#123;</span><br><span class="line">    public string message;</span><br><span class="line">    public int age;</span><br><span class="line">&#125;</span><br><span class="line">public class ThreadTest</span><br><span class="line">&#123;</span><br><span class="line">    static void Information(Object o)</span><br><span class="line">    &#123;</span><br><span class="line">        Data data = (Data) o;</span><br><span class="line">        Console.WriteLine(&quot;年龄：&quot; + data.age+&quot;  信息：&quot;+data.message);</span><br><span class="line">    &#125;</span><br><span class="line">    static void Main(string[] args)</span><br><span class="line">    &#123;</span><br><span class="line">        Data data = new Data();</span><br><span class="line">        data.message = &quot;123&quot;;</span><br><span class="line">        data.age = 10;</span><br><span class="line">        Thread thread1 = new Thread(Information);</span><br><span class="line">        thread1.Start(data);</span><br><span class="line">        Console.WriteLine(&quot;Main   &quot; + Thread.CurrentThread.ManagedThreadId);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用自定义类传输数据"><a href="#使用自定义类传输数据" class="headerlink" title="使用自定义类传输数据"></a>使用自定义类传输数据</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">namespace 多线程;</span><br><span class="line">internal class DownloadTool</span><br><span class="line">&#123;</span><br><span class="line">    public string URL &#123; get; set; &#125;</span><br><span class="line">    public string Message &#123; get; set; &#125;</span><br><span class="line"></span><br><span class="line">    public DownloadTool(string url,string message)</span><br><span class="line">    &#123;</span><br><span class="line">        URL = url;</span><br><span class="line">        Message = message;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void dowmload()</span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(&quot;从&quot;+URL +&quot;下载&quot;+Message);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">public class Program</span><br><span class="line">&#123;</span><br><span class="line">    static void Main(string[] args)</span><br><span class="line">    &#123;</span><br><span class="line">        DownloadTool downloadtool = new DownloadTool(&quot;www.bilibili.com&quot;,&quot;视频&quot;);</span><br><span class="line">        Thread thread = new Thread(downloadtool.dowmload);</span><br><span class="line">        thread.Start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="前台线程和后台线程"><a href="#前台线程和后台线程" class="headerlink" title="前台线程和后台线程"></a>前台线程和后台线程</h2><p>​        上述方法创建的线程都是前台线程。C#中默认使用前台线程，也可以手动指定为前台线程。</p>
+<p>加上语句{IsBackground=false}。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">class Program&#123;</span><br><span class="line">    static void Main()</span><br><span class="line">    &#123;</span><br><span class="line">        Thread t1 = new Thread(ThreadMain)&#123;IsBackground=false&#125;; </span><br><span class="line">        t1.Start(); </span><br><span class="line">        Console.WriteLine(&quot;Main thread ending now.&quot;);</span><br><span class="line">    &#125;static void ThreadMain()</span><br><span class="line">    &#123; </span><br><span class="line">        Console.WriteLine(&quot;Thread +&quot;+Thread.CurrentThread.Name+&quot; start&quot;); </span><br><span class="line">        Thread.Sleep(3000);</span><br><span class="line">        Console.WriteLine(&quot;Thread +&quot;+Thread.CurrentThread.Name+&quot; end&quot;);</span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​        只有一个前台线程在运行，应用程序的进程就在运行，如果多个前台线程在运行，但是Main 方法结束了，应用程序的进程仍然是运行的，直到所有的前台线程完成其任务为止。 在默认情况下，用Thread类创建的线程是前台线程。线程池中的线程总是后台线程。 在用Thread类创建线程的时候，可以设置IsBackground属性，表示它是一个前台线程还是一 个后台线程。 </p>
+<p>后台线程加上语句{IsBackground=true}</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">class Program&#123;</span><br><span class="line">    static void Main()</span><br><span class="line">    &#123;</span><br><span class="line">        Thread t1 = new Thread(ThreadMain)&#123;IsBackground=true&#125;; </span><br><span class="line">        t1.Start(); </span><br><span class="line">        Console.WriteLine(&quot;Main thread ending now.&quot;);</span><br><span class="line">    &#125;static void ThreadMain()</span><br><span class="line">    &#123; </span><br><span class="line">        Console.WriteLine(&quot;Thread +&quot;+Thread.CurrentThread.Name+&quot; start&quot;); </span><br><span class="line">        Thread.Sleep(3000);</span><br><span class="line">        Console.WriteLine(&quot;Thread +&quot;+Thread.CurrentThread.Name+&quot; end&quot;);</span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当Main方法执行完毕之后直接关闭后台线程，所以<code>Console.WriteLine(&quot;Thread +&quot;+Thread.CurrentThread.Name+&quot; end&quot;);</code></p>
+<p>不会被执行。</p>
+<h2 id="线程的优先级"><a href="#线程的优先级" class="headerlink" title="线程的优先级"></a>线程的优先级</h2><p>​        线程有操作系统调度，一个CPU同一时间只能做一件事情（运行一个线程中的计算任务），当有很多线程需要CPU去执行的时候，线程调度器会根据线程的优先级去判断先去执行哪一 个线程，如果优先级相同的话，就使用一个循环调度规则，逐个执行每个线程。在Thead类中，可以设置Priority属性，以影响线程的基本优先级 。</p>
+<p>Priority属性是一个 ThreadPriority枚举定义的一个值。定义的级别有Highest ,AboveNormal,Normal,BelowNormal 和 Lowest， 默认优先级为Normal。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">class Program&#123;</span><br><span class="line">    static void A()</span><br><span class="line">    &#123;</span><br><span class="line">        long a = 0;</span><br><span class="line">        while (true)</span><br><span class="line">        &#123;</span><br><span class="line">            a++;</span><br><span class="line">            Console.WriteLine(&quot;A:&quot;+a);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    static void B()</span><br><span class="line">    &#123;</span><br><span class="line">        long b = 0;</span><br><span class="line">        while (true)</span><br><span class="line">        &#123;</span><br><span class="line">            b++;</span><br><span class="line">            Console.WriteLine(&quot;B:&quot;+b);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    static void Main()</span><br><span class="line">    &#123;</span><br><span class="line">        Thread a = new Thread(A);</span><br><span class="line">        Thread b = new Thread(B);</span><br><span class="line">        //设置优先级</span><br><span class="line">        a.Priority = ThreadPriority.Highest;</span><br><span class="line">        b.Priority = ThreadPriority.Lowest;</span><br><span class="line">        a.Start();</span><br><span class="line">        b.Start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行可以看到A的执行次数多于B。</p>
+<h2 id="线程的状态"><a href="#线程的状态" class="headerlink" title="线程的状态"></a>线程的状态</h2><ol>
+<li><p>获取线程的状态（Running还是Unstarted…），当我们通过调用Thread对象的Start方 法，可以创建线程，但是调用了Start方法之后，新线程不是马上进入Running状态，而是处于Unstarted状态，只有当操作系统的线程调度器选择了要运行的线程，这个线程的状态才会修改为Running状态。我们使用Thread.Sleep()方法可以让当前线程休眠进入 WaitSleepJoin状态。 </p>
+</li>
+<li><p>使用Thread对象的Abort()方法可以停止线程。调用这个方法，会在终止要终止的线程中抛出一个ThreadAbortException类型的异常，我们可以try catch这个异常，然后在线程结 束前做一些清理的工作。 </p>
+</li>
+<li><p>如果需要等待线程的结束，可以调用Thread对象的Join方法，表示把Thread加入进来，暂停当前线程，并把它设置为WaitSleepJoin状态，直到加入的线程完成为止。 </p>
+</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">class Program&#123;</span><br><span class="line">    static void Print()</span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(&quot;Print&quot;);</span><br><span class="line">        Thread.Sleep(5000);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    static void Main()</span><br><span class="line">    &#123;</span><br><span class="line">        Thread t = new Thread(Print);</span><br><span class="line">       </span><br><span class="line">        t.Start();</span><br><span class="line">        //刚开始就会执行的main线程</span><br><span class="line">        Console.WriteLine(&quot;main&quot;);</span><br><span class="line">        //t.join()后的线程合而为一</span><br><span class="line">        t.Join();</span><br><span class="line">        //会等待3秒执行的main线程</span><br><span class="line">        Console.WriteLine(&quot;main end&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h2><p>​        创建线程需要时间。如果有不同的小任务要完成,就可以事先创建许多线程 , 在应完成这 些任务时发出请求。 这个线程数最好在需要更多的线程时增加,在需要释放资源时减少。 不需要 自己创建线程池，系统已经有一个ThreadPool类管理线程。 这个类会在需要时增减 池中线程的线程数,直到达到最大的线程数。 池中的最大线程数是可配置的。在双核 CPU 中 ,默认设置为1023个工作线程和 1000个 I/o线程。也可以指定在创建线程池时应立即启 动的最小线程数,以及线程池中可用的最大线程数。 如果有更多的作业要处理,线程池中线程的个数也到了极限,最新的作业就要排队,且必须等待线程完成其任务。 </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">using System.Diagnostics;</span><br><span class="line"></span><br><span class="line">class Program&#123;</span><br><span class="line">    static void Download(Object state)</span><br><span class="line">    &#123; </span><br><span class="line">        Console.WriteLine(&quot;Downloading....&quot;+Thread.CurrentThread.ManagedThreadId);</span><br><span class="line">        Thread.Sleep(200);</span><br><span class="line">    &#125;</span><br><span class="line">    static void Main()</span><br><span class="line">    &#123;</span><br><span class="line">        for (int i = 0; i &lt; 50; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            ThreadPool.QueueUserWorkItem(Download);</span><br><span class="line">        &#125;Thread.Sleep(5000);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​        如果线程池还没有运行,就会创建一个线程池,并启动第一个线程。如果线程池己经在运行,且有一个空闲线程来完成该任务,就把该作业传递给这个线程。 使用线程池需要注意的事项： </p>
+<ul>
+<li><p>线程池中的所有线程都是后台线程 。 </p>
+</li>
+<li><p>如果进程的所有前台线程都结束了,所有的后台线程就会停止。 </p>
+</li>
+<li><p>不能把入池的线程改为前台线程 。</p>
+</li>
+<li><p>不能给入池的线程设置优先级或名称。 </p>
+</li>
+<li><p>入池的线程只能用于时间较短的任务。 </p>
+</li>
+<li><p>如果线程要一直运行(如 Word的拼写检查器线程),就应使 用Thread类创建一个线程。 </p>
+</li>
+</ul>
+<h1 id="任务"><a href="#任务" class="headerlink" title="任务"></a>任务</h1><p>​        在.NET4 新的命名空间System.Threading.Tasks包含了类抽象出了线程功能，在后台使用的 ThreadPool进行管理的。任务表示应完成某个单元的工作。这个工作可以在单独的线程中运行，也可以以同步方式启动一个任务。任务也是异步编程中的一种实现方式。 </p>
+<p>第一种启动任务方式：</p>
+<p>使用TaskFactory</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">using System;</span><br><span class="line"></span><br><span class="line">class Program&#123;</span><br><span class="line">    static void test()</span><br><span class="line">    &#123;</span><br><span class="line">        for (int i = 0; i &lt; 10000; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine(&quot;A&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    static void Main()</span><br><span class="line">    &#123;</span><br><span class="line">        TaskFactory taskFactory = new TaskFactory();</span><br><span class="line">        taskFactory.StartNew(test);</span><br><span class="line">        Thread.Sleep(2000);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第二种启动任务方式：</p>
+<p>像新建线程一样启动任务</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">using System;</span><br><span class="line"></span><br><span class="line">class Program&#123;</span><br><span class="line">    static void Test()</span><br><span class="line">    &#123;</span><br><span class="line">        for (int i = 0; i &lt; 10000; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine(&quot;A&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    static void Main()</span><br><span class="line">    &#123;</span><br><span class="line">        Task task = new Task(Test);</span><br><span class="line">        task.Start();</span><br><span class="line">        Thread.Sleep(2000);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="连续任务"><a href="#连续任务" class="headerlink" title="连续任务"></a>连续任务</h2><p>当需要一个任务完成后紧接着一个任务时，可以使用连续任务<code>task.ContinueWith(第二个任务)</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">using System;</span><br><span class="line"></span><br><span class="line">class Program&#123;</span><br><span class="line">    static void FirstDownload()</span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(&quot;Downloading&quot;);</span><br><span class="line">        Thread.Sleep(2000);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //第二个任务需要加上Task参数</span><br><span class="line">    static void SecondAlert(Task task)</span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(&quot;下载完成&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    static void Main()</span><br><span class="line">    &#123;</span><br><span class="line">        Task task = new Task(FirstDownload);</span><br><span class="line">        task.ContinueWith(SecondAlert);</span><br><span class="line">        task.Start();</span><br><span class="line">        Thread.Sleep(2000);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="资源冲突"><a href="#资源冲突" class="headerlink" title="资源冲突"></a>资源冲突</h1><p>下面代码演示的读写冲突，期望输出的state值是6，结果运行结果有的是5，这是因为当一个线程执行<code>state=5</code>时，别的线程又在执行输出语句，这时就将5输出了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">using System;</span><br><span class="line"></span><br><span class="line">class Program&#123;</span><br><span class="line">    static void Main()</span><br><span class="line">    &#123;</span><br><span class="line">        StateObject stateObject = new StateObject();</span><br><span class="line">        for (int i = 0; i &lt; 100; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            ThreadPool.QueueUserWorkItem(stateObject.ChangeState);</span><br><span class="line">        &#125;</span><br><span class="line">        Thread.Sleep(1000);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class StateObject</span><br><span class="line">&#123;</span><br><span class="line">    private int state = 5;</span><br><span class="line"></span><br><span class="line">    public void ChangeState(Object o)</span><br><span class="line">    &#123;</span><br><span class="line">        if (state == 5)</span><br><span class="line">        &#123;</span><br><span class="line">            state++;</span><br><span class="line">            Console.WriteLine(&quot;State:&quot;+state+&quot; 当前线程id:&quot;+Thread.CurrentThread.ManagedThreadId);</span><br><span class="line">        &#125;</span><br><span class="line">        state = 5;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过加锁可以防止资源冲突问题，但缺点是执行效率变低，当一个线程执行完毕后才会释放锁，下一个线程才能执行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">class StateObject</span><br><span class="line">&#123;</span><br><span class="line">    private int state = 5;</span><br><span class="line">    private Object _lock = new object();</span><br><span class="line">    public void ChangeState(Object o)</span><br><span class="line">    &#123;</span><br><span class="line">        lock (_lock)</span><br><span class="line">        &#123;</span><br><span class="line">            if (state == 5)</span><br><span class="line">            &#123;</span><br><span class="line">                state++;</span><br><span class="line">                Console.WriteLine(&quot;State:&quot;+state+&quot; 当前线程id:&quot;+Thread.CurrentThread.ManagedThreadId);</span><br><span class="line">            &#125;</span><br><span class="line">            state = 5;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h2><p>​    当用一把锁锁多个资源时，容易发生死锁问题，比如1号线程只需要资源1，2号线程只需要资源2，3号线程需要资源1和2，当1号资源访问资源时，虽然2号资源空闲，但是由于被上锁，导致效率大幅度降低。当某些资源需要多把锁时，容易发生死锁问题，比如一个线程先需要一个1号锁，然后需要一个2号锁，另外一个线程先需要一个2号锁，然后需要一个1号锁，这样程序就会死锁。所以需要分配好锁的顺序，防止死锁的情况发生。</p>
+
+        </div>
+        
+            <div class="kratos-copyright text-center clearfix">
+                <h5>本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</h5>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+                <div class="post-like-donate text-center clearfix" id="post-like-donate">
+                
+                
+                    <a class="share" href="javascript:;"><i class="fa fa-share-alt"></i> 分享</a>
+                    <div class="share-wrap" style="display: none;">
+    <div class="share-group">
+        <a href="javascript:;" class="share-plain qq" onclick="share('qq');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-qq"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain qzone" onclick="share('qzone');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-star"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weixin pop style-plain" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weixin"></i>
+            </div>
+            <div class="share-int">
+                <div class="qrcode" id="wechat-qr"></div>
+                <p>打开微信“扫一扫”，打开网页后点击屏幕右上角分享按钮</p>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weibo" onclick="share('weibo');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weibo"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain facebook style-plain" onclick="share('facebook');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-facebook"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain twitter style-plain" onclick="share('twitter');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-twitter"></i>
+            </div>
+        </a>
+    </div>
+    <script type="text/javascript">
+        $(()=>{
+            new QRCode("wechat-qr", {
+                text: "https://moewolf.me/C/%E5%A4%9A%E7%BA%BF%E7%A8%8B/",
+                width: 150,
+                height: 150,
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        });
+        function share(dest) {
+            const qqBase        = "https://connect.qq.com/widget/shareqq/index.html?";
+            const weiboBase     = "https://service.weibo.com/share/share.php?";
+            const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
+            const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
+            const twitterBase   = "https://twitter.com/intent/tweet?";
+            const hostUrl       = "https://moewolf.me/C/%E5%A4%9A%E7%BA%BF%E7%A8%8B/";
+            const title         = "「多线程」";
+            const excerpt       = `多线程使得并行编程实现，使用线程节省了 CPU 周期的浪费，同时提高了应用程序的效率。`;
+            let _URL;
+            switch (dest) {
+                case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
+                case "weibo"    : _URL = weiboBase+"url="+hostUrl+"&title="+title+excerpt;                                 break;
+                case "qzone"    : _URL = qzoneBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";  break;
+                case "facebook" : _URL = facebookBase+"u="+hostUrl;                                                        break;
+                case "twitter"  : _URL = twitterBase+"text="+title+excerpt+"&url="+hostUrl;                                break;
+            }
+            window.open(_URL);
+        };
+    </script>
+</div>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/C-%E9%AB%98%E9%98%B6/" rel="tag">C#高阶</a>
+                </div>
+                <div class="pull-date">
+                <span>最后编辑：2022-06-06</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" 委托、Lambda表达式和事件" href="/C/委托、lambda表达式和事件/">&lt; 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" 游戏存档系统" href="/功能实现/游戏存档系统/">下一篇 &gt;</a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+        
+
+                
+            
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/holo_avatar.png" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">生如夏花之绚烂，死如秋叶之静美</p>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix">
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar"></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B"><span class="toc-text">线程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E5%BF%B5"><span class="toc-text">概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Thread%E7%B1%BB"><span class="toc-text">Thread类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%88%9B%E5%BB%BA%E6%96%B0%E7%BA%BF%E7%A8%8B"><span class="toc-text">使用Lambda表达式创建新线程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E7%BB%93%E6%9E%84%E4%BD%93%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE"><span class="toc-text">使用结构体传输数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE"><span class="toc-text">使用自定义类传输数据</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E5%8F%B0%E7%BA%BF%E7%A8%8B%E5%92%8C%E5%90%8E%E5%8F%B0%E7%BA%BF%E7%A8%8B"><span class="toc-text">前台线程和后台线程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E7%9A%84%E4%BC%98%E5%85%88%E7%BA%A7"><span class="toc-text">线程的优先级</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%8A%B6%E6%80%81"><span class="toc-text">线程的状态</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0"><span class="toc-text">线程池</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1"><span class="toc-text">任务</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9E%E7%BB%AD%E4%BB%BB%E5%8A%A1"><span class="toc-text">连续任务</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%B5%84%E6%BA%90%E5%86%B2%E7%AA%81"><span class="toc-text">资源冲突</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%AD%BB%E9%94%81"><span class="toc-text">死锁</span></a></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类目录</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C#</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/">功能实现</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E5%B8%B8/">日常</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/">茉子的幻想乡奇遇</a><span class="category-list-count">3</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/C-%E9%AB%98%E9%98%B6/" style="font-size: 0.8em;">C#高阶</a> <a href="/tags/Unity/" style="font-size: 0.8em;">Unity</a> <a href="/tags/%E5%BC%80%E5%8F%91%E6%97%A5%E5%BF%97/" style="font-size: 0.8em;">开发日志</a> <a href="/tags/%E6%97%A5%E5%B8%B8/" style="font-size: 0.6em;">日常</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9Aexcel%E8%A1%A8%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E5%92%8C%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（三）：Excel表配置数据和背包系统</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E5%AF%B9%E8%AF%9D%E5%8A%9F%E8%83%BD%E7%9A%84%E5%AE%9E%E7%8E%B0/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（二）：对话功能的实现</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9Apuremvc%E4%B8%8E%E4%B8%BB%E7%95%8C%E9%9D%A2/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（一）：PureMVC与主界面</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E5%88%A9%E7%94%A8%E5%8F%8D%E5%B0%84%E5%88%B6%E4%BD%9Cplayerprefs%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86%E7%B1%BB/"><i class="fa  fa-book"></i> 利用反射制作PlayerPrefs数据管理类</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F/"><i class="fa  fa-book"></i> 背包系统</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+        
+        </div>
+    </div>
+</div>
+<footer>
+    <div id="footer"  >
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://t.me/LittleWolfHouse"><i class="fa fa-telegram"></i></a></li>
+                        
+                        
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://github.com/Dai-MoeWolf"><i class="fa fa-github"></i></a></li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2022 MoeWolf的博客 版权所有.</li>
+                            <li>本站已运行<span id="span_dt">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>Theme <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a></li>
+                            <li>Site built with&nbsp;<i class="fa fa-heart throb" style="color:#d43f57"></i>&nbsp;by MoeWolf.</li>
+                        </div>
+                        <div>
+                            <li>Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a></li>
+                            
+                        </div>
+                        <div>
+                            
+                            
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search/">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="box theme-box" id="darkmode-switch">
+                        <span class="fa fa-adjust"></span>
+                    </div>
+                
+                
+            </div>
+            <div class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.4/dist/js/bootstrap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js"></script>
+<script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+    <script async src="/js/candy.min.js"></script>
+
+
+
+
+    <script defer src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script>
+<script defer src="/js/kratosr.min.js"></script>
+<script defer src="/js/pjax.min.js"></script>
+
+
+    <script defer src="/js/kr-dark.min.js"></script>
+
+
+
+<!-- Extra support for third-party plguins  -->
+
+
+    </body>
+</html>

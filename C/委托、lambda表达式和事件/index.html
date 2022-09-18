@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  <link rel="icon" href="/images/webicon.jpg">
+  <title>委托、Lambda表达式和事件 | MoeWolf的博客</title>
+  <meta name="author" content="MoeWolf" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="C#高阶" />
+  
+  <meta name="description" content="委托提升了程序的可扩展性，Lambda表达式简化了代码量，增强了代码可读性，事件对委托进行了某些限制">
+<meta property="og:type" content="article">
+<meta property="og:title" content="委托、Lambda表达式和事件">
+<meta property="og:url" content="https://moewolf.me/C/%E5%A7%94%E6%89%98%E3%80%81lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%92%8C%E4%BA%8B%E4%BB%B6/index.html">
+<meta property="og:site_name" content="MoeWolf的博客">
+<meta property="og:description" content="委托提升了程序的可扩展性，Lambda表达式简化了代码量，增强了代码可读性，事件对委托进行了某些限制">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://moewolf.me/images/webicon.jpg">
+<meta property="article:published_time" content="2022-03-26T09:39:31.000Z">
+<meta property="article:modified_time" content="2022-03-26T09:47:14.538Z">
+<meta property="article:author" content="MoeWolf">
+<meta property="article:tag" content="C#高阶">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://moewolf.me/images/webicon.jpg">
+<meta name="twitter:site" content="@null">
+  
+  <!-- 站点验证相关 -->
+  
+    
+    
+    
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kratosr.min.css" type="text/css" media="all">
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/night-eighties.min.css" type="text/css" media="all">
+  
+  
+  <link rel="stylesheet" id="fontawe-css" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" type="text/css" media="all">
+  <link rel="stylesheet" id="nprogress-css" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css" type="text/css" media="all">
+  
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+  
+  
+    <link rel="stylesheet" id="darkmode-css" href="/css/kr-dark.min.css" type="text/css" media="all">
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  
+    <script src="https://cdn.jsdelivr.net/npm/qrcode_js@1.0.0/qrcode.min.js"></script>
+  
+  
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/holo_banner.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/holo_bg.png');
+        }
+      }
+    
+  </style>
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    
+                                        <li><a href="/"><i class="fa fa-home"></i>首页</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/archives/"><i class="fa fa-file"></i>档案馆</a></li>
+                                    
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">MoeWolf的博客</a></div>
+                    <div class="nav-toggle">
+                        <a class="kratos-nav-toggle js-kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>MoeWolf的博客</h2> <br />
+                        <span>𝓦𝓱𝓪𝓽’𝓼 𝓹𝓪𝓼𝓽 𝓲𝓼 𝓹𝓻𝓸𝓵𝓸𝓰𝓾𝓮.</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+                    
+
+        
+
+            <section class="col-md-8">
+
+        
+
+            <article>
+    <div class="kratos-hentry kratos-post-inner clearfix">
+        <header class="kratos-entry-header">
+            
+                <h1 class="kratos-entry-title text-center">委托、Lambda表达式和事件</h1>
+            
+            
+            <ul class="kratos-post-meta text-center">
+                <li><i class="fa fa-calendar"></i> 2022-03-26</li>
+                <li><i class="fa fa-user"></i> 作者 MoeWolf</li>
+                <li>
+                    <i class="fa fa-edit"></i> 
+                    
+                    
+                        ~10.37K
+                    
+                    字
+                </li>
+                
+            </ul>
+        </header>
+        <div class="kratos-post-content">
+            <div id="expire-alert" class="alert alert-warning hidden" role="alert">
+                本文最后编辑于 <time datetime="1648288034538"></time> 前，其中的内容可能需要更新。
+            </div>
+            
+                <div class="kratos-post-inner-toc">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A7%94%E6%89%98"><span class="toc-number">1.</span> <span class="toc-text">委托</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E5%AD%90"><span class="toc-number">1.1.</span> <span class="toc-text">引子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A3%B0%E6%98%8E%E5%A7%94%E6%89%98"><span class="toc-number">1.2.</span> <span class="toc-text">声明委托</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%E5%A7%94%E6%89%98"><span class="toc-number">1.2.1.</span> <span class="toc-text">定义委托</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%A7%94%E6%89%98"><span class="toc-number">1.2.2.</span> <span class="toc-text">使用委托</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BD%93%E4%BD%9C%E6%96%B9%E6%B3%95%E7%9B%B4%E6%8E%A5%E8%B0%83%E7%94%A8"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">当作方法直接调用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A7%94%E6%89%98%E7%B1%BB%E5%9E%8B%E6%95%B0%E7%BB%84"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">委托类型数组</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BD%93%E4%BD%9C%E6%96%B9%E6%B3%95%E7%9A%84%E5%8F%82%E6%95%B0%E4%BD%BF%E7%94%A8"><span class="toc-number">1.2.2.3.</span> <span class="toc-text">当作方法的参数使用</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Action%E5%A7%94%E6%89%98%E4%B8%8EFunc%E5%A7%94%E6%89%98"><span class="toc-number">1.3.</span> <span class="toc-text">Action委托与Func委托</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Action%E5%A7%94%E6%89%98"><span class="toc-number">1.3.1.</span> <span class="toc-text">Action委托</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Func%E5%A7%94%E6%89%98"><span class="toc-number">1.3.2.</span> <span class="toc-text">Func委托</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%9A%E6%92%AD%E5%A7%94%E6%89%98"><span class="toc-number">1.4.</span> <span class="toc-text">多播委托</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%A6%E5%A4%96%E4%B8%80%E7%A7%8D%E8%B0%83%E7%94%A8%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="toc-number">1.4.1.</span> <span class="toc-text">另外一种调用的方式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8C%BF%E5%90%8D%E6%96%B9%E6%B3%95"><span class="toc-number">1.5.</span> <span class="toc-text">匿名方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-number">2.</span> <span class="toc-text">Lambda表达式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AE%E5%A4%96%E9%83%A8%E5%8F%98%E9%87%8F"><span class="toc-number">2.1.</span> <span class="toc-text">访问外部变量</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8B%E4%BB%B6"><span class="toc-number">3.</span> <span class="toc-text">事件</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90"><span class="toc-number">3.1.</span> <span class="toc-text">例子</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ToolMan%E7%B1%BB"><span class="toc-number">3.1.1.</span> <span class="toc-text">ToolMan类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Roommate%E7%B1%BB"><span class="toc-number">3.1.2.</span> <span class="toc-text">Roommate类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Program%E7%B1%BB"><span class="toc-number">3.1.3.</span> <span class="toc-text">Program类</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8B%E4%BB%B6%E4%B8%8E%E5%A7%94%E6%89%98%E7%9A%84%E8%81%94%E7%B3%BB%E5%92%8C%E5%8C%BA%E5%88%AB"><span class="toc-number">3.2.</span> <span class="toc-text">事件与委托的联系和区别</span></a></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <p>委托提升了程序的可扩展性，Lambda表达式简化了代码量，增强了代码可读性，事件对委托进行了某些限制</p>
+<span id="more"></span>
+
+<h1 id="委托"><a href="#委托" class="headerlink" title="委托"></a>委托</h1><h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>​    如果需要把方法当作参数传递的话，就需要使用委托。简单来说委托是一个类型，这个类型可以赋值一个方法的引用。</p>
+<h2 id="声明委托"><a href="#声明委托" class="headerlink" title="声明委托"></a>声明委托</h2><p>​    在C#中使用一个<strong>类</strong>分为两个阶段，首先定义这个类，告诉编译器这个类由什么字段和方法组成，然后才实例化这个类。使用委托也是如此，先定义委托，再告诉编译器这个委托可以指向哪些类型的方法，然后创建该委托的实例。</p>
+<h3 id="定义委托"><a href="#定义委托" class="headerlink" title="定义委托"></a>定义委托</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">//这个名为FunctionInvoker的委托指向了：</span><br><span class="line">	//带有一个int类型的参数</span><br><span class="line">	//方法的返回值是void的</span><br><span class="line">delegate void FunctionInvoker(int x);</span><br><span class="line">//指向返回值为double的，参数为两个long类型的方法</span><br><span class="line">delegate double FunctionInvoker(long first,long second);</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用委托"><a href="#使用委托" class="headerlink" title="使用委托"></a>使用委托</h3><h4 id="当作方法直接调用"><a href="#当作方法直接调用" class="headerlink" title="当作方法直接调用"></a>当作方法直接调用</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">namespace 委托Lambda表达式与事件</span><br><span class="line">&#123;</span><br><span class="line">    public class newclass</span><br><span class="line">    &#123;</span><br><span class="line">        //定义委托</span><br><span class="line">        delegate void FunctionInvoker(int x);</span><br><span class="line">        delegate double FunctionInvokerDouble(long x,long y);</span><br><span class="line">        </span><br><span class="line">        static void Main(string[] args)</span><br><span class="line">        &#123;</span><br><span class="line">            </span><br><span class="line">            FunctionInvoker invoker;</span><br><span class="line">            FunctionInvokerDouble invokerDouble;</span><br><span class="line">            //委托指向</span><br><span class="line">            invoker = test; //不需要加上参数列表</span><br><span class="line">            invokerDouble = testdouble;</span><br><span class="line">            </span><br><span class="line">            invoker(12);</span><br><span class="line">            invokerDouble(20,40);</span><br><span class="line">        &#125;</span><br><span class="line">        //实际的方法</span><br><span class="line">        private static void test(int x)&#123;</span><br><span class="line">            System.Console.WriteLine(&quot;这里是test方法：&quot;+x);</span><br><span class="line">        &#125;</span><br><span class="line">        private static double testdouble(long x,long y)&#123;</span><br><span class="line">            System.Console.WriteLine(&quot;这里是testdouble放法：&quot;+x+&quot;  &quot;+y);</span><br><span class="line">            return 0;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">//奇特的用法</span><br><span class="line">delegate string FunctionInvokerString();</span><br><span class="line">   int x= 51351;</span><br><span class="line">FunctionInvokerString invokerString = x.ToString;</span><br><span class="line">//另一种方法，使用new关键字</span><br><span class="line">FunctionInvokerString invokerString = new FunctionInvokerString(x.ToString);</span><br></pre></td></tr></table></figure>
+
+<h4 id="委托类型数组"><a href="#委托类型数组" class="headerlink" title="委托类型数组"></a>委托类型数组</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">namespace 委托Lambda表达式与事件</span><br><span class="line">&#123;</span><br><span class="line">    public class newclass</span><br><span class="line">    &#123;</span><br><span class="line">        delegate double MathOpDelegate(double value);</span><br><span class="line">        static void Main(string[] args)</span><br><span class="line">        &#123;	</span><br><span class="line">            //先调用Multiply，再调用Square</span><br><span class="line">            MathOpDelegate[] mathOpDelegates = &#123;Multiply,Square&#125;;</span><br><span class="line">            foreach(MathOpDelegate mathOpDelegate in mathOpDelegates)&#123;</span><br><span class="line">                System.Console.WriteLine(mathOpDelegate(3));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        private static double Multiply(double value)&#123;</span><br><span class="line">            return value * 2;</span><br><span class="line">        &#125;</span><br><span class="line">        private static double Square(double value)&#123;</span><br><span class="line">            return value * value;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="当作方法的参数使用"><a href="#当作方法的参数使用" class="headerlink" title="当作方法的参数使用"></a>当作方法的参数使用</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">namespace 委托Lambda表达式与事件</span><br><span class="line">&#123;</span><br><span class="line">    public class newclass</span><br><span class="line">    &#123;</span><br><span class="line">        delegate double MathOpDelegate(double value);</span><br><span class="line">        static void Main(string[] args)</span><br><span class="line">        &#123;</span><br><span class="line">            Invoker(Multiply,4);</span><br><span class="line">            Invoker(Square,4);</span><br><span class="line">        &#125;</span><br><span class="line">        //作为参数传递一个方法</span><br><span class="line">        static void Invoker(MathOpDelegate mathOpDelegate,double value)&#123;</span><br><span class="line">            //调用指定的方法，输出结果</span><br><span class="line">            System.Console.WriteLine(mathOpDelegate(value));</span><br><span class="line">        &#125;</span><br><span class="line">        //两个方法实体</span><br><span class="line">        private static double Multiply(double value)&#123;</span><br><span class="line">            return value * 2;</span><br><span class="line">        &#125;</span><br><span class="line">        private static double Square(double value)&#123;</span><br><span class="line">            return value * value;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Action委托与Func委托"><a href="#Action委托与Func委托" class="headerlink" title="Action委托与Func委托"></a>Action委托与Func委托</h2><p>所有的委托需要自己定义的话有点冗长，C#系统内置了两种委托</p>
+<h3 id="Action委托"><a href="#Action委托" class="headerlink" title="Action委托"></a>Action委托</h3><p>​    这种委托引用了一个返回值为void类型的方法，它的参数可有任意个（须在定义时声明参数）。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">namespace 委托Lambda表达式与事件</span><br><span class="line">&#123;</span><br><span class="line">    public class newclass</span><br><span class="line">    &#123;</span><br><span class="line">        static void Main(string[] args)</span><br><span class="line">        &#123;   </span><br><span class="line">            //无参Action</span><br><span class="line">            Action action;</span><br><span class="line">            action = Print;</span><br><span class="line">            action();</span><br><span class="line">            //一个参数</span><br><span class="line">            Action&lt;int&gt; action1;</span><br><span class="line">            action1 = Square;</span><br><span class="line">            //两个参数，一个int,一个double</span><br><span class="line">            Action&lt;int ,double&gt; action2;</span><br><span class="line">            action2 = Multiply;</span><br><span class="line">        &#125;</span><br><span class="line">        private static void Print()&#123;</span><br><span class="line">            System.Console.WriteLine(&quot;Hello&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        private static void Square(int value)&#123;</span><br><span class="line">            System.Console.WriteLine(value * value);</span><br><span class="line">        &#125;</span><br><span class="line">        private static void Multiply(int x,double y)&#123;</span><br><span class="line">            System.Console.WriteLine( x * y);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Func委托"><a href="#Func委托" class="headerlink" title="Func委托"></a>Func委托</h3><p>​    这种委托引用了一个<strong>有返回值</strong>的方法（与Action委托相反），它的参数可有任意个（须在定义时声明参数）。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//无参</span><br><span class="line">Func func&lt;返回类型&gt;;</span><br><span class="line">//多个参数</span><br><span class="line">Func func&lt;参数类型1，参数类型2，返回类型&gt;;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>例子</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">namespace 委托Lambda表达式与事件</span><br><span class="line">&#123;</span><br><span class="line">    public class newclass</span><br><span class="line">    &#123;</span><br><span class="line">        static void Main(string[] args)</span><br><span class="line">        &#123;   </span><br><span class="line">            //一个参数</span><br><span class="line">            Func&lt;int,double&gt; fanc;</span><br><span class="line">            fanc = Square;</span><br><span class="line">            //两个参数</span><br><span class="line">            Func&lt;int ,double ,double&gt; fanc1;</span><br><span class="line">            fanc1 = Multiply;</span><br><span class="line">        &#125;</span><br><span class="line">        private static double Square(int value)&#123;</span><br><span class="line">            return value * value;</span><br><span class="line">        &#125;</span><br><span class="line">        private static double Multiply(int x,double y)&#123;</span><br><span class="line">            return x * y;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="多播委托"><a href="#多播委托" class="headerlink" title="多播委托"></a>多播委托</h2><p>​    前面使用委托都只包含一个方法的调用，但是委托也可以包含方法，这种委托叫做<strong>多播委托</strong>。使用多播委托就可以按照顺序调用多个方法，多播委托只能得到调用的<strong>最后一个方法的结果</strong>，一般我们把多播委托的返回类型声明为void（使用Action委托）。</p>
+<p>​    <em>多播委托包含了一个逐步调用的委托集合，如果通过委托调用的其中一个方法<strong>抛出异常</strong>，整个迭代就会停止</em></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">namespace 委托Lambda表达式与事件</span><br><span class="line">&#123;</span><br><span class="line">    public class newclass</span><br><span class="line">    &#123;</span><br><span class="line">        static void Main(string[] args)</span><br><span class="line">        &#123;   </span><br><span class="line">            //先指向Test1()</span><br><span class="line">            Action action = Test1;</span><br><span class="line">            //往一个集合中添加Test2()，先执行Test1()，再执行Test2()</span><br><span class="line">            action += Test2;</span><br><span class="line">            //遍历委托集合</span><br><span class="line">            action();</span><br><span class="line">            //移除Test1()</span><br><span class="line">            action -= Test1;</span><br><span class="line">            action();</span><br><span class="line">        &#125;</span><br><span class="line">        private static void Test1()&#123;</span><br><span class="line">            System.Console.WriteLine(&quot;Test1 &quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        private static void Test2()&#123;</span><br><span class="line">            System.Console.WriteLine(&quot;Test2 &quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="另外一种调用的方式"><a href="#另外一种调用的方式" class="headerlink" title="另外一种调用的方式"></a>另外一种调用的方式</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">      //将多播委托赋值给一个委托数组</span><br><span class="line">Delegate[] delegates = action.GetInvocationList();</span><br><span class="line">      foreach(Delegate d in delegates)&#123;</span><br><span class="line">          //动态调用</span><br><span class="line">          d.DynamicInvoke();</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="匿名方法"><a href="#匿名方法" class="headerlink" title="匿名方法"></a>匿名方法</h2><p>​    使用委托，都是先定义一个方法，然后把方法给委托的实例。但还有另外一种使用委托的方式，不用去定义一个方法，而是使用匿名方法（方法没有名字），用于降低代码复杂性。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">namespace 委托Lambda表达式与事件</span><br><span class="line">&#123;</span><br><span class="line">    public class newclass</span><br><span class="line">    &#123;</span><br><span class="line">        //一般的委托声明在类体外，也可以声明在类体中</span><br><span class="line">        delegate void anonym1(int x,int y) ;</span><br><span class="line">        static void Main(string[] args)</span><br><span class="line">        &#123;   </span><br><span class="line">            //特殊的委托(Action、Func)声明可以声明在函数体中</span><br><span class="line">            //使用delegate关键字，不需要方法名直接定义一个方法</span><br><span class="line">            Func&lt;int,int,int&gt; anonym = delegate (int a, int b) </span><br><span class="line">            &#123;</span><br><span class="line">                //返回值为int</span><br><span class="line">                return a + b;</span><br><span class="line">            &#125;;</span><br><span class="line">			//使用自定义委托</span><br><span class="line">            anonym1 anonym1;</span><br><span class="line">            anonym1 =  delegate (int x,int y)&#123;</span><br><span class="line">                System.Console.WriteLine(&quot;匿名方法&quot;);</span><br><span class="line">            &#125;;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Lambda表达式"><a href="#Lambda表达式" class="headerlink" title="Lambda表达式"></a>Lambda表达式</h1><p>​    如果是匿名方法是减少代码量的第一步，那么使用Lambda表达式就更加精简，它去掉了很多不必要的关键字，还是以上面的例子</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">namespace 委托Lambda表达式与事件</span><br><span class="line">&#123;</span><br><span class="line">    public class newclass</span><br><span class="line">    &#123;</span><br><span class="line">        static void Main(string[] args)</span><br><span class="line">        &#123;          </span><br><span class="line">            //特殊的委托(Action、Func)声明可以声明在函数体中</span><br><span class="line">            //使用lambda表达式，省去不必要的关键字</span><br><span class="line">            //参数类型已在Func委托中定义，lambda表达式可以省去</span><br><span class="line">            Func&lt;int,int,int&gt; anonym = (a, b) =&gt;&#123;return a + b;&#125;;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​    如果一个匿名方法只有一条语句，省去大括号，如果这是一条返回语句，<code>return</code>关键字也可以省略，可以更加精简</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">namespace 委托Lambda表达式与事件</span><br><span class="line">&#123;</span><br><span class="line">    public class newclass</span><br><span class="line">    &#123;</span><br><span class="line">        static void Main(string[] args)</span><br><span class="line">        &#123;</span><br><span class="line">            //如果只有一个参数，参数的括号也可以省略</span><br><span class="line">            Func&lt;int,int&gt; square = a =&gt; a * a;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<h2 id="访问外部变量"><a href="#访问外部变量" class="headerlink" title="访问外部变量"></a>访问外部变量</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">namespace 委托Lambda表达式与事件</span><br><span class="line">&#123;</span><br><span class="line">    public class newclass</span><br><span class="line">    &#123;</span><br><span class="line">        static void Main(string[] args)</span><br><span class="line">        &#123;</span><br><span class="line">            //访问外部变量</span><br><span class="line">            int b = 10;</span><br><span class="line">            Func&lt;int,int&gt; add = a =&gt; a + b;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<h1 id="事件"><a href="#事件" class="headerlink" title="事件"></a>事件</h1><p>​    事件(event)基于委托，为委托提供了一个发布/订阅机制，我们可以说事件是一种具有特殊签名的委托。事件（Event）是类或对象向其他类或对象通知发生的事情的一种特殊签名的委托.<br>​            事件的声明：<br>​            <code>public event 委托类型 事件名;</code><br>事件使用event关键词来声明，他的返回类值是一个委托类型。通常事件的命名，以名字+Event 作为他的名称，在编码中尽量使用规范命名，增加代码可读性。</p>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>​    比如在一间大学寝室，其中某个工具人专门给室友带饭，在他的桌上有一个清单，室友可以把自己的名字和需要带的吃的写在这个清单上面，当然如果不需要带饭，也可以划掉自己的名字，当这个工具人买饭的时候，只需要带着清单去，这种处理方式就是<strong>订阅/发布机制</strong>，这个工具人<strong>发布</strong>了这个下楼带饭的事件，其他人可以<strong>订阅</strong>这个事件。</p>
+<h3 id="ToolMan类"><a href="#ToolMan类" class="headerlink" title="ToolMan类"></a>ToolMan类</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">namespace 委托Lambda表达式与事件</span><br><span class="line">&#123;</span><br><span class="line">    //定义一个无参无返回值的委托</span><br><span class="line">    public delegate void DownStairDelegate();</span><br><span class="line">    public class ToolMan</span><br><span class="line">    &#123;</span><br><span class="line">        public string Name &#123;get;set;&#125;</span><br><span class="line">        public DownStairDelegate downStairDelegate;</span><br><span class="line">        public ToolMan(string name)&#123;</span><br><span class="line">            this.Name = name;</span><br><span class="line">        &#125;</span><br><span class="line">        public void DownStair()&#123;</span><br><span class="line">            System.Console.WriteLine(&quot;工具人：&quot;+ Name +&quot;下楼了&quot;);</span><br><span class="line">            if(downStairDelegate != null)&#123;</span><br><span class="line">                downStairDelegate();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Roommate类"><a href="#Roommate类" class="headerlink" title="Roommate类"></a>Roommate类</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">namespace 委托Lambda表达式与事件</span><br><span class="line">&#123;</span><br><span class="line">    public class Roommate</span><br><span class="line">    &#123;</span><br><span class="line">        public string Name &#123;get;set;&#125;</span><br><span class="line"></span><br><span class="line">        public Roommate(string name)&#123;</span><br><span class="line">            this.Name = name;</span><br><span class="line">        &#125;</span><br><span class="line">        public void TakeFood()&#123;</span><br><span class="line">            System.Console.WriteLine(&quot;给&quot;+Name+&quot;拿外卖&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        public void TakeExpress()&#123;</span><br><span class="line">            System.Console.WriteLine(&quot;给&quot;+Name+&quot;拿快递&quot;);</span><br><span class="line">        &#125;    </span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Program类"><a href="#Program类" class="headerlink" title="Program类"></a>Program类</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">namespace 委托Lambda表达式与事件</span><br><span class="line">&#123;</span><br><span class="line">    public class Program</span><br><span class="line">    &#123;</span><br><span class="line">        static void Main(string[] args)</span><br><span class="line">        &#123;</span><br><span class="line">            ToolMan toolMan = new ToolMan(&quot;张三&quot;);</span><br><span class="line">            Roommate roommate1 = new Roommate(&quot;小明&quot;);</span><br><span class="line">            Roommate roommate2 = new Roommate(&quot;小红&quot;);</span><br><span class="line">            Roommate roommate3 = new Roommate(&quot;小刚&quot;);</span><br><span class="line"></span><br><span class="line">            //使用多播委托，将室友的需求写进清单</span><br><span class="line">            toolMan.downStairDelegate += roommate1.TakeFood;</span><br><span class="line">            toolMan.downStairDelegate += roommate2.TakeExpress;</span><br><span class="line">            toolMan.downStairDelegate += roommate3.TakeFood;</span><br><span class="line">            //执行下楼</span><br><span class="line">            toolMan.DownStair();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<p>这样看似毫无问题，但是却有一个很大的缺陷</p>
+<p>在Program类中直接执行以下语句：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">toolMan.downStairDelegate();</span><br></pre></td></tr></table></figure>
+
+<p>会发现当工具人没有下楼，就会触发拿快递，带饭的操作</p>
+<p>又或者在在Program类中直接执行以下语句：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">         toolMan.downStairDelegate += roommate1.TakeFood;</span><br><span class="line">         toolMan.downStairDelegate += roommate2.TakeExpress;</span><br><span class="line">//使用赋值语句会覆盖掉其它两个室友</span><br><span class="line">         toolMan.downStairDelegate = roommate3.TakeFood;</span><br></pre></td></tr></table></figure>
+
+<p>这时候，需要在ToolMan类中数据成员：<code>downStairDelegate</code> 的前面加上事件关键字<code>event</code>进行约束</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public event DownStairDelegate downStairDelegate;</span><br></pre></td></tr></table></figure>
+
+<p>这样就可以避免上述情况发生，只能在类的内部执行，不能在外部执行。</p>
+<h2 id="事件与委托的联系和区别"><a href="#事件与委托的联系和区别" class="headerlink" title="事件与委托的联系和区别"></a>事件与委托的联系和区别</h2><ul>
+<li>事件是一种特殊的委托，或者说是受限制的委托，是委托一种特殊应用，只能施加+=,-=操作符。二者本质上是一个东西。</li>
+<li><code>event ActionHandler Tick;</code> // 编译成创建一个私有的委托示例, 和施加在其上的add, remove方法.</li>
+<li>event只允许用add, remove方法来操作，这导致了它不允许在类的外部被直接触发，只能在类的内部适合的时机触发。委托可以在外部被触发，但不建议这么用。</li>
+<li>使用中，委托常用来表达回调，事件表达外发的接口。</li>
+</ul>
+
+        </div>
+        
+            <div class="kratos-copyright text-center clearfix">
+                <h5>本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</h5>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+                <div class="post-like-donate text-center clearfix" id="post-like-donate">
+                
+                
+                    <a class="share" href="javascript:;"><i class="fa fa-share-alt"></i> 分享</a>
+                    <div class="share-wrap" style="display: none;">
+    <div class="share-group">
+        <a href="javascript:;" class="share-plain qq" onclick="share('qq');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-qq"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain qzone" onclick="share('qzone');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-star"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weixin pop style-plain" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weixin"></i>
+            </div>
+            <div class="share-int">
+                <div class="qrcode" id="wechat-qr"></div>
+                <p>打开微信“扫一扫”，打开网页后点击屏幕右上角分享按钮</p>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weibo" onclick="share('weibo');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weibo"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain facebook style-plain" onclick="share('facebook');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-facebook"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain twitter style-plain" onclick="share('twitter');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-twitter"></i>
+            </div>
+        </a>
+    </div>
+    <script type="text/javascript">
+        $(()=>{
+            new QRCode("wechat-qr", {
+                text: "https://moewolf.me/C/%E5%A7%94%E6%89%98%E3%80%81lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%92%8C%E4%BA%8B%E4%BB%B6/",
+                width: 150,
+                height: 150,
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        });
+        function share(dest) {
+            const qqBase        = "https://connect.qq.com/widget/shareqq/index.html?";
+            const weiboBase     = "https://service.weibo.com/share/share.php?";
+            const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
+            const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
+            const twitterBase   = "https://twitter.com/intent/tweet?";
+            const hostUrl       = "https://moewolf.me/C/%E5%A7%94%E6%89%98%E3%80%81lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%92%8C%E4%BA%8B%E4%BB%B6/";
+            const title         = "「委托、Lambda表达式和事件」";
+            const excerpt       = `委托提升了程序的可扩展性，Lambda表达式简化了代码量，增强了代码可读性，事件对委托进行了某些限制`;
+            let _URL;
+            switch (dest) {
+                case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
+                case "weibo"    : _URL = weiboBase+"url="+hostUrl+"&title="+title+excerpt;                                 break;
+                case "qzone"    : _URL = qzoneBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";  break;
+                case "facebook" : _URL = facebookBase+"u="+hostUrl;                                                        break;
+                case "twitter"  : _URL = twitterBase+"text="+title+excerpt+"&url="+hostUrl;                                break;
+            }
+            window.open(_URL);
+        };
+    </script>
+</div>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/C-%E9%AB%98%E9%98%B6/" rel="tag">C#高阶</a>
+                </div>
+                <div class="pull-date">
+                <span>最后编辑：2022-03-26</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" 正则表达式" href="/C/正则表达式/">&lt; 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" 多线程" href="/C/多线程/">下一篇 &gt;</a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+        
+
+                
+            
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/holo_avatar.png" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">生如夏花之绚烂，死如秋叶之静美</p>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix">
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar"></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A7%94%E6%89%98"><span class="toc-text">委托</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E5%AD%90"><span class="toc-text">引子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A3%B0%E6%98%8E%E5%A7%94%E6%89%98"><span class="toc-text">声明委托</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%E5%A7%94%E6%89%98"><span class="toc-text">定义委托</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%A7%94%E6%89%98"><span class="toc-text">使用委托</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BD%93%E4%BD%9C%E6%96%B9%E6%B3%95%E7%9B%B4%E6%8E%A5%E8%B0%83%E7%94%A8"><span class="toc-text">当作方法直接调用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A7%94%E6%89%98%E7%B1%BB%E5%9E%8B%E6%95%B0%E7%BB%84"><span class="toc-text">委托类型数组</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BD%93%E4%BD%9C%E6%96%B9%E6%B3%95%E7%9A%84%E5%8F%82%E6%95%B0%E4%BD%BF%E7%94%A8"><span class="toc-text">当作方法的参数使用</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Action%E5%A7%94%E6%89%98%E4%B8%8EFunc%E5%A7%94%E6%89%98"><span class="toc-text">Action委托与Func委托</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Action%E5%A7%94%E6%89%98"><span class="toc-text">Action委托</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Func%E5%A7%94%E6%89%98"><span class="toc-text">Func委托</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%9A%E6%92%AD%E5%A7%94%E6%89%98"><span class="toc-text">多播委托</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%A6%E5%A4%96%E4%B8%80%E7%A7%8D%E8%B0%83%E7%94%A8%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="toc-text">另外一种调用的方式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8C%BF%E5%90%8D%E6%96%B9%E6%B3%95"><span class="toc-text">匿名方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-text">Lambda表达式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AE%E5%A4%96%E9%83%A8%E5%8F%98%E9%87%8F"><span class="toc-text">访问外部变量</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8B%E4%BB%B6"><span class="toc-text">事件</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90"><span class="toc-text">例子</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ToolMan%E7%B1%BB"><span class="toc-text">ToolMan类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Roommate%E7%B1%BB"><span class="toc-text">Roommate类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Program%E7%B1%BB"><span class="toc-text">Program类</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8B%E4%BB%B6%E4%B8%8E%E5%A7%94%E6%89%98%E7%9A%84%E8%81%94%E7%B3%BB%E5%92%8C%E5%8C%BA%E5%88%AB"><span class="toc-text">事件与委托的联系和区别</span></a></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类目录</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C#</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/">功能实现</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E5%B8%B8/">日常</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/">茉子的幻想乡奇遇</a><span class="category-list-count">3</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/C-%E9%AB%98%E9%98%B6/" style="font-size: 0.8em;">C#高阶</a> <a href="/tags/Unity/" style="font-size: 0.8em;">Unity</a> <a href="/tags/%E5%BC%80%E5%8F%91%E6%97%A5%E5%BF%97/" style="font-size: 0.8em;">开发日志</a> <a href="/tags/%E6%97%A5%E5%B8%B8/" style="font-size: 0.6em;">日常</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9Aexcel%E8%A1%A8%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E5%92%8C%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（三）：Excel表配置数据和背包系统</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E5%AF%B9%E8%AF%9D%E5%8A%9F%E8%83%BD%E7%9A%84%E5%AE%9E%E7%8E%B0/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（二）：对话功能的实现</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9Apuremvc%E4%B8%8E%E4%B8%BB%E7%95%8C%E9%9D%A2/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（一）：PureMVC与主界面</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E5%88%A9%E7%94%A8%E5%8F%8D%E5%B0%84%E5%88%B6%E4%BD%9Cplayerprefs%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86%E7%B1%BB/"><i class="fa  fa-book"></i> 利用反射制作PlayerPrefs数据管理类</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F/"><i class="fa  fa-book"></i> 背包系统</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+        
+        </div>
+    </div>
+</div>
+<footer>
+    <div id="footer"  >
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://t.me/LittleWolfHouse"><i class="fa fa-telegram"></i></a></li>
+                        
+                        
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://github.com/Dai-MoeWolf"><i class="fa fa-github"></i></a></li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2022 MoeWolf的博客 版权所有.</li>
+                            <li>本站已运行<span id="span_dt">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>Theme <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a></li>
+                            <li>Site built with&nbsp;<i class="fa fa-heart throb" style="color:#d43f57"></i>&nbsp;by MoeWolf.</li>
+                        </div>
+                        <div>
+                            <li>Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a></li>
+                            
+                        </div>
+                        <div>
+                            
+                            
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search/">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="box theme-box" id="darkmode-switch">
+                        <span class="fa fa-adjust"></span>
+                    </div>
+                
+                
+            </div>
+            <div class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.4/dist/js/bootstrap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js"></script>
+<script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+    <script async src="/js/candy.min.js"></script>
+
+
+
+
+    <script defer src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script>
+<script defer src="/js/kratosr.min.js"></script>
+<script defer src="/js/pjax.min.js"></script>
+
+
+    <script defer src="/js/kr-dark.min.js"></script>
+
+
+
+<!-- Extra support for third-party plguins  -->
+
+
+    </body>
+</html>

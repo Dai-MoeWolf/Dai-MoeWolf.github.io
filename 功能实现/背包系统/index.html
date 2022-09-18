@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  <link rel="icon" href="/images/webicon.jpg">
+  <title>背包系统 | MoeWolf的博客</title>
+  <meta name="author" content="MoeWolf" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="Unity" />
+  
+  <meta name="description" content="基于MVC思想，使用数据仓库ScriptableObject存储游戏对象数据">
+<meta property="og:type" content="article">
+<meta property="og:title" content="背包系统">
+<meta property="og:url" content="https://moewolf.me/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F/index.html">
+<meta property="og:site_name" content="MoeWolf的博客">
+<meta property="og:description" content="基于MVC思想，使用数据仓库ScriptableObject存储游戏对象数据">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://moewolf.me/images/webicon.jpg">
+<meta property="article:published_time" content="2022-06-18T12:41:18.000Z">
+<meta property="article:modified_time" content="2022-09-12T02:35:21.939Z">
+<meta property="article:author" content="MoeWolf">
+<meta property="article:tag" content="Unity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://moewolf.me/images/webicon.jpg">
+<meta name="twitter:site" content="@null">
+  
+  <!-- 站点验证相关 -->
+  
+    
+    
+    
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kratosr.min.css" type="text/css" media="all">
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/night-eighties.min.css" type="text/css" media="all">
+  
+  
+  <link rel="stylesheet" id="fontawe-css" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" type="text/css" media="all">
+  <link rel="stylesheet" id="nprogress-css" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css" type="text/css" media="all">
+  
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+  
+  
+    <link rel="stylesheet" id="darkmode-css" href="/css/kr-dark.min.css" type="text/css" media="all">
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  
+    <script src="https://cdn.jsdelivr.net/npm/qrcode_js@1.0.0/qrcode.min.js"></script>
+  
+  
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/holo_banner.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/holo_bg.png');
+        }
+      }
+    
+  </style>
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    
+                                        <li><a href="/"><i class="fa fa-home"></i>首页</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/archives/"><i class="fa fa-file"></i>档案馆</a></li>
+                                    
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">MoeWolf的博客</a></div>
+                    <div class="nav-toggle">
+                        <a class="kratos-nav-toggle js-kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>MoeWolf的博客</h2> <br />
+                        <span>𝓦𝓱𝓪𝓽’𝓼 𝓹𝓪𝓼𝓽 𝓲𝓼 𝓹𝓻𝓸𝓵𝓸𝓰𝓾𝓮.</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+                    
+
+        
+
+            <section class="col-md-8">
+
+        
+
+            <article>
+    <div class="kratos-hentry kratos-post-inner clearfix">
+        <header class="kratos-entry-header">
+            
+                <h1 class="kratos-entry-title text-center">背包系统</h1>
+            
+            
+            <ul class="kratos-post-meta text-center">
+                <li><i class="fa fa-calendar"></i> 2022-06-18</li>
+                <li><i class="fa fa-user"></i> 作者 MoeWolf</li>
+                <li>
+                    <i class="fa fa-edit"></i> 
+                    
+                    
+                        ~20.80K
+                    
+                    字
+                </li>
+                
+            </ul>
+        </header>
+        <div class="kratos-post-content">
+            <div id="expire-alert" class="alert alert-warning hidden" role="alert">
+                本文最后编辑于 <time datetime="1662950121939"></time> 前，其中的内容可能需要更新。
+            </div>
+            
+                <div class="kratos-post-inner-toc">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%83%8C%E5%8C%85UI"><span class="toc-number">1.</span> <span class="toc-text">背包UI</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%B6%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-number">1.1.</span> <span class="toc-text">制作流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E5%86%99%E8%83%8C%E5%8C%85UI%E5%BC%80%E5%85%B3%E8%84%9A%E6%9C%AC"><span class="toc-number">1.2.</span> <span class="toc-text">编写背包UI开关脚本</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F"><span class="toc-number">2.</span> <span class="toc-text">背包系统</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%A9%E5%93%81"><span class="toc-number">2.1.</span> <span class="toc-text">物品</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E5%8C%85"><span class="toc-number">2.2.</span> <span class="toc-text">背包</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Scene%E4%B8%AD%E7%9A%84%E7%89%A9%E5%93%81%EF%BC%88%E6%8C%82%E8%BD%BD%E8%84%9A%E6%9C%AC%EF%BC%89"><span class="toc-number">2.3.</span> <span class="toc-text">Scene中的物品（挂载脚本）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%86%E7%89%A9%E5%93%81%E6%98%BE%E7%A4%BA%E5%9C%A8UI"><span class="toc-number">2.4.</span> <span class="toc-text">将物品显示在UI</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%A9%E5%93%81SlotUI%E6%8E%A7%E5%88%B6"><span class="toc-number">2.4.1.</span> <span class="toc-text">物品SlotUI控制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%8C%E5%8C%85%E6%95%B4%E4%BD%93UI%E6%8E%A7%E5%88%B6"><span class="toc-number">2.4.2.</span> <span class="toc-text">背包整体UI控制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9B%B4%E6%96%B0%E6%98%BE%E7%A4%BA"><span class="toc-number">2.4.3.</span> <span class="toc-text">更新显示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%98%BE%E7%A4%BA%E7%89%A9%E5%93%81%E6%8F%8F%E8%BF%B0"><span class="toc-number">2.4.4.</span> <span class="toc-text">显示物品描述</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%89%A9%E5%93%81%E6%8B%96%E6%8B%BD%E7%9A%84%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F"><span class="toc-number">3.</span> <span class="toc-text">物品拖拽的背包系统</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E6%9E%84UI"><span class="toc-number">3.1.</span> <span class="toc-text">重构UI</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E6%9E%84InventoryController%E7%B1%BB"><span class="toc-number">3.2.</span> <span class="toc-text">重构InventoryController类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E6%9E%84Slot%E7%B1%BB"><span class="toc-number">3.3.</span> <span class="toc-text">重构Slot类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E6%9E%84Inventory%E7%B1%BB"><span class="toc-number">3.4.</span> <span class="toc-text">重构Inventory类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E6%8B%96%E6%8B%BD"><span class="toc-number">3.5.</span> <span class="toc-text">实现拖拽</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%96%E6%8B%BD%E7%89%A9%E5%93%81"><span class="toc-number">3.5.1.</span> <span class="toc-text">拖拽物品</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%96%E6%8B%BDUI"><span class="toc-number">3.5.2.</span> <span class="toc-text">拖拽UI</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%94%B9%E5%8F%98%E8%83%8C%E5%8C%85%E7%89%A9%E5%93%81%E5%88%97%E8%A1%A8%E4%B8%AD%E7%9A%84%E5%AE%9E%E9%99%85%E9%A1%BA%E5%BA%8F"><span class="toc-number">3.6.</span> <span class="toc-text">改变背包物品列表中的实际顺序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E6%9E%84Slot%E7%B1%BB-1"><span class="toc-number">3.6.1.</span> <span class="toc-text">重构Slot类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E6%9E%84InventoryController%E7%B1%BB-1"><span class="toc-number">3.6.2.</span> <span class="toc-text">重构InventoryController类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E6%9E%84ItemOnDrag%E7%B1%BB"><span class="toc-number">3.6.3.</span> <span class="toc-text">重构ItemOnDrag类</span></a></li></ol></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <p>基于MVC思想，使用数据仓库ScriptableObject存储游戏对象数据</p>
+<span id="more"></span>
+
+<h1 id="背包UI"><a href="#背包UI" class="headerlink" title="背包UI"></a>背包UI</h1><h2 id="制作流程"><a href="#制作流程" class="headerlink" title="制作流程"></a>制作流程</h2><p>首先制作一个背包的UI，对于内部的一个个小格子，在Grid上面添加Grid Layout Group，然后在Grid上添加一个Image命名为Slot，调整为一个小格子的大小，使用Ctrl + D 生成更多的格子，在Grid Layout Group中调整每个Slot，使得刚好覆盖每一格子，在Slot之上添加一个Text，用于显示物品数量,命名为Number，之后在Image上添加Button组件，用于点击物品，最后将Slot保存为一个预制件，删除所有Slot。</p>
+<p><img src="/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F/%E8%83%8C%E5%8C%85UI.png" alt="背包UI"></p>
+<h2 id="编写背包UI开关脚本"><a href="#编写背包UI开关脚本" class="headerlink" title="编写背包UI开关脚本"></a>编写背包UI开关脚本</h2><p>最开始在Scene中将Bag的Active改为false，让游戏开始时不显示背包UI。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">using UnityEngine;</span><br><span class="line">public class BagUIController : MonoBehaviour</span><br><span class="line">&#123;</span><br><span class="line">    private bool _isOpen;</span><br><span class="line">    public GameObject bagUI;</span><br><span class="line">    private void Update()</span><br><span class="line">    &#123;</span><br><span class="line">        OpenBag();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    void OpenBag()</span><br><span class="line">    &#123;</span><br><span class="line">        if (Input.GetKeyDown(KeyCode.B))</span><br><span class="line">        &#123;</span><br><span class="line">            if (bagUI.activeSelf != _isOpen)</span><br><span class="line">            &#123;</span><br><span class="line">                _isOpen = !_isOpen;</span><br><span class="line">            &#125;</span><br><span class="line">            _isOpen = !_isOpen;</span><br><span class="line">            bagUI.SetActive(_isOpen);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样可以点击右上角的按钮关闭UI，也可以使用按键开启/关闭UI，使用一个if语句保证isOpen与UI的Active保持同步，则按键就保持了同步，可以让脚本挂载到Canvas同一控制UI。</p>
+<h1 id="背包系统"><a href="#背包系统" class="headerlink" title="背包系统"></a>背包系统</h1><p>整个背包系统的类图</p>
+<p><img src="/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F/ClassDiagram.png" alt="ClassDiagram"></p>
+<h2 id="物品"><a href="#物品" class="headerlink" title="物品"></a>物品</h2><p>使用继承ScriptableObject，将类变为一个可独立于类实例来保存大量数据的数据容器，使用[CreateAssetMenu]特性，可以使用Create实例化一个物品对象。制作一个物品类，用于存储这种类型物品的属性。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">using UnityEngine;</span><br><span class="line"></span><br><span class="line">//[CreateAssetMenu]特性，自定义新建菜单 参数1：文件名 参数2： 菜单目录层级</span><br><span class="line">[CreateAssetMenu(fileName = &quot;New Item&quot;,menuName = &quot;Inventory/New Item&quot;)]</span><br><span class="line">public class Item : ScriptableObject</span><br><span class="line">&#123;</span><br><span class="line">    public string itemName;</span><br><span class="line">    public Sprite itemImage;</span><br><span class="line">    public int itemNum;</span><br><span class="line">    //[TextArea]特性，标记为可以多行书写的字符串</span><br><span class="line">    [TextArea]</span><br><span class="line">    public string itemDescription;</span><br><span class="line">    public bool canEquip;	//可装备</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="背包"><a href="#背包" class="headerlink" title="背包"></a>背包</h2><p>使用List列表存储物品，依旧使用[CreateAssetMenu]特性，Create一个背包实例。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">using System.Collections;</span><br><span class="line">using System.Collections.Generic;</span><br><span class="line">using UnityEngine;</span><br><span class="line"></span><br><span class="line">[CreateAssetMenu(fileName = &quot;New Inventory&quot;,menuName = &quot;Inventory/New Inventory&quot;)]</span><br><span class="line">public class Inventory : ScriptableObject</span><br><span class="line">&#123;</span><br><span class="line">    public List&lt;Item&gt; itemList = new List&lt;Item&gt;();</span><br><span class="line">    </span><br><span class="line">    //添加物品进背包</span><br><span class="line">    public void AddItemIntoInventory(Item item)</span><br><span class="line">    &#123;</span><br><span class="line">        //物品存在背包则物品的数量+1，否则增加物品进背包</span><br><span class="line">        if (itemList.Contains(item))</span><br><span class="line">        &#123;</span><br><span class="line">            item.itemNum++;</span><br><span class="line">        &#125;</span><br><span class="line">        else</span><br><span class="line">        &#123;</span><br><span class="line">            itemList.Add(item);</span><br><span class="line">            item.itemNum++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="Scene中的物品（挂载脚本）"><a href="#Scene中的物品（挂载脚本）" class="headerlink" title="Scene中的物品（挂载脚本）"></a>Scene中的物品（挂载脚本）</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">using System;</span><br><span class="line">using System.Collections;</span><br><span class="line">using System.Collections.Generic;</span><br><span class="line">using UnityEngine;</span><br><span class="line"></span><br><span class="line">public class ItemOnWorld : MonoBehaviour</span><br><span class="line">&#123;</span><br><span class="line">    //该物品的属性，和所属的背包</span><br><span class="line">    public Item item;</span><br><span class="line">    public Inventory playerInventory;</span><br><span class="line"></span><br><span class="line">    private void OnTriggerEnter2D(Collider2D other)</span><br><span class="line">    &#123;</span><br><span class="line">        //物品碰到玩家，则调用玩家背包的增加物品方法</span><br><span class="line">        if (other.gameObject.CompareTag(&quot;Player&quot;))</span><br><span class="line">        &#123;</span><br><span class="line">            playerInventory.AddItemIntoInventory(item);</span><br><span class="line">        &#125;</span><br><span class="line">        Destroy(gameObject);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="将物品显示在UI"><a href="#将物品显示在UI" class="headerlink" title="将物品显示在UI"></a>将物品显示在UI</h2><h3 id="物品SlotUI控制"><a href="#物品SlotUI控制" class="headerlink" title="物品SlotUI控制"></a>物品SlotUI控制</h3><p>将之前保存的Slot上挂载一个脚本用于控制UI的参数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">using System.Collections;</span><br><span class="line">using System.Collections.Generic;</span><br><span class="line">using TMPro;</span><br><span class="line">using UnityEngine;</span><br><span class="line">using UnityEngine.UI;</span><br><span class="line"></span><br><span class="line">public class Slot : MonoBehaviour</span><br><span class="line">&#123;</span><br><span class="line">    public Item slotItem;</span><br><span class="line">    public Image slotImage;</span><br><span class="line">    public TMP_Text slotNum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>将自身的Image和TextMeshPro-Text拖入Inspector</p>
+<p><img src="/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F/%E5%85%B3%E8%81%94.png" alt="关联"></p>
+<h3 id="背包整体UI控制"><a href="#背包整体UI控制" class="headerlink" title="背包整体UI控制"></a>背包整体UI控制</h3><p>将整体控制脚本挂载到Canvas</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">using System;</span><br><span class="line">using System.Collections;</span><br><span class="line">using System.Collections.Generic;</span><br><span class="line">using TMPro;</span><br><span class="line">using UnityEngine;</span><br><span class="line"></span><br><span class="line">public class InventoryController : MonoBehaviour</span><br><span class="line">&#123;</span><br><span class="line">    //使用单例模式</span><br><span class="line">    public static InventoryController Instance &#123; get; private set; &#125;</span><br><span class="line">    </span><br><span class="line">    public Inventory myBag;</span><br><span class="line">    public GameObject slotGrid;</span><br><span class="line">    public Slot slotPrefab;</span><br><span class="line">    public TMP_Text itemInformation;</span><br><span class="line">    </span><br><span class="line">    private void Awake()</span><br><span class="line">    &#123;</span><br><span class="line">        if (Instance != null)</span><br><span class="line">        &#123;</span><br><span class="line">            Destroy(this);</span><br><span class="line">        &#125;</span><br><span class="line">        Instance = this;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>根据对应字段将对应的对象拖入Inspector</p>
+<p><img src="/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F/%E8%83%8C%E5%8C%85UI%E5%85%B3%E8%81%94.png" alt="背包UI关联"></p>
+<h3 id="更新显示"><a href="#更新显示" class="headerlink" title="更新显示"></a>更新显示</h3><p>每当玩家碰到物品时，物品左下角数字需要刷新显示</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line">using System;</span><br><span class="line">using System.Collections;</span><br><span class="line">using System.Collections.Generic;</span><br><span class="line">using TMPro;</span><br><span class="line">using UnityEngine;</span><br><span class="line"></span><br><span class="line">public class InventoryController : MonoBehaviour</span><br><span class="line">&#123;</span><br><span class="line">    //使用单例模式</span><br><span class="line">    public static InventoryController Instance &#123; get; private set; &#125;</span><br><span class="line">    </span><br><span class="line">    public Inventory myBag;</span><br><span class="line">    public GameObject slotGrid;</span><br><span class="line">    public Slot slotPrefab;</span><br><span class="line">    public TMP_Text itemInformation;</span><br><span class="line">    </span><br><span class="line">    private void Awake()</span><br><span class="line">    &#123;</span><br><span class="line">        if (Instance != null)</span><br><span class="line">        &#123;</span><br><span class="line">            Destroy(this);</span><br><span class="line">        &#125;</span><br><span class="line">        Instance = this;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void OnEnable()</span><br><span class="line">    &#123;</span><br><span class="line">        RefreshItem();</span><br><span class="line">        //默认物品描述为空</span><br><span class="line">        Instance.itemInformation.text = &quot;&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void CreateNewItem(Item item)</span><br><span class="line">    &#123;</span><br><span class="line">        //在Grid之下下实例化Slot</span><br><span class="line">        Slot newItem = Instantiate(Instance.slotPrefab,Instance.slotGrid.transform.position,Quaternion.identity);</span><br><span class="line">        //将Grid设为父节点</span><br><span class="line">        newItem.gameObject.transform.SetParent(Instance.slotGrid.transform);</span><br><span class="line"></span><br><span class="line">        //将Slot(物品UI)中的字段赋值为保存好的item的字段</span><br><span class="line">        newItem.slotItem = item;</span><br><span class="line">        newItem.slotImage.sprite = item.itemImage;</span><br><span class="line">        newItem.slotNum.text =item.itemNum.ToString();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void RefreshItem()</span><br><span class="line">    &#123;</span><br><span class="line">        int slotNum = Instance.slotGrid.transform.childCount;</span><br><span class="line">        //捡到物品后刷新UI 销毁所有Slot，并重新生成</span><br><span class="line">        for (int i = 0; i &lt; slotNum; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            if (slotNum == 0)</span><br><span class="line">            &#123;</span><br><span class="line">                break;</span><br><span class="line">            &#125;</span><br><span class="line">            Destroy(Instance.slotGrid.transform.GetChild(i).gameObject);</span><br><span class="line">        &#125;</span><br><span class="line">        //生成</span><br><span class="line">        for (int i = 0; i &lt; Instance.myBag.itemList.Count; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            CreateNewItem(Instance.myBag.itemList[i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void UpdateItemInfo(string itemDescription)</span><br><span class="line">    &#123;</span><br><span class="line">        Instance.itemInformation.text = itemDescription;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>修改Inventory类，让增加物品时调用刷新背包</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">using System.Collections;</span><br><span class="line">using System.Collections.Generic;</span><br><span class="line">using UnityEngine;</span><br><span class="line"></span><br><span class="line">[CreateAssetMenu(fileName = &quot;New Inventory&quot;,menuName = &quot;Inventory/New Inventory&quot;)]</span><br><span class="line">public class Inventory : ScriptableObject</span><br><span class="line">&#123;</span><br><span class="line">    public List&lt;Item&gt; itemList = new List&lt;Item&gt;();</span><br><span class="line">    </span><br><span class="line">    //添加物品进背包</span><br><span class="line">    public void AddItemIntoInventory(Item item)</span><br><span class="line">    &#123;</span><br><span class="line">        //物品存在背包则物品的数量+1，否则增加物品进背包</span><br><span class="line">        if (itemList.Contains(item))</span><br><span class="line">        &#123;</span><br><span class="line">            item.itemNum++;</span><br><span class="line">        &#125;</span><br><span class="line">        else</span><br><span class="line">        &#123;</span><br><span class="line">            itemList.Add(item);</span><br><span class="line">            item.itemNum++;</span><br><span class="line">        &#125;</span><br><span class="line">        InventoryController.RefreshItem();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="显示物品描述"><a href="#显示物品描述" class="headerlink" title="显示物品描述"></a>显示物品描述</h3><p>点击物品，显示物品描述，修改Slot类</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">using System.Collections;</span><br><span class="line">using System.Collections.Generic;</span><br><span class="line">using TMPro;</span><br><span class="line">using UnityEngine;</span><br><span class="line">using UnityEngine.UI;</span><br><span class="line"></span><br><span class="line">public class Slot : MonoBehaviour</span><br><span class="line">&#123;</span><br><span class="line">    public Item slotItem;</span><br><span class="line">    public Image slotImage;</span><br><span class="line">    public TMP_Text slotNum;</span><br><span class="line"></span><br><span class="line">    public void ItemOnClicked()</span><br><span class="line">    &#123;</span><br><span class="line">        InventoryController.UpdateItemInfo(slotItem.itemDescription);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>将ItemOnClicked添加到Slot的Button的OnClick()事件上，至此一个最基础的背包就做好了。</p>
+<p><img src="/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F/%E7%89%A9%E5%93%81%E6%8F%8F%E8%BF%B0%E6%8C%89%E9%92%AE.png" alt="物品描述按钮"></p>
+<h1 id="物品拖拽的背包系统"><a href="#物品拖拽的背包系统" class="headerlink" title="物品拖拽的背包系统"></a>物品拖拽的背包系统</h1><p>如果要实现物品拖拽，要将整个背包系统进行重构</p>
+<h2 id="重构UI"><a href="#重构UI" class="headerlink" title="重构UI"></a>重构UI</h2><p>将Grid的透明度改为0，将Slot的Image改为单个小格子，在Grid layout group中调整大小间距，将Slot Apply all，在预制件中将Slot的button删除，重新添加一个button到slot的子节点，将button命名为Item，用于点击拖拽物品，将Item上的Image和子节点的Text删除，Item的Pivot设为中心，再将宽高设为和slot的一样大，将number作为Item的子节点，在Item中新建一个Image，表示物品图片，将图片大小设置略微小于Item大小，让其看起来不那么大，最后将Item中的button组件的Transition字段改为None，当Item的Active为False时，则表示为空格。为了防止Item出现在在不存在的第四排，在Item上增加组件Layou Element,勾选Ignore Layout。</p>
+<p><img src="/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F/%E9%87%8D%E6%9E%84UI.png" alt="重构UI"></p>
+<p>修改Inventory，将初始的ItemList改为18</p>
+<p><img src="/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F/%E9%87%8D%E6%9E%84Inventory.png" alt="重构Inventory"></p>
+<h2 id="重构InventoryController类"><a href="#重构InventoryController类" class="headerlink" title="重构InventoryController类"></a>重构InventoryController类</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">using System;</span><br><span class="line">using System.Collections;</span><br><span class="line">using System.Collections.Generic;</span><br><span class="line">using TMPro;</span><br><span class="line">using UnityEngine;</span><br><span class="line"></span><br><span class="line">public class InventoryController : MonoBehaviour</span><br><span class="line">&#123;</span><br><span class="line">    //使用单例模式</span><br><span class="line">    public static InventoryController Instance &#123; get; private set; &#125;</span><br><span class="line">    </span><br><span class="line">    public Inventory myBag;</span><br><span class="line">    public GameObject slotGrid;</span><br><span class="line">    public GameObject emptySlot;</span><br><span class="line">    public TMP_Text itemInformation;</span><br><span class="line">    public List&lt;GameObject&gt; slotList = new List&lt;GameObject&gt;();</span><br><span class="line"></span><br><span class="line">    private void Awake()</span><br><span class="line">    &#123;</span><br><span class="line">        if (Instance != null)</span><br><span class="line">        &#123;</span><br><span class="line">            Destroy(this);</span><br><span class="line">        &#125;</span><br><span class="line">        Instance = this;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void OnEnable()</span><br><span class="line">    &#123;</span><br><span class="line">        RefreshItem();</span><br><span class="line">        //默认物品描述为空</span><br><span class="line">        Instance.itemInformation.text = &quot;&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">    public static void RefreshItem()</span><br><span class="line">    &#123;</span><br><span class="line">        int slotNum = Instance.slotGrid.transform.childCount;</span><br><span class="line">        //捡到物品后刷新UI 销毁所有Slot，并重新生成</span><br><span class="line">        for (int i = 0; i &lt; slotNum; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            if (slotNum == 0)</span><br><span class="line">            &#123;</span><br><span class="line">                break;</span><br><span class="line">            &#125;</span><br><span class="line">            Destroy(Instance.slotGrid.transform.GetChild(i).gameObject);</span><br><span class="line">        &#125;</span><br><span class="line">        //获取背包中的itemlist的Size,并在开始就绘制18个空slot</span><br><span class="line">        for (int i = 0; i &lt; Instance.myBag.itemList.Count; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            //生成18个空slot</span><br><span class="line">            Instance.slotList.Add(Instantiate(Instance.emptySlot));</span><br><span class="line">            //设置slot位置，为grid的子节点</span><br><span class="line">            Instance.slotList[i].transform.SetParent(Instance.slotGrid.transform);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void UpdateItemInfo(string itemDescription)   </span><br><span class="line">    &#123;</span><br><span class="line">        Instance.itemInformation.text = itemDescription;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在Inspector中将emptySlot属性赋值为做好的预制件Slot</p>
+<h2 id="重构Slot类"><a href="#重构Slot类" class="headerlink" title="重构Slot类"></a>重构Slot类</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">using System.Collections;</span><br><span class="line">using System.Collections.Generic;</span><br><span class="line">using TMPro;</span><br><span class="line">using UnityEngine;</span><br><span class="line">using UnityEngine.UI;</span><br><span class="line"></span><br><span class="line">public class Slot : MonoBehaviour</span><br><span class="line">&#123;</span><br><span class="line">    public Item slotItem;</span><br><span class="line">    public Image slotImage;</span><br><span class="line">    public TMP_Text slotNum;</span><br><span class="line">    public GameObject itemInSlot;</span><br><span class="line">    public string slotInfo;</span><br><span class="line"></span><br><span class="line">    public void ItemOnClicked()</span><br><span class="line">    &#123;</span><br><span class="line">        //传递物品的描述</span><br><span class="line">        InventoryController.UpdateItemInfo(slotInfo);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void SetupSlot(Item item)</span><br><span class="line">    &#123;</span><br><span class="line">        //如果Item为空，则不显示item，解决白色图片的问题</span><br><span class="line">        if(item == null)</span><br><span class="line">        &#123;</span><br><span class="line">            itemInSlot.SetActive(false);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        slotImage.sprite = item.itemImage;</span><br><span class="line">        slotNum.text = item.itemNum.ToString();</span><br><span class="line">        slotInfo = item.itemDescription;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在Inspector中将Slot的Item属性赋值给itemInSlot,将Slot子节点ItemImage赋值给Slot Image属性。</p>
+<p><img src="/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F/%E9%87%8D%E6%9E%84Slot.png" alt="重构Slot"></p>
+<p>修改Inventory中的RefreshItem方法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">for (int i = 0; i &lt; Instance.myBag.itemList.Count; i++)</span><br><span class="line">&#123;</span><br><span class="line">    //生成18个空slot</span><br><span class="line">    Instance.slotList.Add(Instantiate(Instance.emptySlot));</span><br><span class="line">    //设置slot位置，为grid的子节点</span><br><span class="line">    Instance.slotList[i].transform.SetParent(Instance.slotGrid.transform);</span><br><span class="line">    //将背包中的物品挂载到UI上的slot上</span><br><span class="line">    Instance.slotList[i].GetComponent&lt;Slot&gt;().SetupSlot(Instance.myBag.itemList[i]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在Slot预制件中，将Item的Button组件的OnClick()添加Slot中的ItemOnClicked()实现点击物品出现物品描述。</p>
+<h2 id="重构Inventory类"><a href="#重构Inventory类" class="headerlink" title="重构Inventory类"></a>重构Inventory类</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">using System.Collections;</span><br><span class="line">using System.Collections.Generic;</span><br><span class="line">using UnityEngine;</span><br><span class="line"></span><br><span class="line">[CreateAssetMenu(fileName = &quot;New Inventory&quot;,menuName = &quot;Inventory/New Inventory&quot;)]</span><br><span class="line">public class Inventory : ScriptableObject</span><br><span class="line">&#123;</span><br><span class="line">    public List&lt;Item&gt; itemList = new List&lt;Item&gt;();</span><br><span class="line">    </span><br><span class="line">    //添加物品进背包</span><br><span class="line">    public void AddItemIntoInventory(Item item)</span><br><span class="line">    &#123;</span><br><span class="line">        //物品存在背包则物品的数量+1，否则增加物品进背包</span><br><span class="line">        if (itemList.Contains(item))</span><br><span class="line">        &#123;</span><br><span class="line">            item.itemNum++;</span><br><span class="line">        &#125;</span><br><span class="line">        else</span><br><span class="line">        &#123;   //遍历列表如果当前位置为空，就把捡到的物品放在这个位置的空格上</span><br><span class="line">            for (int i = 0; i &lt; itemList.Count; i++)</span><br><span class="line">            &#123;</span><br><span class="line">                if (itemList[i] == null)</span><br><span class="line">                &#123;</span><br><span class="line">                    itemList[i] = item;</span><br><span class="line">                    item.itemNum++;</span><br><span class="line">                    break;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        InventoryController.RefreshItem();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>修改修改Inventory中的RefreshItem方法，让其清空列表</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">for (int i = 0; i &lt; slotNum; i++)</span><br><span class="line">&#123;</span><br><span class="line">    if (slotNum == 0)</span><br><span class="line">    &#123;</span><br><span class="line">        break;</span><br><span class="line">    &#125;</span><br><span class="line">    Destroy(Instance.slotGrid.transform.GetChild(i).gameObject);</span><br><span class="line">    //需要清空列表</span><br><span class="line">    Instance.slotList.Clear();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="实现拖拽"><a href="#实现拖拽" class="headerlink" title="实现拖拽"></a>实现拖拽</h2><h3 id="拖拽物品"><a href="#拖拽物品" class="headerlink" title="拖拽物品"></a>拖拽物品</h3><p>由于移动的实际上是Slot中的Item，所以新建一个拖拽脚本，挂载到Slot的Item上，在Item上添加一个组件Canvas Group。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">using System.Collections;</span><br><span class="line">using System.Collections.Generic;</span><br><span class="line">using UnityEngine;</span><br><span class="line">using UnityEngine.EventSystems;</span><br><span class="line"></span><br><span class="line">public class ItemOnDrag : MonoBehaviour,IBeginDragHandler,IDragHandler,IEndDragHandler</span><br><span class="line">&#123;</span><br><span class="line">    //原始父节点与原始坐标</span><br><span class="line">    public Transform originalParent;</span><br><span class="line"></span><br><span class="line">    //开始拖拽</span><br><span class="line">    public void OnBeginDrag(PointerEventData eventData)</span><br><span class="line">    &#123;</span><br><span class="line">        originalParent = transform.parent;</span><br><span class="line"></span><br><span class="line">        //解决渲染层次的问题，将自身节点挂载到父节点的父节点</span><br><span class="line">        transform.SetParent(transform.parent.parent);</span><br><span class="line">        transform.position = eventData.position;</span><br><span class="line">        //射线穿透Item，获取下面对游戏对象</span><br><span class="line">        GetComponent&lt;CanvasGroup&gt;().blocksRaycasts = false;</span><br><span class="line">    &#125;</span><br><span class="line">    //拖拽过程中</span><br><span class="line">    public void OnDrag(PointerEventData eventData)</span><br><span class="line">    &#123;</span><br><span class="line">        transform.position = eventData.position;</span><br><span class="line">        Debug.Log(eventData.pointerCurrentRaycast.gameObject.name);</span><br><span class="line">    &#125;</span><br><span class="line">    //结束拖拽</span><br><span class="line">    public void OnEndDrag(PointerEventData eventData)</span><br><span class="line">    &#123;</span><br><span class="line">        //如果移动到的位置是ItemImage，则表明移动到了一个已经有物品的格子</span><br><span class="line">        if (eventData.pointerCurrentRaycast.gameObject.name == &quot;ItemImage&quot;)</span><br><span class="line">        &#123;</span><br><span class="line">            //将这个物品的父节点设置为目标物品的父节点Slot</span><br><span class="line">            transform.SetParent(eventData.pointerCurrentRaycast.gameObject.transform.parent.parent);</span><br><span class="line">            transform.position = eventData.pointerCurrentRaycast.gameObject.transform.parent.parent.position;</span><br><span class="line">            </span><br><span class="line">            //将目标物品移动到原始格子，完成拖拽交换</span><br><span class="line">            eventData.pointerCurrentRaycast.gameObject.transform.parent.position = originalParent.position;</span><br><span class="line">            eventData.pointerCurrentRaycast.gameObject.transform.parent.SetParent(originalParent);</span><br><span class="line">            //重置射线穿透</span><br><span class="line">            GetComponent&lt;CanvasGroup&gt;().blocksRaycasts = true;</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        //如果没有物品可以交换则将物体放入这个格子并重置射线穿透</span><br><span class="line">        transform.SetParent(eventData.pointerCurrentRaycast.gameObject.transform);</span><br><span class="line">        transform.position = eventData.pointerCurrentRaycast.gameObject.transform.position;</span><br><span class="line">        GetComponent&lt;CanvasGroup&gt;().blocksRaycasts = true;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="拖拽UI"><a href="#拖拽UI" class="headerlink" title="拖拽UI"></a>拖拽UI</h3><p>将其挂载到背包UI上</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">using System;</span><br><span class="line">using System.Collections;</span><br><span class="line">using System.Collections.Generic;</span><br><span class="line">using UnityEngine;</span><br><span class="line">using UnityEngine.EventSystems;</span><br><span class="line"></span><br><span class="line">public class MoveBag : MonoBehaviour, IDragHandler</span><br><span class="line">&#123;</span><br><span class="line">    private RectTransform _currentTransform;</span><br><span class="line"></span><br><span class="line">    private void Awake()</span><br><span class="line">    &#123;</span><br><span class="line">        _currentTransform = GetComponent&lt;RectTransform&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void OnDrag(PointerEventData eventData)</span><br><span class="line">    &#123;</span><br><span class="line">        //移动鼠标上一帧到这一帧改变的值，移动的是锚点的坐标</span><br><span class="line">        _currentTransform.anchoredPosition += eventData.delta;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="改变背包物品列表中的实际顺序"><a href="#改变背包物品列表中的实际顺序" class="headerlink" title="改变背包物品列表中的实际顺序"></a>改变背包物品列表中的实际顺序</h2><h3 id="重构Slot类-1"><a href="#重构Slot类-1" class="headerlink" title="重构Slot类"></a>重构Slot类</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">using System.Collections;</span><br><span class="line">using System.Collections.Generic;</span><br><span class="line">using TMPro;</span><br><span class="line">using UnityEngine;</span><br><span class="line">using UnityEngine.UI;</span><br><span class="line"></span><br><span class="line">public class Slot : MonoBehaviour</span><br><span class="line">&#123;</span><br><span class="line">    //空格的索引 等于 物品列表的索引 </span><br><span class="line">    public int slotId;</span><br><span class="line">    public Item slotItem;</span><br><span class="line">    public Image slotImage;</span><br><span class="line">    public TMP_Text slotNum;</span><br><span class="line">    public GameObject itemInSlot;</span><br><span class="line">    public string slotInfo;</span><br><span class="line"></span><br><span class="line">    public void ItemOnClicked()</span><br><span class="line">    &#123;</span><br><span class="line">        InventoryController.UpdateItemInfo(slotInfo);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void SetupSlot(Item item)</span><br><span class="line">    &#123;</span><br><span class="line">        //如果Item为空，则不显示item，解决白色图片的问题</span><br><span class="line">        if(item == null)</span><br><span class="line">        &#123;</span><br><span class="line">            itemInSlot.SetActive(false);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        slotImage.sprite = item.itemImage;</span><br><span class="line">        slotNum.text = item.itemNum.ToString();</span><br><span class="line">        slotInfo = item.itemDescription;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="重构InventoryController类-1"><a href="#重构InventoryController类-1" class="headerlink" title="重构InventoryController类"></a>重构InventoryController类</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">using System;</span><br><span class="line">using System.Collections;</span><br><span class="line">using System.Collections.Generic;</span><br><span class="line">using TMPro;</span><br><span class="line">using UnityEngine;</span><br><span class="line"></span><br><span class="line">public class InventoryController : MonoBehaviour</span><br><span class="line">&#123;</span><br><span class="line">    //使用单例模式</span><br><span class="line">    public static InventoryController Instance &#123; get; private set; &#125;</span><br><span class="line">    </span><br><span class="line">    public Inventory myBag;</span><br><span class="line">    public GameObject slotGrid;</span><br><span class="line">    public GameObject emptySlot;</span><br><span class="line">    public TMP_Text itemInformation;</span><br><span class="line">    public List&lt;GameObject&gt; slotList = new List&lt;GameObject&gt;();</span><br><span class="line"></span><br><span class="line">    private void Awake()</span><br><span class="line">    &#123;</span><br><span class="line">        if (Instance != null)</span><br><span class="line">        &#123;</span><br><span class="line">            Destroy(this);</span><br><span class="line">        &#125;</span><br><span class="line">        Instance = this;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void OnEnable()</span><br><span class="line">    &#123;</span><br><span class="line">        RefreshItem();</span><br><span class="line">        //默认物品描述为空</span><br><span class="line">        Instance.itemInformation.text = &quot;&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">    public static void RefreshItem()</span><br><span class="line">    &#123;</span><br><span class="line">        int slotNum = Instance.slotGrid.transform.childCount;</span><br><span class="line">        //捡到物品后刷新UI 销毁所有Slot，并重新生成</span><br><span class="line">        for (int i = 0; i &lt; slotNum; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            if (slotNum == 0)</span><br><span class="line">            &#123;</span><br><span class="line">                break;</span><br><span class="line">            &#125;</span><br><span class="line">            Destroy(Instance.slotGrid.transform.GetChild(i).gameObject);</span><br><span class="line">            //需要清空列表</span><br><span class="line">            Instance.slotList.Clear();</span><br><span class="line">        &#125;</span><br><span class="line">        //获取背包中的itemlist的Size,并在开始就绘制18个空slot</span><br><span class="line">        for (int i = 0; i &lt; Instance.myBag.itemList.Count; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            //生成18个空slot</span><br><span class="line">            Instance.slotList.Add(Instantiate(Instance.emptySlot));</span><br><span class="line">            //设置slot位置，为grid的子节点</span><br><span class="line">            Instance.slotList[i].transform.SetParent(Instance.slotGrid.transform);</span><br><span class="line">            ////空格的索引 等于 物品列表的索引 </span><br><span class="line">            Instance.slotList[i].GetComponent&lt;Slot&gt;().slotId = i;</span><br><span class="line">            //将背包中的物品挂载到UI上的slot上</span><br><span class="line">            Instance.slotList[i].GetComponent&lt;Slot&gt;().SetupSlot(Instance.myBag.itemList[i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void UpdateItemInfo(string itemDescription)   </span><br><span class="line">    &#123;</span><br><span class="line">        Instance.itemInformation.text = itemDescription;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="重构ItemOnDrag类"><a href="#重构ItemOnDrag类" class="headerlink" title="重构ItemOnDrag类"></a>重构ItemOnDrag类</h3><p>在inspector中对myBag属性赋值</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line">using System.Collections;</span><br><span class="line">using System.Collections.Generic;</span><br><span class="line">using UnityEngine;</span><br><span class="line">using UnityEngine.EventSystems;</span><br><span class="line"></span><br><span class="line">public class ItemOnDrag : MonoBehaviour,IBeginDragHandler,IDragHandler,IEndDragHandler</span><br><span class="line">&#123;</span><br><span class="line">    //原始父节点与原始坐标</span><br><span class="line">    public Transform originalParent;</span><br><span class="line">    //获取背包,和当前物品的id</span><br><span class="line">    public Inventory myBag;</span><br><span class="line">    public int currentItemID;</span><br><span class="line">    </span><br><span class="line">    //开始拖拽</span><br><span class="line">    public void OnBeginDrag(PointerEventData eventData)</span><br><span class="line">    &#123;</span><br><span class="line">        originalParent = transform.parent;</span><br><span class="line">        currentItemID = originalParent.GetComponent&lt;Slot&gt;().slotId;</span><br><span class="line">        //解决渲染层次的问题，将自身节点挂载到父节点的父节点</span><br><span class="line">        transform.SetParent(transform.parent.parent);</span><br><span class="line">        transform.position = eventData.position;</span><br><span class="line">        //射线穿透Item，获取下面对游戏对象</span><br><span class="line">        GetComponent&lt;CanvasGroup&gt;().blocksRaycasts = false;</span><br><span class="line">    &#125;</span><br><span class="line">    //拖拽过程中</span><br><span class="line">    public void OnDrag(PointerEventData eventData)</span><br><span class="line">    &#123;</span><br><span class="line">        transform.position = eventData.position;</span><br><span class="line">    &#125;</span><br><span class="line">    //结束拖拽</span><br><span class="line">    public void OnEndDrag(PointerEventData eventData)</span><br><span class="line">    &#123;</span><br><span class="line">        if (eventData.pointerCurrentRaycast.gameObject != null)</span><br><span class="line">        &#123;</span><br><span class="line">            //如果移动到的位置是ItemImage，则表明移动到了一个已经有物品的格子</span><br><span class="line">            if (eventData.pointerCurrentRaycast.gameObject.name == &quot;ItemImage&quot;)</span><br><span class="line">            &#123;</span><br><span class="line">                //将这个物品的父节点设置为目标物品的父节点Slot</span><br><span class="line">                transform.SetParent(eventData.pointerCurrentRaycast.gameObject.transform.parent.parent);</span><br><span class="line">                transform.position = eventData.pointerCurrentRaycast.gameObject.transform.parent.parent.position;</span><br><span class="line">                //交换索引</span><br><span class="line">                var temp = myBag.itemList[currentItemID];</span><br><span class="line">                myBag.itemList[currentItemID] =</span><br><span class="line">                    myBag.itemList[eventData.pointerCurrentRaycast.gameObject.GetComponentInParent&lt;Slot&gt;().slotId];</span><br><span class="line">                myBag.itemList[eventData.pointerCurrentRaycast.gameObject.GetComponentInParent&lt;Slot&gt;().slotId] = temp;</span><br><span class="line"></span><br><span class="line">                //将目标物品移动到原始格子，完成拖拽交换</span><br><span class="line">                eventData.pointerCurrentRaycast.gameObject.transform.parent.position = originalParent.position;</span><br><span class="line">                eventData.pointerCurrentRaycast.gameObject.transform.parent.SetParent(originalParent);</span><br><span class="line">                //重置射线穿透</span><br><span class="line">                GetComponent&lt;CanvasGroup&gt;().blocksRaycasts = true;</span><br><span class="line">                return;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            if (eventData.pointerCurrentRaycast.gameObject.name == &quot;Slot(Clone)&quot;)</span><br><span class="line">            &#123;</span><br><span class="line">                //如果没有物品可以交换则将物体放入这个格子并重置射线穿透</span><br><span class="line">                transform.SetParent(eventData.pointerCurrentRaycast.gameObject.transform);</span><br><span class="line">                transform.position = eventData.pointerCurrentRaycast.gameObject.transform.position;</span><br><span class="line"></span><br><span class="line">                //与空格子交换索引</span><br><span class="line">                myBag.itemList[eventData.pointerCurrentRaycast.gameObject.GetComponentInParent&lt;Slot&gt;().slotId] =</span><br><span class="line">                    myBag.itemList[currentItemID];</span><br><span class="line">                //解决自己放在自己位置导致自己消失</span><br><span class="line">                if (eventData.pointerCurrentRaycast.gameObject.GetComponent&lt;Slot&gt;().slotId != currentItemID)</span><br><span class="line">                &#123;</span><br><span class="line">                    myBag.itemList[currentItemID] = null;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                GetComponent&lt;CanvasGroup&gt;().blocksRaycasts = true;</span><br><span class="line">                return;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        //如果不是以上两种情况，则回到自己原本的位置</span><br><span class="line">        transform.SetParent(originalParent); </span><br><span class="line">        transform.position = originalParent.position; </span><br><span class="line">        GetComponent&lt;CanvasGroup&gt;().blocksRaycasts = true;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>至此，可以拖拽的背包系统就完成了。</p>
+
+        </div>
+        
+            <div class="kratos-copyright text-center clearfix">
+                <h5>本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</h5>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+                <div class="post-like-donate text-center clearfix" id="post-like-donate">
+                
+                
+                    <a class="share" href="javascript:;"><i class="fa fa-share-alt"></i> 分享</a>
+                    <div class="share-wrap" style="display: none;">
+    <div class="share-group">
+        <a href="javascript:;" class="share-plain qq" onclick="share('qq');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-qq"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain qzone" onclick="share('qzone');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-star"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weixin pop style-plain" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weixin"></i>
+            </div>
+            <div class="share-int">
+                <div class="qrcode" id="wechat-qr"></div>
+                <p>打开微信“扫一扫”，打开网页后点击屏幕右上角分享按钮</p>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weibo" onclick="share('weibo');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weibo"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain facebook style-plain" onclick="share('facebook');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-facebook"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain twitter style-plain" onclick="share('twitter');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-twitter"></i>
+            </div>
+        </a>
+    </div>
+    <script type="text/javascript">
+        $(()=>{
+            new QRCode("wechat-qr", {
+                text: "https://moewolf.me/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F/",
+                width: 150,
+                height: 150,
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        });
+        function share(dest) {
+            const qqBase        = "https://connect.qq.com/widget/shareqq/index.html?";
+            const weiboBase     = "https://service.weibo.com/share/share.php?";
+            const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
+            const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
+            const twitterBase   = "https://twitter.com/intent/tweet?";
+            const hostUrl       = "https://moewolf.me/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F/";
+            const title         = "「背包系统」";
+            const excerpt       = `基于MVC思想，使用数据仓库ScriptableObject存储游戏对象数据`;
+            let _URL;
+            switch (dest) {
+                case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
+                case "weibo"    : _URL = weiboBase+"url="+hostUrl+"&title="+title+excerpt;                                 break;
+                case "qzone"    : _URL = qzoneBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";  break;
+                case "facebook" : _URL = facebookBase+"u="+hostUrl;                                                        break;
+                case "twitter"  : _URL = twitterBase+"text="+title+excerpt+"&url="+hostUrl;                                break;
+            }
+            window.open(_URL);
+        };
+    </script>
+</div>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/Unity/" rel="tag">Unity</a>
+                </div>
+                <div class="pull-date">
+                <span>最后编辑：2022-09-12</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" 游戏存档系统" href="/功能实现/游戏存档系统/">&lt; 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" 利用反射制作PlayerPrefs数据管理类" href="/功能实现/利用反射制作playerprefs数据管理类/">下一篇 &gt;</a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+        
+
+                
+            
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/holo_avatar.png" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">生如夏花之绚烂，死如秋叶之静美</p>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix">
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar"></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%83%8C%E5%8C%85UI"><span class="toc-text">背包UI</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%B6%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-text">制作流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E5%86%99%E8%83%8C%E5%8C%85UI%E5%BC%80%E5%85%B3%E8%84%9A%E6%9C%AC"><span class="toc-text">编写背包UI开关脚本</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F"><span class="toc-text">背包系统</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%A9%E5%93%81"><span class="toc-text">物品</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E5%8C%85"><span class="toc-text">背包</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Scene%E4%B8%AD%E7%9A%84%E7%89%A9%E5%93%81%EF%BC%88%E6%8C%82%E8%BD%BD%E8%84%9A%E6%9C%AC%EF%BC%89"><span class="toc-text">Scene中的物品（挂载脚本）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%86%E7%89%A9%E5%93%81%E6%98%BE%E7%A4%BA%E5%9C%A8UI"><span class="toc-text">将物品显示在UI</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%A9%E5%93%81SlotUI%E6%8E%A7%E5%88%B6"><span class="toc-text">物品SlotUI控制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%8C%E5%8C%85%E6%95%B4%E4%BD%93UI%E6%8E%A7%E5%88%B6"><span class="toc-text">背包整体UI控制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9B%B4%E6%96%B0%E6%98%BE%E7%A4%BA"><span class="toc-text">更新显示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%98%BE%E7%A4%BA%E7%89%A9%E5%93%81%E6%8F%8F%E8%BF%B0"><span class="toc-text">显示物品描述</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%89%A9%E5%93%81%E6%8B%96%E6%8B%BD%E7%9A%84%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F"><span class="toc-text">物品拖拽的背包系统</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E6%9E%84UI"><span class="toc-text">重构UI</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E6%9E%84InventoryController%E7%B1%BB"><span class="toc-text">重构InventoryController类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E6%9E%84Slot%E7%B1%BB"><span class="toc-text">重构Slot类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E6%9E%84Inventory%E7%B1%BB"><span class="toc-text">重构Inventory类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E6%8B%96%E6%8B%BD"><span class="toc-text">实现拖拽</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%96%E6%8B%BD%E7%89%A9%E5%93%81"><span class="toc-text">拖拽物品</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%96%E6%8B%BDUI"><span class="toc-text">拖拽UI</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%94%B9%E5%8F%98%E8%83%8C%E5%8C%85%E7%89%A9%E5%93%81%E5%88%97%E8%A1%A8%E4%B8%AD%E7%9A%84%E5%AE%9E%E9%99%85%E9%A1%BA%E5%BA%8F"><span class="toc-text">改变背包物品列表中的实际顺序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E6%9E%84Slot%E7%B1%BB-1"><span class="toc-text">重构Slot类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E6%9E%84InventoryController%E7%B1%BB-1"><span class="toc-text">重构InventoryController类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E6%9E%84ItemOnDrag%E7%B1%BB"><span class="toc-text">重构ItemOnDrag类</span></a></li></ol></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类目录</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C#</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/">功能实现</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E5%B8%B8/">日常</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/">茉子的幻想乡奇遇</a><span class="category-list-count">3</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/C-%E9%AB%98%E9%98%B6/" style="font-size: 0.8em;">C#高阶</a> <a href="/tags/Unity/" style="font-size: 0.8em;">Unity</a> <a href="/tags/%E5%BC%80%E5%8F%91%E6%97%A5%E5%BF%97/" style="font-size: 0.8em;">开发日志</a> <a href="/tags/%E6%97%A5%E5%B8%B8/" style="font-size: 0.6em;">日常</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9Aexcel%E8%A1%A8%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E5%92%8C%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（三）：Excel表配置数据和背包系统</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E5%AF%B9%E8%AF%9D%E5%8A%9F%E8%83%BD%E7%9A%84%E5%AE%9E%E7%8E%B0/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（二）：对话功能的实现</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9Apuremvc%E4%B8%8E%E4%B8%BB%E7%95%8C%E9%9D%A2/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（一）：PureMVC与主界面</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E5%88%A9%E7%94%A8%E5%8F%8D%E5%B0%84%E5%88%B6%E4%BD%9Cplayerprefs%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86%E7%B1%BB/"><i class="fa  fa-book"></i> 利用反射制作PlayerPrefs数据管理类</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F/"><i class="fa  fa-book"></i> 背包系统</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+        
+        </div>
+    </div>
+</div>
+<footer>
+    <div id="footer"  >
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://t.me/LittleWolfHouse"><i class="fa fa-telegram"></i></a></li>
+                        
+                        
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://github.com/Dai-MoeWolf"><i class="fa fa-github"></i></a></li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2022 MoeWolf的博客 版权所有.</li>
+                            <li>本站已运行<span id="span_dt">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>Theme <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a></li>
+                            <li>Site built with&nbsp;<i class="fa fa-heart throb" style="color:#d43f57"></i>&nbsp;by MoeWolf.</li>
+                        </div>
+                        <div>
+                            <li>Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a></li>
+                            
+                        </div>
+                        <div>
+                            
+                            
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search/">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="box theme-box" id="darkmode-switch">
+                        <span class="fa fa-adjust"></span>
+                    </div>
+                
+                
+            </div>
+            <div class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.4/dist/js/bootstrap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js"></script>
+<script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+    <script async src="/js/candy.min.js"></script>
+
+
+
+
+    <script defer src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script>
+<script defer src="/js/kratosr.min.js"></script>
+<script defer src="/js/pjax.min.js"></script>
+
+
+    <script defer src="/js/kr-dark.min.js"></script>
+
+
+
+<!-- Extra support for third-party plguins  -->
+
+
+    </body>
+</html>

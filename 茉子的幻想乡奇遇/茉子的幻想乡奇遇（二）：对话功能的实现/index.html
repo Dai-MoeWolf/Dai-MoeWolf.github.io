@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  <link rel="icon" href="/images/webicon.jpg">
+  <title>茉子的幻想乡奇遇（二）：对话功能的实现 | MoeWolf的博客</title>
+  <meta name="author" content="MoeWolf" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="开发日志" />
+  
+  <meta name="description" content="使用.txt文本文档按规则存储对话文本，使用单例模式对话管理类读取文件并显示到UI">
+<meta property="og:type" content="article">
+<meta property="og:title" content="茉子的幻想乡奇遇（二）：对话功能的实现">
+<meta property="og:url" content="https://moewolf.me/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E5%AF%B9%E8%AF%9D%E5%8A%9F%E8%83%BD%E7%9A%84%E5%AE%9E%E7%8E%B0/index.html">
+<meta property="og:site_name" content="MoeWolf的博客">
+<meta property="og:description" content="使用.txt文本文档按规则存储对话文本，使用单例模式对话管理类读取文件并显示到UI">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://moewolf.me/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E5%AF%B9%E8%AF%9D%E5%8A%9F%E8%83%BD%E7%9A%84%E5%AE%9E%E7%8E%B0/%E5%AF%B9%E8%AF%9D3.png">
+<meta property="article:published_time" content="2022-09-13T13:13:59.000Z">
+<meta property="article:modified_time" content="2022-09-13T14:52:43.358Z">
+<meta property="article:author" content="MoeWolf">
+<meta property="article:tag" content="开发日志">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://moewolf.me/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E5%AF%B9%E8%AF%9D%E5%8A%9F%E8%83%BD%E7%9A%84%E5%AE%9E%E7%8E%B0/%E5%AF%B9%E8%AF%9D3.png">
+<meta name="twitter:site" content="@null">
+  
+  <!-- 站点验证相关 -->
+  
+    
+    
+    
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kratosr.min.css" type="text/css" media="all">
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/night-eighties.min.css" type="text/css" media="all">
+  
+  
+  <link rel="stylesheet" id="fontawe-css" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" type="text/css" media="all">
+  <link rel="stylesheet" id="nprogress-css" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css" type="text/css" media="all">
+  
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+  
+  
+    <link rel="stylesheet" id="darkmode-css" href="/css/kr-dark.min.css" type="text/css" media="all">
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  
+    <script src="https://cdn.jsdelivr.net/npm/qrcode_js@1.0.0/qrcode.min.js"></script>
+  
+  
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/holo_banner.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/holo_bg.png');
+        }
+      }
+    
+  </style>
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    
+                                        <li><a href="/"><i class="fa fa-home"></i>首页</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/archives/"><i class="fa fa-file"></i>档案馆</a></li>
+                                    
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">MoeWolf的博客</a></div>
+                    <div class="nav-toggle">
+                        <a class="kratos-nav-toggle js-kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>MoeWolf的博客</h2> <br />
+                        <span>𝓦𝓱𝓪𝓽’𝓼 𝓹𝓪𝓼𝓽 𝓲𝓼 𝓹𝓻𝓸𝓵𝓸𝓰𝓾𝓮.</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+                    
+
+        
+
+            <section class="col-md-8">
+
+        
+
+            <article>
+    <div class="kratos-hentry kratos-post-inner clearfix">
+        <header class="kratos-entry-header">
+            
+                <h1 class="kratos-entry-title text-center">茉子的幻想乡奇遇（二）：对话功能的实现</h1>
+            
+            
+            <ul class="kratos-post-meta text-center">
+                <li><i class="fa fa-calendar"></i> 2022-09-13</li>
+                <li><i class="fa fa-user"></i> 作者 MoeWolf</li>
+                <li>
+                    <i class="fa fa-edit"></i> 
+                    
+                    
+                        ~10.44K
+                    
+                    字
+                </li>
+                
+            </ul>
+        </header>
+        <div class="kratos-post-content">
+            <div id="expire-alert" class="alert alert-warning hidden" role="alert">
+                本文最后编辑于 <time datetime="1663080763358"></time> 前，其中的内容可能需要更新。
+            </div>
+            
+                <div class="kratos-post-inner-toc">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%B6%E4%BD%9C%E6%80%9D%E8%B7%AF"><span class="toc-number">1.</span> <span class="toc-text">制作思路</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AF%B9%E8%AF%9D%E9%9D%A2%E6%9D%BF"><span class="toc-number">2.</span> <span class="toc-text">对话面板</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8FUI%E9%9D%A2%E6%9D%BF%E5%9F%BA%E7%B1%BB"><span class="toc-number">2.1.</span> <span class="toc-text">单例模式UI面板基类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E8%AF%9D%E9%9D%A2%E6%9D%BF-1"><span class="toc-number">2.2.</span> <span class="toc-text">对话面板</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AF%B9%E8%AF%9D%E6%95%B0%E6%8D%AE%E5%92%8C%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86%E7%B1%BB"><span class="toc-number">3.</span> <span class="toc-text">对话数据和数据管理类</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E8%AF%9D%E6%95%B0%E6%8D%AE%E6%96%87%E6%9C%AC"><span class="toc-number">3.1.</span> <span class="toc-text">对话数据文本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E8%AF%9D%E6%95%B0%E6%8D%AE%E7%B1%BB"><span class="toc-number">3.2.</span> <span class="toc-text">对话数据类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E8%AF%9D%E7%AE%A1%E7%90%86%E7%B1%BB"><span class="toc-number">3.3.</span> <span class="toc-text">对话管理类</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%88%E6%9E%9C"><span class="toc-number">4.</span> <span class="toc-text">效果</span></a></li></ol>
+                </div>
+            
+            <hr />
+            <p>使用.txt文本文档按规则存储对话文本，使用单例模式对话管理类读取文件并显示到UI</p>
+<span id="more"></span>
+
+<h1 id="制作思路"><a href="#制作思路" class="headerlink" title="制作思路"></a>制作思路</h1><p>实现对话功能的方式有很多，起初的想法就是比如用xml或者是json在里面写对话文本，然后将其读取转成一个数据类，通过这个数据类来访问对话文本，但是用手写xml和json要注意格式，而我想比如文案能更好的把注意力放在写对话剧情上，当然也可以写一些小工具，将写好的对话文案转成xml或者json文件，这里就不那么麻烦，直接写在一个文本文档里面，使用文件流读取就好</p>
+<h1 id="对话面板"><a href="#对话面板" class="headerlink" title="对话面板"></a>对话面板</h1><h2 id="单例模式UI面板基类"><a href="#单例模式UI面板基类" class="headerlink" title="单例模式UI面板基类"></a>单例模式UI面板基类</h2><p>使用PureMVC能很好的降低模块的耦合性，但是使用起来真的很繁琐，这里就让面板继承写好的UI面板基类，让对应的管理类来管理单例面板的数据，仍然将Model层、View层、Controller层分离，而且使用起来更加的轻松方便</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line">using System.Collections;</span><br><span class="line">using System.Collections.Generic;</span><br><span class="line">using TMPro;</span><br><span class="line">using UnityEngine;</span><br><span class="line">using UnityEngine.EventSystems;</span><br><span class="line">using UnityEngine.UI;</span><br><span class="line"></span><br><span class="line">public class BasePanelSingleton&lt;T&gt; : MonoBehaviour where T : BasePanelSingleton&lt;T&gt;</span><br><span class="line">&#123;</span><br><span class="line">    private Dictionary&lt;string, List&lt;UIBehaviour&gt;&gt; controlDic = new Dictionary&lt;string, List&lt;UIBehaviour&gt;&gt;();</span><br><span class="line">    private static T instance;</span><br><span class="line">    public static T Instance =&gt; instance;</span><br><span class="line">    </span><br><span class="line">    protected virtual void Awake()</span><br><span class="line">    &#123;</span><br><span class="line">        instance = this as T;</span><br><span class="line">        FindChildControl&lt;Button&gt;();</span><br><span class="line">        FindChildControl&lt;Image&gt;();</span><br><span class="line">        FindChildControl&lt;TextMeshProUGUI&gt;();</span><br><span class="line">        FindChildControl&lt;Toggle&gt;();</span><br><span class="line">        FindChildControl&lt;ScrollRect&gt;();</span><br><span class="line">        FindChildControl&lt;Slider&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    public virtual void ShowMe()</span><br><span class="line">    &#123;</span><br><span class="line">        this.gameObject.SetActive(true);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public virtual void HideMe()</span><br><span class="line">    &#123;</span><br><span class="line">        this.gameObject.SetActive(false);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// UI面板初始化时就获取所有子控件存入字典</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    /// &lt;typeparam name=&quot;K&quot;&gt;控件类型&lt;/typeparam&gt;</span><br><span class="line">    private void FindChildControl&lt;K&gt;() where K : UIBehaviour</span><br><span class="line">    &#123;</span><br><span class="line">        K[] controls = GetComponentsInChildren&lt;K&gt;();</span><br><span class="line">        string controlName;</span><br><span class="line">        foreach (var control in controls)</span><br><span class="line">        &#123;</span><br><span class="line">            controlName = control.name;</span><br><span class="line">            if (controlDic.ContainsKey(controlName))</span><br><span class="line">                controlDic[controlName].Add(control);</span><br><span class="line">            else</span><br><span class="line">                controlDic.Add(controlName,new List&lt;UIBehaviour&gt;() &#123;control&#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 获取字典中的控件</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    /// &lt;param name=&quot;controlName&quot;&gt;控件名&lt;/param&gt;</span><br><span class="line">    /// &lt;typeparam name=&quot;K&quot;&gt;控件类型&lt;/typeparam&gt;</span><br><span class="line">    /// &lt;returns&gt;&lt;/returns&gt;</span><br><span class="line">    protected K GetChildControl&lt;K&gt;(string controlName) where K : UIBehaviour</span><br><span class="line">    &#123;</span><br><span class="line">        if (controlDic.ContainsKey(controlName))</span><br><span class="line">        &#123;</span><br><span class="line">            foreach (var control in controlDic[controlName])</span><br><span class="line">            &#123;</span><br><span class="line">                if (control is K)</span><br><span class="line">                    return control as K;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="对话面板-1"><a href="#对话面板-1" class="headerlink" title="对话面板"></a>对话面板</h2><p>拼UI面板注意下分辨率自适应就好了，面板上的角色立绘和文字，之后都会使用对话管理器根据文本文档动态的改变，立绘的透明度在后面会进行动态的修改</p>
+<p><img src="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E5%AF%B9%E8%AF%9D%E5%8A%9F%E8%83%BD%E7%9A%84%E5%AE%9E%E7%8E%B0/%E5%AF%B9%E8%AF%9D%E9%9D%A2%E6%9D%BF.png" alt="对话面板"></p>
+<p>然后就是初始化过后隐藏自己就好，在管理器中通过单例来访问这个面板，并且可以设置控件上的数据</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">using System;</span><br><span class="line">using TMPro;</span><br><span class="line">using UnityEngine.UI;</span><br><span class="line"></span><br><span class="line">public class DialogPanel : BasePanelSingleton&lt;DialogPanel&gt;</span><br><span class="line">&#123;</span><br><span class="line">    public Image imgNPC;</span><br><span class="line">    public Image imgPlayer;</span><br><span class="line">    public TextMeshProUGUI txtName;</span><br><span class="line">    public TextMeshProUGUI txtDialog;</span><br><span class="line"></span><br><span class="line">    protected override void Awake()</span><br><span class="line">    &#123;</span><br><span class="line">        base.Awake();</span><br><span class="line">        imgPlayer = GetChildControl&lt;Image&gt;(&quot;imgPlayer&quot;);</span><br><span class="line">        imgNPC = GetChildControl&lt;Image&gt;(&quot;imgNPC&quot;);</span><br><span class="line">        txtName = GetChildControl&lt;TextMeshProUGUI&gt;(&quot;txtName&quot;);</span><br><span class="line">        txtDialog = GetChildControl&lt;TextMeshProUGUI&gt;(&quot;txtDialog&quot;);</span><br><span class="line">        HideMe();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="对话数据和数据管理类"><a href="#对话数据和数据管理类" class="headerlink" title="对话数据和数据管理类"></a>对话数据和数据管理类</h1><h2 id="对话数据文本"><a href="#对话数据文本" class="headerlink" title="对话数据文本"></a>对话数据文本</h2><p>自己定义一个简单的规则，按照规则书写就好，之后读取文本就按照这个规则来读取，我想的就是第一行就是初始化面板的时候NPC的名字，我们可以根据这个名字来加载面板NPC位置的图片，第二行开始就是对话了，每一个对话使用<code>&gt;</code>开头，用于区分不同的对话，每一句对话使用<code>:</code>区分说话的角色名字和对话内容，当然规则完全可以按照自己的喜好来</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">博丽灵梦</span><br><span class="line">&gt;茉子:啊，灵梦小姐，你好呀</span><br><span class="line">&gt;博丽灵梦:你好，今天天气真好，很适合摸鱼地说</span><br><span class="line">&gt;茉子:今天开始准备在这里生活了呢，不过话说回来，还是好想念以前的家呀</span><br><span class="line">&gt;博丽灵梦:我也希望你能早点回到自己的世界呢</span><br><span class="line">&gt;茉子:当然也不能颓废，要好好的经营自己的田地才行</span><br><span class="line">&gt;雾雨魔理沙:你们好呀</span><br><span class="line">&gt;茉子:魔理沙小姐！你好</span><br><span class="line">&gt;博丽灵梦:你怎么来了</span><br><span class="line">&gt;雾雨魔理沙:别这么见外呀</span><br><span class="line">&gt;雾雨魔理沙:我只是路过而已，我刚才去了一趟红魔馆，好不容易才从看门的手里逃出来，茉子酱，刚刚从那拿的好东西就给你了</span><br><span class="line">&gt;茉子:这样真的好吗，这是犯罪吧！</span><br></pre></td></tr></table></figure>
+
+<h2 id="对话数据类"><a href="#对话数据类" class="headerlink" title="对话数据类"></a>对话数据类</h2><p>有了数据当然就需要对应的一个数据类来存储里面的信息，使用一个字符串数组来存储里面所有用<code>&gt;</code>分开的字符</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public class DialogData</span><br><span class="line">&#123;</span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 存储对话的文件名</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    public string fileName;</span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 第一次分割后的字符串数组，每一个子元素就是 名字：对话内容</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    public string[] dialogs;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="对话管理类"><a href="#对话管理类" class="headerlink" title="对话管理类"></a>对话管理类</h2><p>将数据读到数据类，并且将内容显示到UI，就是对话管理类干的事情了，一个管理类自然就是一个单例模式，而对话文本肯定不止有一个，所以需要一个字典将数据类存起来，当要使用某一个对话数据时，使用字典就方便访问了，这个类在构造的时候就需要读取我们写好的所有对话文本，并把它们存入字典，写对话数据文本时，我们规定好了格式，根据规定的格式来分割文本就好</p>
+<p><strong>这里使用StreamingAssets文件夹存放文本，要注意字典需要判断一下是否存在文本了，因为编辑器模式下，他会在编辑器的StreamingAssets和运行状态的的StreamingAssets都取找读取，所以会读到两个一模一样文本</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">using System.Collections;</span><br><span class="line">using System.Collections.Generic;</span><br><span class="line">using System.IO;</span><br><span class="line">using System.Text;</span><br><span class="line">using UnityEngine;</span><br><span class="line"></span><br><span class="line">public class DialogMgr</span><br><span class="line">&#123;</span><br><span class="line">    private static DialogMgr instance = new DialogMgr();</span><br><span class="line">    public static DialogMgr Instance =&gt; instance;</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 对话文件容器 &lt;文件名,对话数据&gt;</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    public Dictionary&lt;string, DialogData&gt; dialogDic = new Dictionary&lt;string, DialogData&gt;();</span><br><span class="line">    </span><br><span class="line">    private DialogMgr()</span><br><span class="line">    &#123;</span><br><span class="line">        ReadDialogFile();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 读取所有的对话文件</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    private void ReadDialogFile()</span><br><span class="line">    &#123;</span><br><span class="line">        //加载指定路径所有的对话文件，并存入DialogData</span><br><span class="line">        DirectoryInfo directoryInfo = Directory.CreateDirectory(Application.streamingAssetsPath + &quot;/Dialog&quot;);</span><br><span class="line">        FileInfo[] fileInfos = directoryInfo.GetFiles();</span><br><span class="line">        foreach (var fileInfo in fileInfos)</span><br><span class="line">        &#123;</span><br><span class="line">            string fileName = fileInfo.Name.Replace(&quot;.txt&quot;,&quot;&quot;);</span><br><span class="line">            //只处理.txt文件,字典存在文件也不处理</span><br><span class="line">            if (fileInfo.Extension != &quot;.txt&quot; || dialogDic.ContainsKey(fileName))</span><br><span class="line">                continue;</span><br><span class="line">            //将数据存入dialogData（文件名）  </span><br><span class="line">            DialogData dialogData = new DialogData();</span><br><span class="line">            //去掉文件后缀</span><br><span class="line">            dialogData.fileName = fileName;</span><br><span class="line">            using (FileStream fs = fileInfo.Open(FileMode.Open,FileAccess.Read))</span><br><span class="line">            &#123;</span><br><span class="line">                byte[] bytes = new byte[fs.Length];</span><br><span class="line">                fs.Read(bytes, 0, bytes.Length);</span><br><span class="line">                string txt = Encoding.UTF8.GetString(bytes);</span><br><span class="line">                fs.Flush();</span><br><span class="line">                //将txt分割成一句句的对话</span><br><span class="line">                string[] dialogs = txt.Split(&quot;&gt;&quot;);</span><br><span class="line">                //将数据存入dialogData（对话 数组）</span><br><span class="line">                dialogData.dialogs = dialogs;</span><br><span class="line">                //将数据结构类存入对话容器类DialogContainer</span><br><span class="line">                dialogDic.Add(dialogData.fileName,dialogData);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>读到了数据，那自然就是要把数据显示到UI，每一句对话都是由<code>:</code>分割的，前面的是角色名，后面的是对话内容，这样就看分别显示到UI的对应位置，然后根据角色名来判断角色的立绘，并加载到UI上，外部需要显示对话面板时，就调用这里的ShowDialogPanel函数，这里直接封装了对话面板上数据初始化，根据对话文件名来加载数据</p>
+<p>ShowDialog函数中的索引要注意是从1开始，索引为0的字符串保存了这次对话最开始的角色名，用于显示面板第一次加载NPC立绘用的</p>
+<p>修改立绘的透明度可以增强视觉表现，当一个角色说话时，就将另外一个角色立绘的透明度调低，这样玩家就不需要通过角色名来分辨这句话是谁说的。当然这个设置立绘透明度的代码有点重复，可以提取成一个函数，使用函数来切换透明度，这里就不这么做了</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 显示对话</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    /// &lt;param name=&quot;fileName&quot;&gt;对话文件名&lt;/param&gt;</span><br><span class="line">    /// &lt;param name=&quot;index&quot;&gt;对话索引(第几条对话，从1开始)&lt;/param&gt;</span><br><span class="line">    public void ShowDialog(string fileName, int index)</span><br><span class="line">    &#123;</span><br><span class="line">        //字典有该文件就开始</span><br><span class="line">        if (dialogDic.ContainsKey(fileName))</span><br><span class="line">        &#123;</span><br><span class="line">            //得到文件内的对话数据</span><br><span class="line">            string[] strDias = dialogDic[fileName].dialogs;</span><br><span class="line">            //对话索引从1开始，超过索引就隐藏对话面板，结束对话</span><br><span class="line">            if (index &lt; 1 || index &gt;= strDias.Length)</span><br><span class="line">            &#123;</span><br><span class="line">                DialogPanel.Instance.HideMe();</span><br><span class="line">                return;</span><br><span class="line">            &#125;</span><br><span class="line">            string[] strDia = strDias[index].Split(&quot;:&quot;);</span><br><span class="line">            //显示角色名</span><br><span class="line">            DialogPanel.Instance.txtName.text = strDia[0];</span><br><span class="line">            //显示对应的立绘，和对话视觉效果</span><br><span class="line">            switch (strDia[0])</span><br><span class="line">            &#123;</span><br><span class="line">                case &quot;茉子&quot;:</span><br><span class="line">                    //修改立绘的透明度</span><br><span class="line">                    DialogPanel.Instance.imgPlayer.color = new Color&#123;a = 1 , r= 1 , g = 1 , b= 1&#125;;</span><br><span class="line">                    DialogPanel.Instance.imgNPC.color = new Color&#123;a = 0.55f , r= 1 , g = 1 , b= 1&#125;;</span><br><span class="line">                    break;</span><br><span class="line">                case &quot;博丽灵梦&quot;:</span><br><span class="line">                    DialogPanel.Instance.imgNPC.sprite = Resources.Load&lt;Sprite&gt;(&quot;illust/Reimu&quot;);</span><br><span class="line">                    DialogPanel.Instance.imgPlayer.color = new Color&#123;a = 0.55f , r= 1 , g = 1 , b= 1&#125;;</span><br><span class="line">                    DialogPanel.Instance.imgNPC.color = new Color&#123;a = 1 , r= 1 , g = 1 , b= 1&#125;;</span><br><span class="line">                    break;</span><br><span class="line">                case &quot;雾雨魔理沙&quot;:</span><br><span class="line">                    DialogPanel.Instance.imgNPC.sprite = Resources.Load&lt;Sprite&gt;(&quot;illust/Marisa&quot;);</span><br><span class="line">                    DialogPanel.Instance.imgPlayer.color = new Color&#123;a = 0.55f , r= 1 , g = 1 , b= 1&#125;;</span><br><span class="line">                    DialogPanel.Instance.imgNPC.color = new Color&#123;a = 1 , r= 1 , g = 1 , b= 1&#125;;</span><br><span class="line">                    break;</span><br><span class="line">            &#125;</span><br><span class="line">            //显是对话</span><br><span class="line">            DialogPanel.Instance.txtDialog.text = strDia[1];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 获取对话的NPC初始立绘，用于初始化面板</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    /// &lt;param name=&quot;fileName&quot;&gt;&lt;/param&gt;</span><br><span class="line">    /// &lt;returns&gt;&lt;/returns&gt;</span><br><span class="line">    private string InitIllustName(string fileName)</span><br><span class="line">    &#123;</span><br><span class="line">        if (dialogDic.ContainsKey(fileName))</span><br><span class="line">            return dialogDic[fileName].dialogs[0];</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 显示对话面板</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    /// &lt;param name=&quot;fileName&quot;&gt;&lt;/param&gt;</span><br><span class="line">    public void ShowDialogPanel(string fileName)</span><br><span class="line">    &#123;</span><br><span class="line">        if(DialogPanel.Instance.gameObject.activeSelf)</span><br><span class="line">            return;</span><br><span class="line">        if(!DialogPanel.Instance.gameObject.activeSelf)</span><br><span class="line">            DialogPanel.Instance.ShowMe();</span><br><span class="line">        string roleName = InitIllustName(fileName);</span><br><span class="line">        //这里的字符串分割出来有一个换行符号，所以用if判断</span><br><span class="line">        if (roleName.Contains(&quot;博丽灵梦&quot;))</span><br><span class="line">        &#123;</span><br><span class="line">            DialogPanel.Instance.imgNPC.sprite = Resources.Load&lt;Sprite&gt;(&quot;illust/Reimu&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        else if (roleName.Contains(&quot;雾雨魔理沙&quot;))</span><br><span class="line">        &#123;</span><br><span class="line">            DialogPanel.Instance.imgNPC.sprite = Resources.Load&lt;Sprite&gt;(&quot;illust/Marisa&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        //显示第一句话</span><br><span class="line">        ShowDialog(fileName,1);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h1><p>在外部调用ShowDialogPanel函数和ShowDialog函数就可以逐条的显示对话了</p>
+<p><img src="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E5%AF%B9%E8%AF%9D%E5%8A%9F%E8%83%BD%E7%9A%84%E5%AE%9E%E7%8E%B0/%E5%AF%B9%E8%AF%9D1.png" alt="对话1"></p>
+<p>角色的透明度改变</p>
+<p><img src="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E5%AF%B9%E8%AF%9D%E5%8A%9F%E8%83%BD%E7%9A%84%E5%AE%9E%E7%8E%B0/%E5%AF%B9%E8%AF%9D2.png" alt="对话2"></p>
+<p>角色立绘改变</p>
+<p><img src="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E5%AF%B9%E8%AF%9D%E5%8A%9F%E8%83%BD%E7%9A%84%E5%AE%9E%E7%8E%B0/%E5%AF%B9%E8%AF%9D3.png" alt="对话3"></p>
+<p>这样一个对话功能就做好了(人<em>´∀｀)｡</em>ﾟ+</p>
+
+        </div>
+        
+            <div class="kratos-copyright text-center clearfix">
+                <h5>本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</h5>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+                <div class="post-like-donate text-center clearfix" id="post-like-donate">
+                
+                
+                    <a class="share" href="javascript:;"><i class="fa fa-share-alt"></i> 分享</a>
+                    <div class="share-wrap" style="display: none;">
+    <div class="share-group">
+        <a href="javascript:;" class="share-plain qq" onclick="share('qq');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-qq"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain qzone" onclick="share('qzone');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-star"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weixin pop style-plain" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weixin"></i>
+            </div>
+            <div class="share-int">
+                <div class="qrcode" id="wechat-qr"></div>
+                <p>打开微信“扫一扫”，打开网页后点击屏幕右上角分享按钮</p>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weibo" onclick="share('weibo');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weibo"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain facebook style-plain" onclick="share('facebook');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-facebook"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain twitter style-plain" onclick="share('twitter');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-twitter"></i>
+            </div>
+        </a>
+    </div>
+    <script type="text/javascript">
+        $(()=>{
+            new QRCode("wechat-qr", {
+                text: "https://moewolf.me/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E5%AF%B9%E8%AF%9D%E5%8A%9F%E8%83%BD%E7%9A%84%E5%AE%9E%E7%8E%B0/",
+                width: 150,
+                height: 150,
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        });
+        function share(dest) {
+            const qqBase        = "https://connect.qq.com/widget/shareqq/index.html?";
+            const weiboBase     = "https://service.weibo.com/share/share.php?";
+            const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
+            const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
+            const twitterBase   = "https://twitter.com/intent/tweet?";
+            const hostUrl       = "https://moewolf.me/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E5%AF%B9%E8%AF%9D%E5%8A%9F%E8%83%BD%E7%9A%84%E5%AE%9E%E7%8E%B0/";
+            const title         = "「茉子的幻想乡奇遇（二）：对话功能的实现」";
+            const excerpt       = `使用.txt文本文档按规则存储对话文本，使用单例模式对话管理类读取文件并显示到UI`;
+            let _URL;
+            switch (dest) {
+                case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
+                case "weibo"    : _URL = weiboBase+"url="+hostUrl+"&title="+title+excerpt;                                 break;
+                case "qzone"    : _URL = qzoneBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";  break;
+                case "facebook" : _URL = facebookBase+"u="+hostUrl;                                                        break;
+                case "twitter"  : _URL = twitterBase+"text="+title+excerpt+"&url="+hostUrl;                                break;
+            }
+            window.open(_URL);
+        };
+    </script>
+</div>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/%E5%BC%80%E5%8F%91%E6%97%A5%E5%BF%97/" rel="tag">开发日志</a>
+                </div>
+                <div class="pull-date">
+                <span>最后编辑：2022-09-13</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" 茉子的幻想乡奇遇（一）：PureMVC与主界面" href="/茉子的幻想乡奇遇/茉子的幻想乡奇遇（一）：puremvc与主界面/">&lt; 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" 茉子的幻想乡奇遇（三）：Excel表配置数据和背包系统" href="/茉子的幻想乡奇遇/茉子的幻想乡奇遇（三）：excel表配置数据和背包系统/">下一篇 &gt;</a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+        
+
+                
+            
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/holo_avatar.png" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">生如夏花之绚烂，死如秋叶之静美</p>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix">
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar"></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%B6%E4%BD%9C%E6%80%9D%E8%B7%AF"><span class="toc-text">制作思路</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AF%B9%E8%AF%9D%E9%9D%A2%E6%9D%BF"><span class="toc-text">对话面板</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8FUI%E9%9D%A2%E6%9D%BF%E5%9F%BA%E7%B1%BB"><span class="toc-text">单例模式UI面板基类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E8%AF%9D%E9%9D%A2%E6%9D%BF-1"><span class="toc-text">对话面板</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AF%B9%E8%AF%9D%E6%95%B0%E6%8D%AE%E5%92%8C%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86%E7%B1%BB"><span class="toc-text">对话数据和数据管理类</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E8%AF%9D%E6%95%B0%E6%8D%AE%E6%96%87%E6%9C%AC"><span class="toc-text">对话数据文本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E8%AF%9D%E6%95%B0%E6%8D%AE%E7%B1%BB"><span class="toc-text">对话数据类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E8%AF%9D%E7%AE%A1%E7%90%86%E7%B1%BB"><span class="toc-text">对话管理类</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%88%E6%9E%9C"><span class="toc-text">效果</span></a></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类目录</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C#</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/">功能实现</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E5%B8%B8/">日常</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/">茉子的幻想乡奇遇</a><span class="category-list-count">3</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/C-%E9%AB%98%E9%98%B6/" style="font-size: 0.8em;">C#高阶</a> <a href="/tags/Unity/" style="font-size: 0.8em;">Unity</a> <a href="/tags/%E5%BC%80%E5%8F%91%E6%97%A5%E5%BF%97/" style="font-size: 0.8em;">开发日志</a> <a href="/tags/%E6%97%A5%E5%B8%B8/" style="font-size: 0.6em;">日常</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9Aexcel%E8%A1%A8%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E5%92%8C%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（三）：Excel表配置数据和背包系统</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E5%AF%B9%E8%AF%9D%E5%8A%9F%E8%83%BD%E7%9A%84%E5%AE%9E%E7%8E%B0/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（二）：对话功能的实现</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9Apuremvc%E4%B8%8E%E4%B8%BB%E7%95%8C%E9%9D%A2/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（一）：PureMVC与主界面</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E5%88%A9%E7%94%A8%E5%8F%8D%E5%B0%84%E5%88%B6%E4%BD%9Cplayerprefs%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86%E7%B1%BB/"><i class="fa  fa-book"></i> 利用反射制作PlayerPrefs数据管理类</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F/"><i class="fa  fa-book"></i> 背包系统</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+        
+        </div>
+    </div>
+</div>
+<footer>
+    <div id="footer"  >
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://t.me/LittleWolfHouse"><i class="fa fa-telegram"></i></a></li>
+                        
+                        
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://github.com/Dai-MoeWolf"><i class="fa fa-github"></i></a></li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2022 MoeWolf的博客 版权所有.</li>
+                            <li>本站已运行<span id="span_dt">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>Theme <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a></li>
+                            <li>Site built with&nbsp;<i class="fa fa-heart throb" style="color:#d43f57"></i>&nbsp;by MoeWolf.</li>
+                        </div>
+                        <div>
+                            <li>Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a></li>
+                            
+                        </div>
+                        <div>
+                            
+                            
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search/">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="box theme-box" id="darkmode-switch">
+                        <span class="fa fa-adjust"></span>
+                    </div>
+                
+                
+            </div>
+            <div class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.4/dist/js/bootstrap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js"></script>
+<script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+    <script async src="/js/candy.min.js"></script>
+
+
+
+
+    <script defer src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script>
+<script defer src="/js/kratosr.min.js"></script>
+<script defer src="/js/pjax.min.js"></script>
+
+
+    <script defer src="/js/kr-dark.min.js"></script>
+
+
+
+<!-- Extra support for third-party plguins  -->
+
+
+    </body>
+</html>

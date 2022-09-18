@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  <link rel="icon" href="/images/webicon.jpg">
+  <title>茉子的幻想乡奇遇（一）：PureMVC与主界面 | MoeWolf的博客</title>
+  <meta name="author" content="MoeWolf" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="开发日志" />
+  
+  <meta name="description" content="使用PureMVC框架和自制面板基类，制作主界面逻辑">
+<meta property="og:type" content="article">
+<meta property="og:title" content="茉子的幻想乡奇遇（一）：PureMVC与主界面">
+<meta property="og:url" content="https://moewolf.me/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9Apuremvc%E4%B8%8E%E4%B8%BB%E7%95%8C%E9%9D%A2/index.html">
+<meta property="og:site_name" content="MoeWolf的博客">
+<meta property="og:description" content="使用PureMVC框架和自制面板基类，制作主界面逻辑">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://moewolf.me/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9Apuremvc%E4%B8%8E%E4%B8%BB%E7%95%8C%E9%9D%A2/%E4%B8%BB%E7%95%8C%E9%9D%A2UI.png">
+<meta property="article:published_time" content="2022-09-12T02:40:32.000Z">
+<meta property="article:modified_time" content="2022-09-12T05:25:02.457Z">
+<meta property="article:author" content="MoeWolf">
+<meta property="article:tag" content="开发日志">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://moewolf.me/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9Apuremvc%E4%B8%8E%E4%B8%BB%E7%95%8C%E9%9D%A2/%E4%B8%BB%E7%95%8C%E9%9D%A2UI.png">
+<meta name="twitter:site" content="@null">
+  
+  <!-- 站点验证相关 -->
+  
+    
+    
+    
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kratosr.min.css" type="text/css" media="all">
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/night-eighties.min.css" type="text/css" media="all">
+  
+  
+  <link rel="stylesheet" id="fontawe-css" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" type="text/css" media="all">
+  <link rel="stylesheet" id="nprogress-css" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css" type="text/css" media="all">
+  
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+  
+  
+    <link rel="stylesheet" id="darkmode-css" href="/css/kr-dark.min.css" type="text/css" media="all">
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  
+    <script src="https://cdn.jsdelivr.net/npm/qrcode_js@1.0.0/qrcode.min.js"></script>
+  
+  
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/holo_banner.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/holo_bg.png');
+        }
+      }
+    
+  </style>
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    
+                                        <li><a href="/"><i class="fa fa-home"></i>首页</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/archives/"><i class="fa fa-file"></i>档案馆</a></li>
+                                    
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">MoeWolf的博客</a></div>
+                    <div class="nav-toggle">
+                        <a class="kratos-nav-toggle js-kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>MoeWolf的博客</h2> <br />
+                        <span>𝓦𝓱𝓪𝓽’𝓼 𝓹𝓪𝓼𝓽 𝓲𝓼 𝓹𝓻𝓸𝓵𝓸𝓰𝓾𝓮.</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+                    
+
+        
+
+            <section class="col-md-8">
+
+        
+
+            <article>
+    <div class="kratos-hentry kratos-post-inner clearfix">
+        <header class="kratos-entry-header">
+            
+                <h1 class="kratos-entry-title text-center">茉子的幻想乡奇遇（一）：PureMVC与主界面</h1>
+            
+            
+            <ul class="kratos-post-meta text-center">
+                <li><i class="fa fa-calendar"></i> 2022-09-12</li>
+                <li><i class="fa fa-user"></i> 作者 MoeWolf</li>
+                <li>
+                    <i class="fa fa-edit"></i> 
+                    
+                    
+                        ~21.00K
+                    
+                    字
+                </li>
+                
+            </ul>
+        </header>
+        <div class="kratos-post-content">
+            <div id="expire-alert" class="alert alert-warning hidden" role="alert">
+                本文最后编辑于 <time datetime="1662960302457"></time> 前，其中的内容可能需要更新。
+            </div>
+            
+                <div class="kratos-post-inner-toc">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87"><span class="toc-number">1.</span> <span class="toc-text">茉子的幻想乡奇遇</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E8%BF%99%E4%B8%AA%E6%B8%B8%E6%88%8F"><span class="toc-number">1.1.</span> <span class="toc-text">关于这个游戏</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-number">1.2.</span> <span class="toc-text">背景</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%BB%E7%95%8C%E9%9D%A2UI%E4%BB%A5%E5%8F%8AUI%E9%9D%A2%E6%9D%BF%E5%9F%BA%E7%B1%BB"><span class="toc-number">2.</span> <span class="toc-text">主界面UI以及UI面板基类</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF"><span class="toc-number">2.1.</span> <span class="toc-text">思路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UI%E9%9D%A2%E6%9D%BF%E5%9F%BA%E7%B1%BB"><span class="toc-number">2.2.</span> <span class="toc-text">UI面板基类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%A2%E6%9D%BF%E5%8F%8A%E8%84%9A%E6%9C%AC"><span class="toc-number">2.3.</span> <span class="toc-text">面板及脚本</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#PureMVC%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-number">3.</span> <span class="toc-text">PureMVC的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%9A%E7%9F%A5%E5%90%8D%E7%B1%BB"><span class="toc-number">3.1.</span> <span class="toc-text">通知名类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9F%B3%E4%B9%90%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%8F%8AProxy"><span class="toc-number">3.2.</span> <span class="toc-text">音乐数据类及Proxy</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%84%E4%B8%AA%E9%9D%A2%E6%9D%BF%E7%9A%84Mediator"><span class="toc-number">3.3.</span> <span class="toc-text">各个面板的Mediator</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Facade%E5%92%8CCommand"><span class="toc-number">3.4.</span> <span class="toc-text">Facade和Command</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+                </div>
+            
+            <hr />
+            <p>使用PureMVC框架和自制面板基类，制作主界面逻辑</p>
+<span id="more"></span>
+
+<h1 id="茉子的幻想乡奇遇"><a href="#茉子的幻想乡奇遇" class="headerlink" title="茉子的幻想乡奇遇"></a>茉子的幻想乡奇遇</h1><h2 id="关于这个游戏"><a href="#关于这个游戏" class="headerlink" title="关于这个游戏"></a>关于这个游戏</h2><p>这是一个2D像素经营、生存类游戏，在游戏中将扮演一个名叫茉子的少女，一边寻找着返回自己的世界的方法，一边耕耘着自己的一片田地，然后与幻想乡的各位女孩邂逅的奇妙冒险</p>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>某一天，茉子照常起床准备上学，她心想这种日复一日的糟糕日子永远不会到头，在学校里毫无存在感的她没有朋友，每天午餐、放学回家的路上都只有她一个人。“要是能离开这么糟糕的地球Online该有多好啊”，她如此想到，突然，她眼前一黑，睁开眼睛的时候已然是另一番风景…</p>
+<h1 id="主界面UI以及UI面板基类"><a href="#主界面UI以及UI面板基类" class="headerlink" title="主界面UI以及UI面板基类"></a>主界面UI以及UI面板基类</h1><h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>制作主界面的各个面板，让他们继承自写好的UI面板基类，然后将他们制作成预制件，想要显示面板时，使用同步加载的方式加载UI到Canvas上，隐藏时直接删除掉Canvas上的该面板，对于需要保存/读取数据的面板（如设置面板），使用PureMVC来进行面板和数据的关联</p>
+<h2 id="UI面板基类"><a href="#UI面板基类" class="headerlink" title="UI面板基类"></a>UI面板基类</h2><p>这个基类的作用就是在面板Awake的时候，自动获取面板上的所有控件存入字典，省的去Inspector窗口中拖拽（麻烦，还容易出错）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">using System.Collections;</span><br><span class="line">using System.Collections.Generic;</span><br><span class="line">using TMPro;</span><br><span class="line">using UnityEngine;</span><br><span class="line">using UnityEngine.EventSystems;</span><br><span class="line">using UnityEngine.UI;</span><br><span class="line"></span><br><span class="line">public class BasePanel : MonoBehaviour</span><br><span class="line">&#123;</span><br><span class="line">    private Dictionary&lt;string, List&lt;UIBehaviour&gt;&gt; controlDic = new Dictionary&lt;string, List&lt;UIBehaviour&gt;&gt;();</span><br><span class="line"></span><br><span class="line">    protected virtual void Awake()</span><br><span class="line">    &#123;</span><br><span class="line">        FindChildControl&lt;Button&gt;();</span><br><span class="line">        FindChildControl&lt;Image&gt;();</span><br><span class="line">        FindChildControl&lt;TextMeshProUGUI&gt;();</span><br><span class="line">        FindChildControl&lt;Toggle&gt;();</span><br><span class="line">        FindChildControl&lt;ScrollRect&gt;();</span><br><span class="line">        FindChildControl&lt;Slider&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// UI面板初始化时就获取所有子控件存入字典</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    /// &lt;typeparam name=&quot;T&quot;&gt;控件类型&lt;/typeparam&gt;</span><br><span class="line">    private void FindChildControl&lt;T&gt;() where T : UIBehaviour</span><br><span class="line">    &#123;</span><br><span class="line">        T[] controls = GetComponentsInChildren&lt;T&gt;();</span><br><span class="line">        string controlName;</span><br><span class="line">        foreach (var control in controls)</span><br><span class="line">        &#123;</span><br><span class="line">            controlName = control.name;</span><br><span class="line">            if (controlDic.ContainsKey(controlName))</span><br><span class="line">                controlDic[controlName].Add(control);</span><br><span class="line">            else</span><br><span class="line">                controlDic.Add(controlName,new List&lt;UIBehaviour&gt;() &#123;control&#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 获取字典中的控件</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    /// &lt;param name=&quot;controlName&quot;&gt;控件名&lt;/param&gt;</span><br><span class="line">    /// &lt;typeparam name=&quot;T&quot;&gt;控件类型&lt;/typeparam&gt;</span><br><span class="line">    /// &lt;returns&gt;&lt;/returns&gt;</span><br><span class="line">    protected T GetChildControl&lt;T&gt;(string controlName) where T : UIBehaviour</span><br><span class="line">    &#123;</span><br><span class="line">        if (controlDic.ContainsKey(controlName))</span><br><span class="line">        &#123;</span><br><span class="line">            foreach (var control in controlDic[controlName])</span><br><span class="line">            &#123;</span><br><span class="line">                if (control is T)</span><br><span class="line">                    return control as T;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="面板及脚本"><a href="#面板及脚本" class="headerlink" title="面板及脚本"></a>面板及脚本</h2><p>首先就是制作主界面</p>
+<p><img src="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9Apuremvc%E4%B8%8E%E4%B8%BB%E7%95%8C%E9%9D%A2/%E4%B8%BB%E7%95%8C%E9%9D%A2UI.png" alt="主界面UI"></p>
+<p>面板脚本，重写基类的Awake直接获取自己的控件，获取是为了方便外部访问</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">using System;</span><br><span class="line">using System.Collections;</span><br><span class="line">using System.Collections.Generic;</span><br><span class="line">using TMPro;</span><br><span class="line">using UnityEngine;</span><br><span class="line">using UnityEngine.UI;</span><br><span class="line"></span><br><span class="line">public class MainMenuPanel : BasePanel</span><br><span class="line">&#123;</span><br><span class="line">    public Button btnContinue;</span><br><span class="line">    public Button btnStart;</span><br><span class="line">    public Button btnSetting;</span><br><span class="line">    public Button btnQuit;</span><br><span class="line"></span><br><span class="line">    protected override void Awake()</span><br><span class="line">    &#123;</span><br><span class="line">        base.Awake();</span><br><span class="line">        btnContinue = GetChildControl&lt;Button&gt;(&quot;btnContinue&quot;);</span><br><span class="line">        btnStart = GetChildControl&lt;Button&gt;(&quot;btnStart&quot;);</span><br><span class="line">        btnSetting = GetChildControl&lt;Button&gt;(&quot;btnSetting&quot;);</span><br><span class="line">        btnQuit = GetChildControl&lt;Button&gt;(&quot;btnQuit&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后是游戏存档界面，由于存档可能不止一个，使用Vertical Layout Group组件和Content Size Fitter组件给ScrollView的content做自动布局和自动扩容，游戏存档的数据和UI显示逻辑以后再来写</p>
+<p><img src="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9Apuremvc%E4%B8%8E%E4%B8%BB%E7%95%8C%E9%9D%A2/%E9%80%89%E6%8B%A9%E5%AD%98%E6%A1%A3UI.png" alt="选择存档UI"></p>
+<p>面板脚本，对于存档按钮的逻辑以后再写</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">using System.Collections.Generic;</span><br><span class="line">using UnityEngine.UI;</span><br><span class="line"></span><br><span class="line">public class GameDataPanel : BasePanel</span><br><span class="line">&#123;</span><br><span class="line">    public Button btnQuit;</span><br><span class="line"></span><br><span class="line">    protected override void Awake()</span><br><span class="line">    &#123;</span><br><span class="line">        base.Awake();</span><br><span class="line">        btnQuit = GetChildControl&lt;Button&gt;(&quot;btnQuit&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后是设置界面</p>
+<p><img src="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9Apuremvc%E4%B8%8E%E4%B8%BB%E7%95%8C%E9%9D%A2/%E8%AE%BE%E7%BD%AE%E7%95%8C%E9%9D%A2UI.png" alt="设置界面UI"></p>
+<p>面板脚本，UpdateInfo方法提供给外部修改面板控件的数值</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">using UnityEngine;</span><br><span class="line">using UnityEngine.UI;</span><br><span class="line"></span><br><span class="line">public class SettingPanel : BasePanel</span><br><span class="line">&#123;</span><br><span class="line">    public Toggle togMusic;</span><br><span class="line">    public Toggle togSound;</span><br><span class="line">    public Slider sdMusic;</span><br><span class="line">    public Slider sdSound;</span><br><span class="line">    public Button btnQuit;</span><br><span class="line"></span><br><span class="line">    protected override void Awake()</span><br><span class="line">    &#123;</span><br><span class="line">        base.Awake();</span><br><span class="line">        togMusic = GetChildControl&lt;Toggle&gt;(&quot;togMusic&quot;);</span><br><span class="line">        togSound = GetChildControl&lt;Toggle&gt;(&quot;togSound&quot;);</span><br><span class="line">        sdMusic = GetChildControl&lt;Slider&gt;(&quot;sdMusic&quot;);</span><br><span class="line">        sdSound = GetChildControl&lt;Slider&gt;(&quot;sdSound&quot;);</span><br><span class="line">        btnQuit = GetChildControl&lt;Button&gt;(&quot;btnQuit&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void UpdateInfo(MusicData data)</span><br><span class="line">    &#123;</span><br><span class="line">        sdMusic.value = data.musicVolume;</span><br><span class="line">        sdSound.value = data.soundVolume;</span><br><span class="line">        togMusic.isOn = data.musicIsOpen;</span><br><span class="line">        togSound.isOn = data.soundIsOpen;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="PureMVC的使用"><a href="#PureMVC的使用" class="headerlink" title="PureMVC的使用"></a>PureMVC的使用</h1><p>由于PureMVC通过通知的方式告知各个模块的执行对应的操作，其中通知名十分重要且会重复使用，为了防止通知名写错，就写一个类专门存放通知名，后续有新的通知名直接写进来就可以了</p>
+<h2 id="通知名类"><a href="#通知名类" class="headerlink" title="通知名类"></a>通知名类</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">/// &lt;summary&gt;</span><br><span class="line">/// PureMVC中的通知名类</span><br><span class="line">/// 用来声明各个通知名字的</span><br><span class="line">/// 方便使用和管理</span><br><span class="line">/// &lt;/summary&gt;</span><br><span class="line">public class PureMVCNotification</span><br><span class="line">&#123;</span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 启动通知</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    public const string START_UP = &quot;startUp&quot;;</span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 显示面板</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    public const string SHOW_PANEL = &quot;showPanel&quot;;</span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 隐藏面板</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    public const string HIDE_PANEL = &quot;hidePanel&quot;;</span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 退出游戏</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    public const string QUIT_GAME = &quot;quitGame&quot;;</span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 玩家数据更新的通知名</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    public const string UPDATE_PLAYER_INFO = &quot;updatePlayerInfo&quot;;</span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 更新设置面板、数据</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    public const string UPDATE_SETTING_INFO = &quot;updateSettingInfo&quot;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="音乐数据类及Proxy"><a href="#音乐数据类及Proxy" class="headerlink" title="音乐数据类及Proxy"></a>音乐数据类及Proxy</h2><p>由于设置面板可以设置音乐/音效数据，而且要将这些数据持久化处理，当然得需要一个数据类</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">using System;</span><br><span class="line"></span><br><span class="line">[Serializable]</span><br><span class="line">public class MusicData</span><br><span class="line">&#123;</span><br><span class="line">    public float musicVolume;</span><br><span class="line">    public float soundVolume;</span><br><span class="line">    public bool musicIsOpen;</span><br><span class="line">    public bool soundIsOpen;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后给这个数据类添加Proxy，这里使用Json的方式存储读取数据</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">using System;</span><br><span class="line">using System.IO;</span><br><span class="line">using PureMVC.Patterns.Proxy;</span><br><span class="line">using UnityEngine;</span><br><span class="line"></span><br><span class="line">public class MusicDataProxy : Proxy</span><br><span class="line">&#123;</span><br><span class="line">    public new const string NAME = &quot;MusicDataProxy&quot;;</span><br><span class="line"></span><br><span class="line">    public MusicDataProxy() : base(NAME)</span><br><span class="line">    &#123;</span><br><span class="line">        //判断数据存不存在，不存在则自己初始化一个保存</span><br><span class="line">        string pathS = $&quot;&#123;Application.streamingAssetsPath&#125;/MusicData.json&quot;;</span><br><span class="line">        string pathP = $&quot;&#123;Application.persistentDataPath&#125;/MusicData.json&quot;;</span><br><span class="line">        if (!File.Exists(pathS) &amp;&amp; !File.Exists(pathP))</span><br><span class="line">        &#123;</span><br><span class="line">            MusicData data = new MusicData</span><br><span class="line">            &#123;</span><br><span class="line">                musicVolume = 1,</span><br><span class="line">                soundVolume = 1,</span><br><span class="line">                musicIsOpen = true,</span><br><span class="line">                soundIsOpen = true,</span><br><span class="line">            &#125;;</span><br><span class="line">            Data = data;</span><br><span class="line">            JsonMgr.Instance.SaveData(data,&quot;MusicData&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        else</span><br><span class="line">        &#123;</span><br><span class="line">            Data = JsonMgr.Instance.LoadData&lt;MusicData&gt;(&quot;MusicData&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void UpdateDataInfo(SettingPanel view)</span><br><span class="line">    &#123;</span><br><span class="line">        MusicData data = Data as MusicData;</span><br><span class="line">        data.musicVolume = view.sdMusic.value;</span><br><span class="line">        data.soundVolume = view.sdSound.value;</span><br><span class="line">        data.musicIsOpen = view.togMusic.isOn;</span><br><span class="line">        data.soundIsOpen = view.togSound.isOn;</span><br><span class="line">        Data = data;</span><br><span class="line">        SaveData();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    public void SaveData()</span><br><span class="line">    &#123;</span><br><span class="line">        MusicData data = Data as MusicData;</span><br><span class="line">        JsonMgr.Instance.SaveData(data,&quot;MusicData&quot;);</span><br><span class="line">        SendNotification(PureMVCNotification.UPDATE_SETTING_INFO,this.Data as MusicData);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中使用的Json管理器，其中有两种读写Json的方法，一个是Unity自带的JsonUtility，一个是第三方的LitJson，需要自己导入LitJson代码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">using System;</span><br><span class="line">using System.IO;</span><br><span class="line">using LitJson;</span><br><span class="line">using UnityEngine;</span><br><span class="line"></span><br><span class="line">public enum JsonType</span><br><span class="line">&#123;</span><br><span class="line">    JsonUtility,</span><br><span class="line">    LitJson</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class JsonMgr</span><br><span class="line">&#123;</span><br><span class="line">    private static JsonMgr instance = new JsonMgr();</span><br><span class="line">    public static JsonMgr Instance =&gt; instance;</span><br><span class="line">    </span><br><span class="line">    private JsonMgr()&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    //存储Json数据 序列化</span><br><span class="line">    public void SaveData(object data, string fileName,JsonType type = JsonType.LitJson)</span><br><span class="line">    &#123;</span><br><span class="line">        //确定存储路径</span><br><span class="line">        string path = $&quot;&#123;Application.persistentDataPath&#125;/&#123;fileName&#125;.json&quot;;</span><br><span class="line">        //序列化 得到json字符串</span><br><span class="line">        string jsonStr = &quot;&quot;;</span><br><span class="line">        switch (type)</span><br><span class="line">        &#123;</span><br><span class="line">            case JsonType.JsonUtility:</span><br><span class="line">                jsonStr = JsonUtility.ToJson(data);</span><br><span class="line">                break;</span><br><span class="line">            case JsonType.LitJson:</span><br><span class="line">                jsonStr = JsonMapper.ToJson(data);</span><br><span class="line">                break;</span><br><span class="line">        &#125;</span><br><span class="line">        //把序列化的Json字符串 存储到指路径定的文件中</span><br><span class="line">        File.WriteAllText(path,jsonStr);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    //读取Json数据 反序列化</span><br><span class="line">    public T LoadData&lt;T&gt;(string fileName,JsonType type = JsonType.LitJson) where T : new()</span><br><span class="line">    &#123;</span><br><span class="line">        //确定从哪个路径读取</span><br><span class="line">        //先判断默认数据文件夹中是否有需要的数据 有则读取 无则切换路径</span><br><span class="line">        string path = $&quot;&#123;Application.streamingAssetsPath&#125;/&#123;fileName&#125;.json&quot;;</span><br><span class="line">        //只读文件夹是否存在该文件 不存在则换持久化路径</span><br><span class="line">        if (!File.Exists(path))</span><br><span class="line">            path = $&quot;&#123;Application.persistentDataPath&#125;/&#123;fileName&#125;.json&quot;;</span><br><span class="line">        //如果读写文件中也没有  则new一个对象返回</span><br><span class="line">        if (!File.Exists(path))</span><br><span class="line">            return new T();</span><br><span class="line">        //反序列化</span><br><span class="line">        string jsonStr = File.ReadAllText(path);</span><br><span class="line">        //数据对象</span><br><span class="line">        T data = default;</span><br><span class="line">        switch (type)</span><br><span class="line">        &#123;</span><br><span class="line">            case JsonType.JsonUtility:</span><br><span class="line">                data = JsonUtility.FromJson&lt;T&gt;(jsonStr);</span><br><span class="line">                break;</span><br><span class="line">            case JsonType.LitJson:</span><br><span class="line">                data = JsonMapper.ToObject&lt;T&gt;(jsonStr);</span><br><span class="line">                break;</span><br><span class="line">        &#125;</span><br><span class="line">        //返回对象</span><br><span class="line">        return data;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="各个面板的Mediator"><a href="#各个面板的Mediator" class="headerlink" title="各个面板的Mediator"></a>各个面板的Mediator</h2><p>这里给PureMVC中的Mediator添加一个空方法，用于子类获取面板和监听面板控件的事件（在显示面板Command中会用到）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">/// &lt;summary&gt;</span><br><span class="line">/// 方便Mediator初始化ViewComponent</span><br><span class="line">/// &lt;/summary&gt;</span><br><span class="line">/// &lt;param name=&quot;panel&quot;&gt;&lt;/param&gt;</span><br><span class="line">public virtual void SetView(BasePanel panel)</span><br><span class="line">&#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>主菜单面板，开始游戏的按钮监听以后再写，主要是跳转逻辑</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">using PureMVC.Patterns.Mediator;</span><br><span class="line"></span><br><span class="line">public class MainMenuPanelMediator : Mediator</span><br><span class="line">&#123;</span><br><span class="line">    public new const string NAME = &quot;MainMenuPanelMediator&quot;;</span><br><span class="line"></span><br><span class="line">    public MainMenuPanelMediator() : base(NAME)</span><br><span class="line">    &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    public override void SetView(BasePanel panel)</span><br><span class="line">    &#123;</span><br><span class="line">        MainMenuPanel view = panel as MainMenuPanel; </span><br><span class="line">        ViewComponent = view;</span><br><span class="line">        view.btnStart.onClick.AddListener((() =&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            </span><br><span class="line">        &#125;));</span><br><span class="line">        view.btnContinue.onClick.AddListener(() =&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            SendNotification(PureMVCNotification.HIDE_PANEL,this);</span><br><span class="line">            SendNotification(PureMVCNotification.SHOW_PANEL,&quot;GameDataPanel&quot;);</span><br><span class="line">        &#125;);</span><br><span class="line">        view.btnSetting.onClick.AddListener(() =&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            SendNotification(PureMVCNotification.SHOW_PANEL,&quot;SettingPanel&quot;);</span><br><span class="line">            SendNotification(PureMVCNotification.HIDE_PANEL,this);</span><br><span class="line">        &#125;);</span><br><span class="line">        view.btnQuit.onClick.AddListener(() =&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            SendNotification(PureMVCNotification.QUIT_GAME);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public override string[] ListNotificationInterests()</span><br><span class="line">    &#123;</span><br><span class="line">        return new[]</span><br><span class="line">        &#123;</span><br><span class="line">            PureMVCNotification.SHOW_PANEL,</span><br><span class="line">            PureMVCNotification.HIDE_PANEL</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>游戏存档面板</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">using PureMVC.Patterns.Mediator;</span><br><span class="line"></span><br><span class="line">public class GameDataPanelMediator : Mediator</span><br><span class="line">&#123;</span><br><span class="line">    public new const string NAME = &quot;GameDataPanelMediator&quot;;</span><br><span class="line"></span><br><span class="line">    public GameDataPanelMediator() : base(NAME)</span><br><span class="line">    &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public override void SetView(BasePanel panel)</span><br><span class="line">    &#123;</span><br><span class="line">        GameDataPanel view = panel as GameDataPanel;</span><br><span class="line">        ViewComponent = view;</span><br><span class="line">        view.btnQuit.onClick.AddListener(() =&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            SendNotification(PureMVCNotification.HIDE_PANEL,this);</span><br><span class="line">            SendNotification(PureMVCNotification.SHOW_PANEL,&quot;MainMenuPanel&quot;);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public override string[] ListNotificationInterests()</span><br><span class="line">    &#123;</span><br><span class="line">        return new[]</span><br><span class="line">        &#123;</span><br><span class="line">            PureMVCNotification.SHOW_PANEL,</span><br><span class="line">            PureMVCNotification.HIDE_PANEL</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>设置面板</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">using PureMVC.Interfaces;</span><br><span class="line">using PureMVC.Patterns.Mediator;</span><br><span class="line"></span><br><span class="line">public class SettingPanelMediator : Mediator</span><br><span class="line">&#123;</span><br><span class="line">    public new const string NAME = &quot;SettingPanelMediator&quot;;</span><br><span class="line"></span><br><span class="line">    public SettingPanelMediator() : base(NAME)</span><br><span class="line">    &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public override void SetView(BasePanel panel)</span><br><span class="line">    &#123;</span><br><span class="line">        SettingPanel view = panel as SettingPanel;</span><br><span class="line">        ViewComponent = view;</span><br><span class="line">        SendNotification(PureMVCNotification.UPDATE_SETTING_INFO,Facade.RetrieveProxy(MusicDataProxy.NAME) as MusicData);</span><br><span class="line">        view.btnQuit.onClick.AddListener((() =&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            SendNotification(PureMVCNotification.SHOW_PANEL,&quot;MainMenuPanel&quot;);</span><br><span class="line">            SendNotification(PureMVCNotification.HIDE_PANEL,this);</span><br><span class="line">        &#125;));</span><br><span class="line">        view.sdMusic.onValueChanged.AddListener(value =&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            SendNotification(PureMVCNotification.UPDATE_SETTING_INFO,this.ViewComponent as SettingPanel);</span><br><span class="line">        &#125;);</span><br><span class="line">        view.sdSound.onValueChanged.AddListener(value =&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            SendNotification(PureMVCNotification.UPDATE_SETTING_INFO,this.ViewComponent as SettingPanel);</span><br><span class="line">        &#125;);</span><br><span class="line">        view.togMusic.onValueChanged.AddListener(value =&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            SendNotification(PureMVCNotification.UPDATE_SETTING_INFO,this.ViewComponent as SettingPanel);</span><br><span class="line">        &#125;);</span><br><span class="line">        view.togSound.onValueChanged.AddListener(value =&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            SendNotification(PureMVCNotification.UPDATE_SETTING_INFO,this.ViewComponent as SettingPanel);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public override string[] ListNotificationInterests()</span><br><span class="line">    &#123;</span><br><span class="line">        return new[]</span><br><span class="line">        &#123;</span><br><span class="line">            PureMVCNotification.SHOW_PANEL,</span><br><span class="line">            PureMVCNotification.HIDE_PANEL,</span><br><span class="line">            PureMVCNotification.UPDATE_SETTING_INFO,</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Facade和Command"><a href="#Facade和Command" class="headerlink" title="Facade和Command"></a>Facade和Command</h2><p>在Facade中提供一个单例给没有继承PureMVC的类访问Facade，在此要将命令和通知名绑定并在Facade中注册，提供一个供外部调用的启动游戏方法执行初始化命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">using PureMVC.Patterns.Facade;</span><br><span class="line"></span><br><span class="line">public class GameFacade : Facade</span><br><span class="line">&#123;</span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 方便单例获取</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    public static GameFacade Instance</span><br><span class="line">    &#123;</span><br><span class="line">        get</span><br><span class="line">        &#123;</span><br><span class="line">            if (instance == null)</span><br><span class="line">                return new GameFacade();</span><br><span class="line">            return instance as GameFacade;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 初始化Controller层</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    protected override void InitializeController()</span><br><span class="line">    &#123;</span><br><span class="line">        base.InitializeController();</span><br><span class="line">        RegisterCommand(PureMVCNotification.START_UP, () =&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            return new StartUpCommand();</span><br><span class="line">        &#125;);</span><br><span class="line">        RegisterCommand(PureMVCNotification.SHOW_PANEL,(() =&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            return new ShowPanelCommand();</span><br><span class="line">        &#125;));</span><br><span class="line">        RegisterCommand(PureMVCNotification.HIDE_PANEL,(() =&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            return new HidePanelCommand();</span><br><span class="line">        &#125;));</span><br><span class="line">        RegisterCommand(PureMVCNotification.QUIT_GAME,(() =&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            return new QuitGameCommand();</span><br><span class="line">        &#125;));</span><br><span class="line">        RegisterCommand(PureMVCNotification.UPDATE_SETTING_INFO,(()=&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            return new UpdateSettingCommand();</span><br><span class="line">        &#125;));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 初始化方法，用于注册Proxy、Mediator</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    public void StartUp()</span><br><span class="line">    &#123;</span><br><span class="line">        SendNotification(PureMVCNotification.START_UP);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>首先是初始化命令，游戏开始的时候，在这里可以初始化信息（注册Proxy之类的），显示主菜单面板</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">using PureMVC.Interfaces;</span><br><span class="line">using PureMVC.Patterns.Command;</span><br><span class="line">using UnityEngine;</span><br><span class="line"></span><br><span class="line">public class StartUpCommand : SimpleCommand</span><br><span class="line">&#123;</span><br><span class="line">    public override void Execute(INotification notification)</span><br><span class="line">    &#123;</span><br><span class="line">        base.Execute(notification);</span><br><span class="line">        //注册Proxy</span><br><span class="line">        if (!Facade.HasProxy(MusicDataProxy.NAME))</span><br><span class="line">            Facade.RegisterProxy(new MusicDataProxy());</span><br><span class="line">        //游戏开始，显示主界面</span><br><span class="line">        SendNotification(PureMVCNotification.SHOW_PANEL,&quot;MainMenuPanel&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>外部调用初始化</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">using System;</span><br><span class="line">using UnityEngine;</span><br><span class="line"></span><br><span class="line">public class MainMenuInit : MonoBehaviour</span><br><span class="line">&#123;</span><br><span class="line">    private void Awake()</span><br><span class="line">    &#123;</span><br><span class="line">        GameFacade.Instance.StartUp();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>显示面板命令，上面在Mediator基类中添加SetView方法的好处就在这里了，由于每个面板的显隐逻辑大差不差，直接提取出一个初始化面板的方法PanelInit，用于注册Mediator和实例化面板，在其中调用SetView，设置自己的ViewComponent和面板上的事件监听</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">using PureMVC.Core;</span><br><span class="line">using PureMVC.Interfaces;</span><br><span class="line">using PureMVC.Patterns.Command;</span><br><span class="line">using PureMVC.Patterns.Mediator;</span><br><span class="line">using UnityEngine;</span><br><span class="line"></span><br><span class="line">public class ShowPanelCommand : SimpleCommand</span><br><span class="line">&#123;</span><br><span class="line">    public override void Execute(INotification notification)</span><br><span class="line">    &#123;</span><br><span class="line">        base.Execute(notification);</span><br><span class="line">        //显示的面板名通过Body判断</span><br><span class="line">        string panelName = notification.Body.ToString();</span><br><span class="line">        switch (panelName)</span><br><span class="line">        &#123;</span><br><span class="line">            case &quot;MainMenuPanel&quot;:</span><br><span class="line">                PanelInit&lt;MainMenuPanelMediator,MainMenuPanel&gt;(MainMenuPanelMediator.NAME,&quot;MainMenuPanel&quot;);</span><br><span class="line">                break;</span><br><span class="line">            case &quot;GameDataPanel&quot;:</span><br><span class="line">                PanelInit&lt;GameDataPanelMediator,GameDataPanel&gt;(GameDataPanelMediator.NAME,&quot;GameDataPanel&quot;);</span><br><span class="line">                break;</span><br><span class="line">            case &quot;SettingPanel&quot;:</span><br><span class="line">                PanelInit&lt;SettingPanelMediator,SettingPanel&gt;(SettingPanelMediator.NAME,&quot;SettingPanel&quot;);</span><br><span class="line">                SendNotification(PureMVCNotification.UPDATE_SETTING_INFO,Facade.RetrieveProxy(MusicDataProxy.NAME).Data as MusicData);</span><br><span class="line">                break;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 注册Mediator并实例化面板</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    ///  &lt;param name=&quot;mediatorName&quot;&gt;面板中介者名&lt;/param&gt;</span><br><span class="line">    /// &lt;param name=&quot;panelName&quot;&gt;面板名&lt;/param&gt;</span><br><span class="line">    /// &lt;typeparam name=&quot;T&quot;&gt;面板中介者类&lt;/typeparam&gt;</span><br><span class="line">    /// &lt;typeparam name=&quot;K&quot;&gt;面板类&lt;/typeparam&gt;</span><br><span class="line">    private void PanelInit&lt;T,K&gt;(string mediatorName,string panelName) where T : Mediator,new() where K : BasePanel</span><br><span class="line">    &#123;</span><br><span class="line">        //注册面板的中介者</span><br><span class="line">        if (!Facade.HasMediator(mediatorName))</span><br><span class="line">        &#123;</span><br><span class="line">            Facade.RegisterMediator(new T());</span><br><span class="line">        &#125;</span><br><span class="line">        //有了中介者就创建面板</span><br><span class="line">        T mediator = Facade.RetrieveMediator(mediatorName) as T;</span><br><span class="line">        //如果不存在面板则实例化</span><br><span class="line">        if (mediator.ViewComponent == null)</span><br><span class="line">        &#123;</span><br><span class="line">            //实例化面板</span><br><span class="line">            GameObject res = Resources.Load&lt;GameObject&gt;($&quot;UI/&#123;panelName&#125;&quot;);</span><br><span class="line">            GameObject obj = GameObject.Instantiate(res, GameObject.Find(&quot;Canvas&quot;).transform);</span><br><span class="line">            mediator.SetView(obj.GetComponent&lt;K&gt;());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>隐藏面板命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">using PureMVC.Interfaces;</span><br><span class="line">using PureMVC.Patterns.Command;</span><br><span class="line">using PureMVC.Patterns.Mediator;</span><br><span class="line">using UnityEngine;</span><br><span class="line"></span><br><span class="line">public class HidePanelCommand : SimpleCommand</span><br><span class="line">&#123;</span><br><span class="line">    public override void Execute(INotification notification)</span><br><span class="line">    &#123;</span><br><span class="line">        base.Execute(notification);</span><br><span class="line">        //隐藏的流程 得到Mediator → 得到其中的ViewComponent → 删除/SetActivity</span><br><span class="line">        Mediator mediator = notification.Body as Mediator;</span><br><span class="line">        if (mediator != null &amp;&amp; mediator.ViewComponent != null)</span><br><span class="line">        &#123;</span><br><span class="line">            //删除ViewComponent对应的panel对应的游戏对象</span><br><span class="line">            GameObject.Destroy((mediator.ViewComponent as MonoBehaviour).gameObject);</span><br><span class="line">            mediator.ViewComponent = null;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>更新设置数据命令，根据notification的body中的内容，是更新音乐数据还是面板上的数据</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">using PureMVC.Interfaces;</span><br><span class="line">using PureMVC.Patterns.Command;</span><br><span class="line">using UnityEngine;</span><br><span class="line"></span><br><span class="line">public class UpdateSettingCommand : SimpleCommand</span><br><span class="line">&#123;</span><br><span class="line">    public override void Execute(INotification notification)</span><br><span class="line">    &#123;</span><br><span class="line">        base.Execute(notification);</span><br><span class="line">        //根据规则，分割信息，区分控件的值</span><br><span class="line">        if (notification.Body is MusicData)</span><br><span class="line">        &#123;</span><br><span class="line">            SettingPanelMediator mediator = Facade.RetrieveMediator(SettingPanelMediator.NAME) as SettingPanelMediator;</span><br><span class="line">            (mediator.ViewComponent as SettingPanel).UpdateInfo(notification.Body as MusicData);</span><br><span class="line">        &#125;</span><br><span class="line">        if (notification.Body is SettingPanel)</span><br><span class="line">        &#123;</span><br><span class="line">            MusicDataProxy proxy = Facade.RetrieveProxy(MusicDataProxy.NAME) as MusicDataProxy;</span><br><span class="line">            proxy.UpdateDataInfo(notification.Body as SettingPanel);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>退出游戏命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">using PureMVC.Interfaces;</span><br><span class="line">using PureMVC.Patterns.Command;</span><br><span class="line">using UnityEngine;</span><br><span class="line"></span><br><span class="line">public class QuitGameCommand : SimpleCommand</span><br><span class="line">&#123;</span><br><span class="line">    public override void Execute(INotification notification)</span><br><span class="line">    &#123;</span><br><span class="line">        base.Execute(notification);</span><br><span class="line">#if UNITY_EDITOR</span><br><span class="line">        UnityEditor.EditorApplication.isPlaying = false;</span><br><span class="line">#endif</span><br><span class="line">        Application.Quit();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>使用PureMVC降低了各个模块之间的耦合度，但是它本身使用起来也比较繁琐，小的项目用起来就有点杀鸡用牛刀了，小项目使用单例模式的各个面板管理类（每个面板都有的逻辑泛化到面板积累，比如显隐、单例模式等等）更加轻便好用</p>
+
+        </div>
+        
+            <div class="kratos-copyright text-center clearfix">
+                <h5>本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</h5>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+                <div class="post-like-donate text-center clearfix" id="post-like-donate">
+                
+                
+                    <a class="share" href="javascript:;"><i class="fa fa-share-alt"></i> 分享</a>
+                    <div class="share-wrap" style="display: none;">
+    <div class="share-group">
+        <a href="javascript:;" class="share-plain qq" onclick="share('qq');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-qq"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain qzone" onclick="share('qzone');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-star"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weixin pop style-plain" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weixin"></i>
+            </div>
+            <div class="share-int">
+                <div class="qrcode" id="wechat-qr"></div>
+                <p>打开微信“扫一扫”，打开网页后点击屏幕右上角分享按钮</p>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weibo" onclick="share('weibo');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weibo"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain facebook style-plain" onclick="share('facebook');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-facebook"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain twitter style-plain" onclick="share('twitter');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-twitter"></i>
+            </div>
+        </a>
+    </div>
+    <script type="text/javascript">
+        $(()=>{
+            new QRCode("wechat-qr", {
+                text: "https://moewolf.me/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9Apuremvc%E4%B8%8E%E4%B8%BB%E7%95%8C%E9%9D%A2/",
+                width: 150,
+                height: 150,
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        });
+        function share(dest) {
+            const qqBase        = "https://connect.qq.com/widget/shareqq/index.html?";
+            const weiboBase     = "https://service.weibo.com/share/share.php?";
+            const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
+            const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
+            const twitterBase   = "https://twitter.com/intent/tweet?";
+            const hostUrl       = "https://moewolf.me/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9Apuremvc%E4%B8%8E%E4%B8%BB%E7%95%8C%E9%9D%A2/";
+            const title         = "「茉子的幻想乡奇遇（一）：PureMVC与主界面」";
+            const excerpt       = `使用PureMVC框架和自制面板基类，制作主界面逻辑`;
+            let _URL;
+            switch (dest) {
+                case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
+                case "weibo"    : _URL = weiboBase+"url="+hostUrl+"&title="+title+excerpt;                                 break;
+                case "qzone"    : _URL = qzoneBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";  break;
+                case "facebook" : _URL = facebookBase+"u="+hostUrl;                                                        break;
+                case "twitter"  : _URL = twitterBase+"text="+title+excerpt+"&url="+hostUrl;                                break;
+            }
+            window.open(_URL);
+        };
+    </script>
+</div>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/%E5%BC%80%E5%8F%91%E6%97%A5%E5%BF%97/" rel="tag">开发日志</a>
+                </div>
+                <div class="pull-date">
+                <span>最后编辑：2022-09-12</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" 利用反射制作PlayerPrefs数据管理类" href="/功能实现/利用反射制作playerprefs数据管理类/">&lt; 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" 茉子的幻想乡奇遇（二）：对话功能的实现" href="/茉子的幻想乡奇遇/茉子的幻想乡奇遇（二）：对话功能的实现/">下一篇 &gt;</a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+        
+
+                
+            
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/holo_avatar.png" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">生如夏花之绚烂，死如秋叶之静美</p>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix">
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar"></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87"><span class="toc-text">茉子的幻想乡奇遇</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E8%BF%99%E4%B8%AA%E6%B8%B8%E6%88%8F"><span class="toc-text">关于这个游戏</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-text">背景</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%BB%E7%95%8C%E9%9D%A2UI%E4%BB%A5%E5%8F%8AUI%E9%9D%A2%E6%9D%BF%E5%9F%BA%E7%B1%BB"><span class="toc-text">主界面UI以及UI面板基类</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF"><span class="toc-text">思路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UI%E9%9D%A2%E6%9D%BF%E5%9F%BA%E7%B1%BB"><span class="toc-text">UI面板基类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%A2%E6%9D%BF%E5%8F%8A%E8%84%9A%E6%9C%AC"><span class="toc-text">面板及脚本</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#PureMVC%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-text">PureMVC的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%9A%E7%9F%A5%E5%90%8D%E7%B1%BB"><span class="toc-text">通知名类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9F%B3%E4%B9%90%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%8F%8AProxy"><span class="toc-text">音乐数据类及Proxy</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%84%E4%B8%AA%E9%9D%A2%E6%9D%BF%E7%9A%84Mediator"><span class="toc-text">各个面板的Mediator</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Facade%E5%92%8CCommand"><span class="toc-text">Facade和Command</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类目录</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C#</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/">功能实现</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E5%B8%B8/">日常</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/">茉子的幻想乡奇遇</a><span class="category-list-count">3</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/C-%E9%AB%98%E9%98%B6/" style="font-size: 0.8em;">C#高阶</a> <a href="/tags/Unity/" style="font-size: 0.8em;">Unity</a> <a href="/tags/%E5%BC%80%E5%8F%91%E6%97%A5%E5%BF%97/" style="font-size: 0.8em;">开发日志</a> <a href="/tags/%E6%97%A5%E5%B8%B8/" style="font-size: 0.6em;">日常</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9Aexcel%E8%A1%A8%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E5%92%8C%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（三）：Excel表配置数据和背包系统</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E5%AF%B9%E8%AF%9D%E5%8A%9F%E8%83%BD%E7%9A%84%E5%AE%9E%E7%8E%B0/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（二）：对话功能的实现</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9Apuremvc%E4%B8%8E%E4%B8%BB%E7%95%8C%E9%9D%A2/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（一）：PureMVC与主界面</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E5%88%A9%E7%94%A8%E5%8F%8D%E5%B0%84%E5%88%B6%E4%BD%9Cplayerprefs%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86%E7%B1%BB/"><i class="fa  fa-book"></i> 利用反射制作PlayerPrefs数据管理类</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F/"><i class="fa  fa-book"></i> 背包系统</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+        
+        </div>
+    </div>
+</div>
+<footer>
+    <div id="footer"  >
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://t.me/LittleWolfHouse"><i class="fa fa-telegram"></i></a></li>
+                        
+                        
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://github.com/Dai-MoeWolf"><i class="fa fa-github"></i></a></li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2022 MoeWolf的博客 版权所有.</li>
+                            <li>本站已运行<span id="span_dt">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>Theme <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a></li>
+                            <li>Site built with&nbsp;<i class="fa fa-heart throb" style="color:#d43f57"></i>&nbsp;by MoeWolf.</li>
+                        </div>
+                        <div>
+                            <li>Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a></li>
+                            
+                        </div>
+                        <div>
+                            
+                            
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search/">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="box theme-box" id="darkmode-switch">
+                        <span class="fa fa-adjust"></span>
+                    </div>
+                
+                
+            </div>
+            <div class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.4/dist/js/bootstrap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js"></script>
+<script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+    <script async src="/js/candy.min.js"></script>
+
+
+
+
+    <script defer src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script>
+<script defer src="/js/kratosr.min.js"></script>
+<script defer src="/js/pjax.min.js"></script>
+
+
+    <script defer src="/js/kr-dark.min.js"></script>
+
+
+
+<!-- Extra support for third-party plguins  -->
+
+
+    </body>
+</html>
