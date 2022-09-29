@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  <link rel="icon" href="/images/webicon.jpg">
+  <title>茉子的幻想乡奇遇（五）：玩家控制和2D混合树 | MoeWolf的博客</title>
+  <meta name="author" content="MoeWolf" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="开发日志" />
+  
+  <meta name="description" content="使用TileMap制作了第一个游戏场景，使用了新的InputSystem制作玩家输入、控制，以及2D混合树来控制角色不同方向的序列帧动画">
+<meta property="og:type" content="article">
+<meta property="og:title" content="茉子的幻想乡奇遇（五）：玩家控制和2D混合树">
+<meta property="og:url" content="https://moewolf.me/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9A%E7%8E%A9%E5%AE%B6%E6%8E%A7%E5%88%B6%E5%92%8C2d%E6%B7%B7%E5%90%88%E6%A0%91/index.html">
+<meta property="og:site_name" content="MoeWolf的博客">
+<meta property="og:description" content="使用TileMap制作了第一个游戏场景，使用了新的InputSystem制作玩家输入、控制，以及2D混合树来控制角色不同方向的序列帧动画">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://moewolf.me/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9A%E7%8E%A9%E5%AE%B6%E6%8E%A7%E5%88%B6%E5%92%8C2d%E6%B7%B7%E5%90%88%E6%A0%91/%E7%A7%BB%E5%8A%A8%E6%95%88%E6%9E%9C.gif">
+<meta property="article:published_time" content="2022-09-29T12:52:22.000Z">
+<meta property="article:modified_time" content="2022-09-29T14:14:44.378Z">
+<meta property="article:author" content="MoeWolf">
+<meta property="article:tag" content="开发日志">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://moewolf.me/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9A%E7%8E%A9%E5%AE%B6%E6%8E%A7%E5%88%B6%E5%92%8C2d%E6%B7%B7%E5%90%88%E6%A0%91/%E7%A7%BB%E5%8A%A8%E6%95%88%E6%9E%9C.gif">
+<meta name="twitter:site" content="@null">
+  
+  <!-- 站点验证相关 -->
+  
+    
+    
+    
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kratosr.min.css" type="text/css" media="all">
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/night-eighties.min.css" type="text/css" media="all">
+  
+  
+  <link rel="stylesheet" id="fontawe-css" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" type="text/css" media="all">
+  <link rel="stylesheet" id="nprogress-css" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css" type="text/css" media="all">
+  
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+  
+  
+    <link rel="stylesheet" id="darkmode-css" href="/css/kr-dark.min.css" type="text/css" media="all">
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  
+    <script src="https://cdn.jsdelivr.net/npm/qrcode_js@1.0.0/qrcode.min.js"></script>
+  
+  
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/holo_banner.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/holo_bg.png');
+        }
+      }
+    
+  </style>
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    
+                                        <li><a href="/"><i class="fa fa-home"></i>首页</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/archives/"><i class="fa fa-file"></i>档案馆</a></li>
+                                    
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">MoeWolf的博客</a></div>
+                    <div class="nav-toggle">
+                        <a class="kratos-nav-toggle js-kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>MoeWolf的博客</h2> <br />
+                        <span>𝓦𝓱𝓪𝓽’𝓼 𝓹𝓪𝓼𝓽 𝓲𝓼 𝓹𝓻𝓸𝓵𝓸𝓰𝓾𝓮.</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+                    
+
+        
+
+            <section class="col-md-8">
+
+        
+
+            <article>
+    <div class="kratos-hentry kratos-post-inner clearfix">
+        <header class="kratos-entry-header">
+            
+                <h1 class="kratos-entry-title text-center">茉子的幻想乡奇遇（五）：玩家控制和2D混合树</h1>
+            
+            
+            <ul class="kratos-post-meta text-center">
+                <li><i class="fa fa-calendar"></i> 2022-09-29</li>
+                <li><i class="fa fa-user"></i> 作者 MoeWolf</li>
+                <li>
+                    <i class="fa fa-edit"></i> 
+                    
+                    
+                        ~5.45K
+                    
+                    字
+                </li>
+                
+            </ul>
+        </header>
+        <div class="kratos-post-content">
+            <div id="expire-alert" class="alert alert-warning hidden" role="alert">
+                本文最后编辑于 <time datetime="1664460884378"></time> 前，其中的内容可能需要更新。
+            </div>
+            
+                <div class="kratos-post-inner-toc">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEInputActions"><span class="toc-number">1.</span> <span class="toc-text">配置InputActions</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%8E%A9%E5%AE%B6%E6%8E%A7%E5%88%B6%E8%84%9A%E6%9C%AC"><span class="toc-number">2.</span> <span class="toc-text">玩家控制脚本</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%88%E6%9E%9C"><span class="toc-number">3.</span> <span class="toc-text">效果</span></a></li></ol>
+                </div>
+            
+            <hr />
+            <p>使用TileMap制作了第一个游戏场景，使用了新的InputSystem制作玩家输入、控制，以及2D混合树来控制角色不同方向的序列帧动画</p>
+<span id="more"></span>
+
+<h1 id="配置InputActions"><a href="#配置InputActions" class="headerlink" title="配置InputActions"></a>配置InputActions</h1><p>对于目前游戏的需求，暂时拟定一些按键，并生成一个C#文件，以后在任意地方判断玩家的输入也可以用得到，在项目设置中使用的是新老输入系统的都是用，这样之后就可以使用Cinemachine来实现摄像机跟随主角移动，这个插件只能是旧输入系统</p>
+<p><img src="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9A%E7%8E%A9%E5%AE%B6%E6%8E%A7%E5%88%B6%E5%92%8C2d%E6%B7%B7%E5%90%88%E6%A0%91/%E9%85%8D%E7%BD%AEInputActions.png" alt="配置InputActions"></p>
+<h1 id="玩家控制脚本"><a href="#玩家控制脚本" class="headerlink" title="玩家控制脚本"></a>玩家控制脚本</h1><p>给玩家添加一个PlayerInput组件，这里使用Invoke C# Event的方式来监听输入事件，当然也可以使用直接生成的C#文件来监听，编写一个脚本用来控制玩家，</p>
+<p>考虑到角色序列帧动画只有上下左右四种移动方向，所以让玩家只能有这四个方向的移动，但是这里配置的Action Type是一个Vector2的Value类型，那么就取其分量，并且同时只取一个值，就是说玩家在竖直移动时按下了水平移动，那么就就行水平移动而不竖直移动，使用两个旗标来表示两个不同的输入信号，使用一个枚举类型来表示当前按下类型，这样就可以保证优先响应后输入的信号</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br></pre></td><td class="code"><pre><span class="line">using System;</span><br><span class="line">using UnityEngine;</span><br><span class="line">using UnityEngine.InputSystem;</span><br><span class="line"></span><br><span class="line">enum LastAxis</span><br><span class="line">&#123;</span><br><span class="line">    horizontal,</span><br><span class="line">    vertical</span><br><span class="line">&#125;</span><br><span class="line">public class PlayerController : MonoBehaviour</span><br><span class="line">&#123;</span><br><span class="line">    private PlayerInput input;</span><br><span class="line">    private float verticalValue;</span><br><span class="line">    private float horizontalValue;</span><br><span class="line">    //当前是竖直移动还是水平移动</span><br><span class="line">    private bool isVertical;</span><br><span class="line">    private bool isHorizontal;</span><br><span class="line">    private bool isRun;</span><br><span class="line">    private bool isWalk;</span><br><span class="line">    //现在上一个按着的方向</span><br><span class="line">    private LastAxis lastAxis;</span><br><span class="line">    //停止时的方向</span><br><span class="line">    private float idleDir;</span><br><span class="line">    private Animator animator;</span><br><span class="line">    [SerializeField]</span><br><span class="line">    private float walkSpeed;</span><br><span class="line">    [SerializeField]</span><br><span class="line">    private float runSpeed;</span><br><span class="line"></span><br><span class="line">    private void Start()</span><br><span class="line">    &#123;</span><br><span class="line">        animator = GetComponent&lt;Animator&gt;();</span><br><span class="line">        input = GetComponent&lt;PlayerInput&gt;();</span><br><span class="line">        input.currentActionMap[&quot;Walk&quot;].performed += MoveCheck;</span><br><span class="line">        input.currentActionMap[&quot;Walk&quot;].canceled += context =&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            isVertical = false;</span><br><span class="line">            isHorizontal = false;</span><br><span class="line">            animator.SetFloat(&quot;x&quot;,0f);</span><br><span class="line">            animator.SetFloat(&quot;y&quot;,0f);</span><br><span class="line">            animator.SetBool(&quot;isWalk&quot;,false);</span><br><span class="line">        &#125;;</span><br><span class="line">        input.currentActionMap[&quot;Run&quot;].performed += context =&gt;isRun = true;</span><br><span class="line">        input.currentActionMap[&quot;Run&quot;].canceled += context =&gt; isRun = false;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void MoveCheck(InputAction.CallbackContext context)</span><br><span class="line">    &#123;</span><br><span class="line">        animator.SetBool(&quot;isWalk&quot;,true);</span><br><span class="line">        horizontalValue = context.ReadValue&lt;Vector2&gt;().x;</span><br><span class="line">        verticalValue = context.ReadValue&lt;Vector2&gt;().y;</span><br><span class="line">        //消除inputSystem的Vector2输入修正</span><br><span class="line">        verticalValue = verticalValue is &lt; -0.65f or &gt; 0.65f ? (verticalValue &lt; -0.65f ? -1 : 1) : 0;</span><br><span class="line">        horizontalValue = horizontalValue is &lt; -0.65f or &gt; 0.65f ? (horizontalValue &lt; -0.65f ? -1 : 1) : 0;</span><br><span class="line">        //判断是否单键输入</span><br><span class="line">        if ( !Mathf.Approximately(horizontalValue,0f) &amp;&amp; Mathf.Approximately(verticalValue,0f))</span><br><span class="line">        &#123;</span><br><span class="line">            isHorizontal = true;</span><br><span class="line">            isVertical = false;</span><br><span class="line">            lastAxis = LastAxis.horizontal;</span><br><span class="line">        &#125;</span><br><span class="line">        else if ( !Mathf.Approximately(verticalValue,0f) &amp;&amp; Mathf.Approximately(horizontalValue,0f) )</span><br><span class="line">        &#123;</span><br><span class="line">            isVertical = true;</span><br><span class="line">            isHorizontal = false;</span><br><span class="line">            lastAxis = LastAxis.vertical;</span><br><span class="line">        &#125;</span><br><span class="line">        //两者都不为零，都按下</span><br><span class="line">        else if (!Mathf.Approximately(horizontalValue, 0f) &amp;&amp; !Mathf.Approximately(verticalValue, 0f))</span><br><span class="line">        &#123;   </span><br><span class="line">            //只取新按下的键</span><br><span class="line">            switch (lastAxis)</span><br><span class="line">            &#123;</span><br><span class="line">                case LastAxis.horizontal:</span><br><span class="line">                    isHorizontal = false;</span><br><span class="line">                    isVertical = true;</span><br><span class="line">                    break;</span><br><span class="line">                case LastAxis.vertical:</span><br><span class="line">                    isVertical = false;</span><br><span class="line">                    isHorizontal = true;</span><br><span class="line">                    break;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void Move()</span><br><span class="line">    &#123;</span><br><span class="line">        if (isHorizontal)</span><br><span class="line">        &#123;</span><br><span class="line">            animator.SetFloat(&quot;y&quot;,0);</span><br><span class="line">            if (isRun)</span><br><span class="line">            &#123;</span><br><span class="line">                transform.Translate(Vector3.right * (horizontalValue * Time.fixedDeltaTime * runSpeed));</span><br><span class="line">                animator.SetFloat(&quot;x&quot;, horizontalValue * runSpeed);</span><br><span class="line">            &#125;</span><br><span class="line">            else</span><br><span class="line">            &#123;</span><br><span class="line">                transform.Translate(Vector3.right * (horizontalValue * Time.fixedDeltaTime * walkSpeed));</span><br><span class="line">                animator.SetFloat(&quot;x&quot;, horizontalValue * walkSpeed);</span><br><span class="line">            &#125;</span><br><span class="line">            idleDir = horizontalValue &gt; 0 ? 1f : 0.6f;</span><br><span class="line">            animator.SetFloat(&quot;E_Dir&quot;,idleDir);</span><br><span class="line">        &#125; </span><br><span class="line">        if (isVertical)</span><br><span class="line">        &#123;</span><br><span class="line">            animator.SetFloat(&quot;x&quot;,0);</span><br><span class="line">            if (isRun)</span><br><span class="line">            &#123;</span><br><span class="line">                transform.Translate(Vector3.up * (verticalValue * Time.fixedDeltaTime * runSpeed));</span><br><span class="line">                animator.SetFloat(&quot;y&quot;,verticalValue * runSpeed);</span><br><span class="line">            &#125;</span><br><span class="line">            else</span><br><span class="line">            &#123;</span><br><span class="line">                transform.Translate(Vector3.up * (verticalValue * Time.fixedDeltaTime * walkSpeed));</span><br><span class="line">                animator.SetFloat(&quot;y&quot;,verticalValue * walkSpeed);</span><br><span class="line">            &#125;</span><br><span class="line">            idleDir = verticalValue &gt; 0 ? 0.3f : 0f;</span><br><span class="line">            animator.SetFloat(&quot;E_Dir&quot;,idleDir);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void FixedUpdate()</span><br><span class="line">    &#123;</span><br><span class="line">        Move();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于多个方向的运动，最好解决的方法就是使用混合树，混合树能大幅度降低动画机的复杂性，过多的状态之间转换由混合树自己来判断，省去了繁琐的判断</p>
+<p><img src="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9A%E7%8E%A9%E5%AE%B6%E6%8E%A7%E5%88%B6%E5%92%8C2d%E6%B7%B7%E5%90%88%E6%A0%91/%E5%8F%8C%E6%B7%B7%E5%90%88%E6%A0%91%E7%9A%84%E5%88%87%E6%8D%A2.png" alt="双混合树的切换"></p>
+<p>这里由于主角有四个方向的运动，那么自然就有四个方向的idle，最后面朝的方向，就是停止输入后显示的idle方向，这里就使用两个混合树来做，idle使用的一个ID混合树，由四个不同的值（0、0.3、0.6、1）来表示当前的方向，这个方向在控制脚本中（如上面脚本101行）具体移动方向的时候被确定，根据水平/竖直方向输入的数值的正负来确定具体的方向</p>
+<p><img src="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9A%E7%8E%A9%E5%AE%B6%E6%8E%A7%E5%88%B6%E5%92%8C2d%E6%B7%B7%E5%90%88%E6%A0%91/Idle%E2%80%94%E2%80%941D%E6%B7%B7%E5%90%88%E6%A0%91.png" alt="Idle——1D混合树"></p>
+<p>对于Move混合树，他是一个2D的FreeForm混合树，由于素材太少，没有跑动的序列帧动画，这里就是用加速Walk动画播放速度来替代</p>
+<p><img src="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9A%E7%8E%A9%E5%AE%B6%E6%8E%A7%E5%88%B6%E5%92%8C2d%E6%B7%B7%E5%90%88%E6%A0%91/image-20220929213901604.png" alt="image-20220929213901604"></p>
+<p>具体移动中对动画机的参数的改变都在上面的脚本中，然后使用Cinemachine配合一个限制范围的碰撞器来</p>
+<h1 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h1><p><img src="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9A%E7%8E%A9%E5%AE%B6%E6%8E%A7%E5%88%B6%E5%92%8C2d%E6%B7%B7%E5%90%88%E6%A0%91/%E7%A7%BB%E5%8A%A8%E6%95%88%E6%9E%9C.gif" alt="移动效果"></p>
+
+        </div>
+        
+            <div class="kratos-copyright text-center clearfix">
+                <h5>本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</h5>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+                <div class="post-like-donate text-center clearfix" id="post-like-donate">
+                
+                
+                    <a class="share" href="javascript:;"><i class="fa fa-share-alt"></i> 分享</a>
+                    <div class="share-wrap" style="display: none;">
+    <div class="share-group">
+        <a href="javascript:;" class="share-plain qq" onclick="share('qq');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-qq"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain qzone" onclick="share('qzone');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-star"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weixin pop style-plain" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weixin"></i>
+            </div>
+            <div class="share-int">
+                <div class="qrcode" id="wechat-qr"></div>
+                <p>打开微信“扫一扫”，打开网页后点击屏幕右上角分享按钮</p>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weibo" onclick="share('weibo');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weibo"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain facebook style-plain" onclick="share('facebook');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-facebook"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain twitter style-plain" onclick="share('twitter');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-twitter"></i>
+            </div>
+        </a>
+    </div>
+    <script type="text/javascript">
+        $(()=>{
+            new QRCode("wechat-qr", {
+                text: "https://moewolf.me/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9A%E7%8E%A9%E5%AE%B6%E6%8E%A7%E5%88%B6%E5%92%8C2d%E6%B7%B7%E5%90%88%E6%A0%91/",
+                width: 150,
+                height: 150,
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        });
+        function share(dest) {
+            const qqBase        = "https://connect.qq.com/widget/shareqq/index.html?";
+            const weiboBase     = "https://service.weibo.com/share/share.php?";
+            const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
+            const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
+            const twitterBase   = "https://twitter.com/intent/tweet?";
+            const hostUrl       = "https://moewolf.me/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9A%E7%8E%A9%E5%AE%B6%E6%8E%A7%E5%88%B6%E5%92%8C2d%E6%B7%B7%E5%90%88%E6%A0%91/";
+            const title         = "「茉子的幻想乡奇遇（五）：玩家控制和2D混合树」";
+            const excerpt       = `使用TileMap制作了第一个游戏场景，使用了新的InputSystem制作玩家输入、控制，以及2D混合树来控制角色不同方向的序列帧动画`;
+            let _URL;
+            switch (dest) {
+                case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
+                case "weibo"    : _URL = weiboBase+"url="+hostUrl+"&title="+title+excerpt;                                 break;
+                case "qzone"    : _URL = qzoneBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";  break;
+                case "facebook" : _URL = facebookBase+"u="+hostUrl;                                                        break;
+                case "twitter"  : _URL = twitterBase+"text="+title+excerpt+"&url="+hostUrl;                                break;
+            }
+            window.open(_URL);
+        };
+    </script>
+</div>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/%E5%BC%80%E5%8F%91%E6%97%A5%E5%BF%97/" rel="tag">开发日志</a>
+                </div>
+                <div class="pull-date">
+                <span>最后编辑：2022-09-29</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" 茉子的幻想乡奇遇（四）：木箱和背包物品的互换" href="/茉子的幻想乡奇遇/茉子的幻想乡奇遇（四）：木箱和背包物品的互换/">&lt; 上一篇</a>
+            </div>
+            
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+        
+
+                
+            
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/holo_avatar.png" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">生如夏花之绚烂，死如秋叶之静美</p>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix">
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar"></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEInputActions"><span class="toc-text">配置InputActions</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%8E%A9%E5%AE%B6%E6%8E%A7%E5%88%B6%E8%84%9A%E6%9C%AC"><span class="toc-text">玩家控制脚本</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%88%E6%9E%9C"><span class="toc-text">效果</span></a></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类目录</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C#</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/">功能实现</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E5%B8%B8/">日常</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/">茉子的幻想乡奇遇</a><span class="category-list-count">5</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/C-%E9%AB%98%E9%98%B6/" style="font-size: 0.7em;">C#高阶</a> <a href="/tags/Unity/" style="font-size: 0.7em;">Unity</a> <a href="/tags/%E5%BC%80%E5%8F%91%E6%97%A5%E5%BF%97/" style="font-size: 0.8em;">开发日志</a> <a href="/tags/%E6%97%A5%E5%B8%B8/" style="font-size: 0.6em;">日常</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9A%E7%8E%A9%E5%AE%B6%E6%8E%A7%E5%88%B6%E5%92%8C2d%E6%B7%B7%E5%90%88%E6%A0%91/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（五）：玩家控制和2D混合树</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9A%E6%9C%A8%E7%AE%B1%E5%92%8C%E8%83%8C%E5%8C%85%E7%89%A9%E5%93%81%E7%9A%84%E4%BA%92%E6%8D%A2/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（四）：木箱和背包物品的互换</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9Aexcel%E8%A1%A8%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E5%92%8C%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（三）：Excel表配置数据和背包系统</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E5%AF%B9%E8%AF%9D%E5%8A%9F%E8%83%BD%E7%9A%84%E5%AE%9E%E7%8E%B0/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（二）：对话功能的实现</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9Apuremvc%E4%B8%8E%E4%B8%BB%E7%95%8C%E9%9D%A2/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（一）：PureMVC与主界面</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+        
+        </div>
+    </div>
+</div>
+<footer>
+    <div id="footer"  >
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://t.me/LittleWolfHouse"><i class="fa fa-telegram"></i></a></li>
+                        
+                        
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://github.com/Dai-MoeWolf"><i class="fa fa-github"></i></a></li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2022 MoeWolf的博客 版权所有.</li>
+                            <li>本站已运行<span id="span_dt">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>Theme <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a></li>
+                            <li>Site built with&nbsp;<i class="fa fa-heart throb" style="color:#d43f57"></i>&nbsp;by MoeWolf.</li>
+                        </div>
+                        <div>
+                            <li>Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a></li>
+                            
+                        </div>
+                        <div>
+                            
+                            
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search/">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="box theme-box" id="darkmode-switch">
+                        <span class="fa fa-adjust"></span>
+                    </div>
+                
+                
+            </div>
+            <div class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.4/dist/js/bootstrap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js"></script>
+<script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+    <script async src="/js/candy.min.js"></script>
+
+
+
+
+    <script defer src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script>
+<script defer src="/js/kratosr.min.js"></script>
+<script defer src="/js/pjax.min.js"></script>
+
+
+    <script defer src="/js/kr-dark.min.js"></script>
+
+
+
+<!-- Extra support for third-party plguins  -->
+
+
+    </body>
+</html>
