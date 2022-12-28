@@ -18,17 +18,17 @@
   <meta name="description" content="使用TileMap制作了第一个游戏场景，使用了新的InputSystem制作玩家输入、控制，以及2D混合树来控制角色不同方向的序列帧动画">
 <meta property="og:type" content="article">
 <meta property="og:title" content="茉子的幻想乡奇遇（五）：玩家控制和2D混合树">
-<meta property="og:url" content="https://moewolf.me/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9A%E7%8E%A9%E5%AE%B6%E6%8E%A7%E5%88%B6%E5%92%8C2d%E6%B7%B7%E5%90%88%E6%A0%91/index.html">
+<meta property="og:url" content="https://moewolf.xyz/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9A%E7%8E%A9%E5%AE%B6%E6%8E%A7%E5%88%B6%E5%92%8C2d%E6%B7%B7%E5%90%88%E6%A0%91/index.html">
 <meta property="og:site_name" content="MoeWolf的博客">
 <meta property="og:description" content="使用TileMap制作了第一个游戏场景，使用了新的InputSystem制作玩家输入、控制，以及2D混合树来控制角色不同方向的序列帧动画">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://moewolf.me/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9A%E7%8E%A9%E5%AE%B6%E6%8E%A7%E5%88%B6%E5%92%8C2d%E6%B7%B7%E5%90%88%E6%A0%91/%E7%A7%BB%E5%8A%A8%E6%95%88%E6%9E%9C.gif">
+<meta property="og:image" content="https://moewolf.xyz/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9A%E7%8E%A9%E5%AE%B6%E6%8E%A7%E5%88%B6%E5%92%8C2d%E6%B7%B7%E5%90%88%E6%A0%91/%E7%A7%BB%E5%8A%A8%E6%95%88%E6%9E%9C.gif">
 <meta property="article:published_time" content="2022-09-29T12:52:22.000Z">
 <meta property="article:modified_time" content="2022-09-29T14:27:56.864Z">
 <meta property="article:author" content="MoeWolf">
 <meta property="article:tag" content="开发日志">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://moewolf.me/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9A%E7%8E%A9%E5%AE%B6%E6%8E%A7%E5%88%B6%E5%92%8C2d%E6%B7%B7%E5%90%88%E6%A0%91/%E7%A7%BB%E5%8A%A8%E6%95%88%E6%9E%9C.gif">
+<meta name="twitter:image" content="https://moewolf.xyz/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9A%E7%8E%A9%E5%AE%B6%E6%8E%A7%E5%88%B6%E5%92%8C2d%E6%B7%B7%E5%90%88%E6%A0%91/%E7%A7%BB%E5%8A%A8%E6%95%88%E6%9E%9C.gif">
 <meta name="twitter:site" content="@null">
   
   <!-- 站点验证相关 -->
@@ -236,7 +236,7 @@
     <script type="text/javascript">
         $(()=>{
             new QRCode("wechat-qr", {
-                text: "https://moewolf.me/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9A%E7%8E%A9%E5%AE%B6%E6%8E%A7%E5%88%B6%E5%92%8C2d%E6%B7%B7%E5%90%88%E6%A0%91/",
+                text: "https://moewolf.xyz/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9A%E7%8E%A9%E5%AE%B6%E6%8E%A7%E5%88%B6%E5%92%8C2d%E6%B7%B7%E5%90%88%E6%A0%91/",
                 width: 150,
                 height: 150,
                 correctLevel : QRCode.CorrectLevel.H
@@ -248,7 +248,7 @@
             const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
             const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
             const twitterBase   = "https://twitter.com/intent/tweet?";
-            const hostUrl       = "https://moewolf.me/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9A%E7%8E%A9%E5%AE%B6%E6%8E%A7%E5%88%B6%E5%92%8C2d%E6%B7%B7%E5%90%88%E6%A0%91/";
+            const hostUrl       = "https://moewolf.xyz/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9A%E7%8E%A9%E5%AE%B6%E6%8E%A7%E5%88%B6%E5%92%8C2d%E6%B7%B7%E5%90%88%E6%A0%91/";
             const title         = "「茉子的幻想乡奇遇（五）：玩家控制和2D混合树」";
             const excerpt       = `使用TileMap制作了第一个游戏场景，使用了新的InputSystem制作玩家输入、控制，以及2D混合树来控制角色不同方向的序列帧动画`;
             let _URL;
