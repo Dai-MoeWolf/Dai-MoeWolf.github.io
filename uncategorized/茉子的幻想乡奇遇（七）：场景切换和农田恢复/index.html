@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  <link rel="icon" href="/images/webicon.jpg">
+  <title>茉子的幻想乡奇遇（七）：场景切换和农田恢复 | MoeWolf的博客</title>
+  <meta name="author" content="MoeWolf" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="开发日志" />
+  
+  <meta name="description" content="实现一个场景切换管理类，使用异步加载的方式进行更加方便的封装，并实现切换场景，显示过场景Loading条面板，对重启游戏&amp;回到神社场景后进行农田的恢复">
+<meta property="og:type" content="article">
+<meta property="og:title" content="茉子的幻想乡奇遇（七）：场景切换和农田恢复">
+<meta property="og:url" content="https://moewolf.me/uncategorized/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%83%EF%BC%89%EF%BC%9A%E5%9C%BA%E6%99%AF%E5%88%87%E6%8D%A2%E5%92%8C%E5%86%9C%E7%94%B0%E6%81%A2%E5%A4%8D/index.html">
+<meta property="og:site_name" content="MoeWolf的博客">
+<meta property="og:description" content="实现一个场景切换管理类，使用异步加载的方式进行更加方便的封装，并实现切换场景，显示过场景Loading条面板，对重启游戏&amp;回到神社场景后进行农田的恢复">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://moewolf.me/uncategorized/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%83%EF%BC%89%EF%BC%9A%E5%9C%BA%E6%99%AF%E5%88%87%E6%8D%A2%E5%92%8C%E5%86%9C%E7%94%B0%E6%81%A2%E5%A4%8D/%E5%9C%BA%E6%99%AF%E5%88%87%E6%8D%A2.png">
+<meta property="article:published_time" content="2022-12-12T12:40:23.000Z">
+<meta property="article:modified_time" content="2022-12-28T11:24:03.530Z">
+<meta property="article:author" content="MoeWolf">
+<meta property="article:tag" content="开发日志">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://moewolf.me/uncategorized/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%83%EF%BC%89%EF%BC%9A%E5%9C%BA%E6%99%AF%E5%88%87%E6%8D%A2%E5%92%8C%E5%86%9C%E7%94%B0%E6%81%A2%E5%A4%8D/%E5%9C%BA%E6%99%AF%E5%88%87%E6%8D%A2.png">
+<meta name="twitter:site" content="@null">
+  
+  <!-- 站点验证相关 -->
+  
+    
+    
+    
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kratosr.min.css" type="text/css" media="all">
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/night-eighties.min.css" type="text/css" media="all">
+  
+  
+  <link rel="stylesheet" id="fontawe-css" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" type="text/css" media="all">
+  <link rel="stylesheet" id="nprogress-css" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css" type="text/css" media="all">
+  
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+  
+  
+    <link rel="stylesheet" id="darkmode-css" href="/css/kr-dark.min.css" type="text/css" media="all">
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  
+    <script src="https://cdn.jsdelivr.net/npm/qrcode_js@1.0.0/qrcode.min.js"></script>
+  
+  
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/holo_banner.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/holo_bg.png');
+        }
+      }
+    
+  </style>
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    
+                                        <li><a href="/"><i class="fa fa-home"></i>首页</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/archives/"><i class="fa fa-file"></i>档案馆</a></li>
+                                    
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">MoeWolf的博客</a></div>
+                    <div class="nav-toggle">
+                        <a class="kratos-nav-toggle js-kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>MoeWolf的博客</h2> <br />
+                        <span>𝓦𝓱𝓪𝓽’𝓼 𝓹𝓪𝓼𝓽 𝓲𝓼 𝓹𝓻𝓸𝓵𝓸𝓰𝓾𝓮.</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+                    
+
+        
+
+            <section class="col-md-8">
+
+        
+
+            <article>
+    <div class="kratos-hentry kratos-post-inner clearfix">
+        <header class="kratos-entry-header">
+            
+                <h1 class="kratos-entry-title text-center">茉子的幻想乡奇遇（七）：场景切换和农田恢复</h1>
+            
+            
+            <ul class="kratos-post-meta text-center">
+                <li><i class="fa fa-calendar"></i> 2022-12-12</li>
+                <li><i class="fa fa-user"></i> 作者 MoeWolf</li>
+                <li>
+                    <i class="fa fa-edit"></i> 
+                    
+                    
+                        ~23.06K
+                    
+                    字
+                </li>
+                
+            </ul>
+        </header>
+        <div class="kratos-post-content">
+            <div id="expire-alert" class="alert alert-warning hidden" role="alert">
+                本文最后编辑于 <time datetime="1672226643530"></time> 前，其中的内容可能需要更新。
+            </div>
+            
+                <div class="kratos-post-inner-toc">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF%E7%AE%A1%E7%90%86%E5%99%A8"><span class="toc-number">1.</span> <span class="toc-text">场景管理器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E4%BA%A4%E4%BA%92%E5%AF%B9%E8%B1%A1"><span class="toc-number">1.1.</span> <span class="toc-text">可交互对象</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF%E5%88%87%E6%8D%A2%E7%9A%84%E7%9B%AE%E6%A0%87%E7%82%B9"><span class="toc-number">1.2.</span> <span class="toc-text">场景切换的目标点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Loading%E9%9D%A2%E6%9D%BF"><span class="toc-number">1.3.</span> <span class="toc-text">Loading面板</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%86%9C%E7%94%B0%E6%81%A2%E5%A4%8D"><span class="toc-number">2.</span> <span class="toc-text">农田恢复</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AC%E5%85%B1Mono%E7%B1%BB"><span class="toc-number">2.1.</span> <span class="toc-text">公共Mono类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8B%E4%BB%B6%E4%B8%AD%E5%BF%83%E7%B1%BB"><span class="toc-number">2.2.</span> <span class="toc-text">事件中心类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%9C%E7%94%B0%E7%AE%A1%E7%90%86%E7%B1%BB"><span class="toc-number">2.3.</span> <span class="toc-text">农田管理类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF%E5%88%87%E6%8D%A2%E5%90%8E%E7%9A%84%E6%81%A2%E5%A4%8D"><span class="toc-number">2.4.</span> <span class="toc-text">场景切换后的恢复</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E8%BF%9B%E6%B8%B8%E6%88%8F%E5%90%8E%E7%9A%84%E6%81%A2%E5%A4%8D"><span class="toc-number">2.5.</span> <span class="toc-text">重进游戏后的恢复</span></a></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <p>实现一个场景切换管理类，使用异步加载的方式进行更加方便的封装，并实现切换场景，显示过场景Loading条面板，对重启游戏&amp;回到神社场景后进行农田的恢复</p>
+<span id="more"></span>
+
+<h1 id="场景管理器"><a href="#场景管理器" class="headerlink" title="场景管理器"></a>场景管理器</h1><p>首先我们自己封装一个场景管理器，用于统一的场景同步/异步加载，有很多时候，需要我们在切换场景时预加载，避免游戏时加载的卡顿，也在此手动进行GC管理，避免了自动GC造成的卡顿</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line">using System.Collections;</span><br><span class="line">using Cinemachine;</span><br><span class="line">using UnityEngine;</span><br><span class="line">using UnityEngine.Events;</span><br><span class="line">using UnityEngine.SceneManagement;</span><br><span class="line"></span><br><span class="line">public class ScenesMgr : BaseManager&lt;ScenesMgr&gt;</span><br><span class="line">&#123;</span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 同步切换场景</span><br><span class="line">    /// &lt;/summary&gt;  </span><br><span class="line">    /// &lt;param name=&quot;name&quot;&gt;场景名&lt;/param&gt;</span><br><span class="line">    /// &lt;param name=&quot;func&quot;&gt;回调&lt;/param&gt;</span><br><span class="line">    public void LoadScene(string name,UnityAction func)</span><br><span class="line">    &#123;</span><br><span class="line">        //场景同步加载</span><br><span class="line">        SceneManager.LoadScene(&quot;name&quot;);</span><br><span class="line">        //加载完成后 才会去执行Func</span><br><span class="line">        func();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 提供给外部的 异步加载的接口方法</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    /// &lt;param name=&quot;name&quot;&gt;场景名&lt;/param&gt;</span><br><span class="line">    /// &lt;param name=&quot;func&quot;&gt;回调&lt;/param&gt;</span><br><span class="line">    public void LoadSceneAsync(string name,UnityAction func)</span><br><span class="line">    &#123;</span><br><span class="line">        //使用公共Mono模块提供的开启协程</span><br><span class="line">        MonoMgr.Instance.StartCoroutine(DoLoadSceneAsync(name, func));</span><br><span class="line">        SceneLoadingPanel.Instance.UpdateLoadingInfo(&quot;正在加载场景...&quot;,0);</span><br><span class="line">        SceneLoadingPanel.Instance.ShowMe();</span><br><span class="line">    &#125;   </span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 场景异步加载</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    /// &lt;param name=&quot;name&quot;&gt;&lt;/param&gt;</span><br><span class="line">    /// &lt;param name=&quot;func&quot;&gt;&lt;/param&gt;</span><br><span class="line">    /// &lt;returns&gt;&lt;/returns&gt;</span><br><span class="line">    private IEnumerator DoLoadSceneAsync(string name, UnityAction func)</span><br><span class="line">    &#123;</span><br><span class="line">        AsyncOperation ao = SceneManager.LoadSceneAsync(name);</span><br><span class="line">        //可以得到场景加载的进度</span><br><span class="line">        while (!ao.isDone)</span><br><span class="line">        &#123;</span><br><span class="line">            // 在此更新progress进度条</span><br><span class="line">            SceneLoadingPanel.Instance.UpdateLoadingInfo(&quot;正在加载场景...&quot;,0.3f * ao.progress);</span><br><span class="line">            yield return ao.progress;</span><br><span class="line">        &#125;</span><br><span class="line">        // 切换（此时的场景是，之前场景）</span><br><span class="line">        SceneLoadingPanel.Instance.ShowMe();</span><br><span class="line">        SceneLoadingPanel.Instance.UpdateLoadingInfo(&quot;正在切换场景...&quot;,0.5f);</span><br><span class="line">        yield return ao;</span><br><span class="line"></span><br><span class="line">        yield return new WaitForSeconds(0.2f);</span><br><span class="line">        SceneLoadingPanel.Instance.UpdateLoadingInfo(&quot;正在加载配置...&quot;,0.75f);</span><br><span class="line">        //场景配置</span><br><span class="line">        SceneConfig(name);</span><br><span class="line">        //回调</span><br><span class="line">        func?.Invoke();</span><br><span class="line">        yield return new WaitForSeconds(0.2f);</span><br><span class="line">        SceneLoadingPanel.Instance.UpdateLoadingInfo(&quot;场景加载完成！&quot;,1f);</span><br><span class="line"></span><br><span class="line">        yield return new WaitForSeconds(0.3f);</span><br><span class="line">        SceneLoadingPanel.Instance.HideMe();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //不同的场景的预加载</span><br><span class="line">    private void SceneConfig(string name)</span><br><span class="line">    &#123;</span><br><span class="line">        //公共场景切换配置</span><br><span class="line">        //设置镜头跟随</span><br><span class="line">        Transform player = GameObject.Find(&quot;Mako&quot;).transform;</span><br><span class="line">        //设置镜头跟随</span><br><span class="line">        GameObject.Find(&quot;Player_vcam&quot;).GetComponent&lt;CinemachineVirtualCamera&gt;().Follow = player;</span><br><span class="line">        //先加载费时加载的资源，避免使用时卡顿</span><br><span class="line">        Resources.Load&lt;InventoryItemOption&gt;(&quot;UI/InventoryItemOption&quot;);</span><br><span class="line">        //加载玩设置当前场景的事件区域</span><br><span class="line">        if (SceneEventObjMgr.Instance != null)</span><br><span class="line">        &#123;</span><br><span class="line">            SceneEventObjMgr.Instance.SetEventAreaObjectActive();</span><br><span class="line">        &#125;</span><br><span class="line">        //分场景配置</span><br><span class="line">        switch (name)</span><br><span class="line">        &#123;</span><br><span class="line">            //如果是神社则恢复农田</span><br><span class="line">            case &quot;HakureiShrine&quot;:</span><br><span class="line">                CropMgr.Instance.RestoringCrop();</span><br><span class="line">                break;</span><br><span class="line">            //</span><br><span class="line">        &#125;</span><br><span class="line">        // 播放对应场景BGM</span><br><span class="line">        MusicMgr.Instance.PlayBGM(SceneManager.GetActiveScene().name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="可交互对象"><a href="#可交互对象" class="headerlink" title="可交互对象"></a>可交互对象</h2><p>游戏中应当由许多的可交互对象，切换场景的可交互的大门，或者小屋内的箱子，这些箱子在玩家靠近后都会有一样的行为，就是出现可交互图标，然后具体的实现逻辑就有子类来实现</p>
+<p><img src="/uncategorized/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%83%EF%BC%89%EF%BC%9A%E5%9C%BA%E6%99%AF%E5%88%87%E6%8D%A2%E5%92%8C%E5%86%9C%E7%94%B0%E6%81%A2%E5%A4%8D/%E5%B0%8F%E5%B1%8B%E5%A4%A7%E9%97%A8%E4%BA%A4%E4%BA%92.png" alt="小屋大门交互"></p>
+<p>对于这个木箱来说，我们之前写好的木箱面板就可以接入了，我们的接口都已经写好了</p>
+<p><img src="/uncategorized/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%83%EF%BC%89%EF%BC%9A%E5%9C%BA%E6%99%AF%E5%88%87%E6%8D%A2%E5%92%8C%E5%86%9C%E7%94%B0%E6%81%A2%E5%A4%8D/%E6%9C%A8%E7%AE%B1.png" alt="木箱"></p>
+<p>因此，我们就泛化出一个基类，他们都拥有一个图标，和玩家交互的状态（这个是为了防止玩家在交互中时，重复触发交互），然后对于会切换场景的交互对象时，我们泛化出一个方法用于统一的切换场景，子类还可以调用时加入自己的回调函数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">using System;</span><br><span class="line">using Cinemachine;</span><br><span class="line">using UnityEngine;</span><br><span class="line">using UnityEngine.Events;</span><br><span class="line">using UnityEngine.InputSystem;</span><br><span class="line"></span><br><span class="line">public class InteractionObj : MonoBehaviour</span><br><span class="line">&#123;</span><br><span class="line">    protected GameObject interactionIcon;</span><br><span class="line">    protected MakoInput input;</span><br><span class="line">    protected bool isInteracting;           //是否已经处于交互中，避免重复触发交互</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 提供给外部设置是否交互的接口</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    /// &lt;param name=&quot;setBool&quot;&gt;&lt;/param&gt;</span><br><span class="line">    public void SetIsInteracting(bool setBool)</span><br><span class="line">    &#123;</span><br><span class="line">        this.isInteracting = setBool;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    protected virtual void Awake()</span><br><span class="line">    &#123;</span><br><span class="line">        input = new MakoInput();</span><br><span class="line">        interactionIcon = transform.Find(&quot;InteractionIcon&quot;).gameObject;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    protected virtual void OnTriggerStay2D(Collider2D other)</span><br><span class="line">    &#123;</span><br><span class="line">        if(!other.gameObject.CompareTag(&quot;Player&quot;))</span><br><span class="line">            return;</span><br><span class="line">        interactionIcon.SetActive(true);</span><br><span class="line">        input.Enable();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    protected virtual void OnTriggerExit2D(Collider2D other)</span><br><span class="line">    &#123;</span><br><span class="line">        if(!other.gameObject.CompareTag(&quot;Player&quot;))</span><br><span class="line">            return;</span><br><span class="line">        isInteracting = false;</span><br><span class="line">        interactionIcon.SetActive(false);</span><br><span class="line">        input.Disable();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 场景初始化，在子类中调用（用于切换场景的可交互对象）</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    /// &lt;param name=&quot;sceneName&quot;&gt;场景名&lt;/param&gt;</span><br><span class="line">    /// &lt;param name=&quot;setPointName&quot;&gt;切换后的设置位置的游戏对象名&lt;/param&gt;</span><br><span class="line">    /// &lt;param name=&quot;func&quot;&gt;场景加载完毕的回调函数&lt;/param&gt;</span><br><span class="line">    protected void SceneInit(string sceneName, string setPointName ,UnityAction func)</span><br><span class="line">    &#123;</span><br><span class="line">        if (!isInteracting &amp;&amp; input.Player.FuncKeyE.phase == InputActionPhase.Performed)</span><br><span class="line">        &#123;</span><br><span class="line">            isInteracting = true;</span><br><span class="line">            // 切换场景</span><br><span class="line">            ScenesMgr.Instance.LoadSceneAsync(sceneName, () =&gt;</span><br><span class="line">            &#123;</span><br><span class="line">                //设置玩家位置</span><br><span class="line">                Transform player = GameObject.Find(&quot;Mako&quot;).transform;</span><br><span class="line">                player.position = GameObject.Find(setPointName).transform.position;</span><br><span class="line">                func?.Invoke();</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="场景切换的目标点"><a href="#场景切换的目标点" class="headerlink" title="场景切换的目标点"></a>场景切换的目标点</h2><p>切换场景后的玩家设置点我们先预设好，这样就免得切换场景后，玩家的坐标在场景外面了，当切换场景时，我们就通过这个预设点设置玩家位置就好了</p>
+<p><img src="/uncategorized/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%83%EF%BC%89%EF%BC%9A%E5%9C%BA%E6%99%AF%E5%88%87%E6%8D%A2%E5%92%8C%E5%86%9C%E7%94%B0%E6%81%A2%E5%A4%8D/%E5%B1%8B%E5%86%85%E8%AE%BE%E7%BD%AE%E7%9B%AE%E6%A0%87%E7%82%B9.png" alt="屋内设置目标点"></p>
+<p>直接继承自写好的可交互对象基类，然后重写基类方法，设置好场景切换的目标点，这里由于是要进入木屋，那么为了避免木箱UI在游戏中加载造成卡顿就直接写在回调函数中预加载即可</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">using UnityEngine;</span><br><span class="line"></span><br><span class="line">public class HouseEntranceObj : InteractionObj</span><br><span class="line">&#123;</span><br><span class="line">    protected override void OnTriggerStay2D(Collider2D other)</span><br><span class="line">    &#123;</span><br><span class="line">        base.OnTriggerStay2D(other);</span><br><span class="line">        SceneInit(&quot;House&quot;,&quot;SetPoint&quot;,() =&gt; Resources.Load&lt;BoxItemOption&gt;(&quot;UI/BoxItemOption&quot;) );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Loading面板"><a href="#Loading面板" class="headerlink" title="Loading面板"></a>Loading面板</h2><p>使用遮罩的方式做一个Loading条，根据场景管理器中的异步加载动态的修改面板上的信息</p>
+<p><img src="/uncategorized/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%83%EF%BC%89%EF%BC%9A%E5%9C%BA%E6%99%AF%E5%88%87%E6%8D%A2%E5%92%8C%E5%86%9C%E7%94%B0%E6%81%A2%E5%A4%8D/Loading%E9%9D%A2%E6%9D%BF.png" alt="Loading面板"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">using TMPro;</span><br><span class="line">using UnityEngine.UI;</span><br><span class="line"></span><br><span class="line">public class SceneLoadingPanel : BasePanelSingleton&lt;SceneLoadingPanel&gt;</span><br><span class="line">&#123;</span><br><span class="line">    public Image BarMask;</span><br><span class="line">    public TextMeshProUGUI txtLoadingInfo;</span><br><span class="line"></span><br><span class="line">    protected override void Awake()</span><br><span class="line">    &#123;</span><br><span class="line">        base.Awake();</span><br><span class="line">        BarMask = GetChildControl&lt;Image&gt;(&quot;BarMask&quot;);</span><br><span class="line">        txtLoadingInfo = GetChildControl&lt;TextMeshProUGUI&gt;(&quot;txtLoadingInfo&quot;);</span><br><span class="line">        HideMe();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 提供给异步加载场景更新加载界面信息的接口</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    /// &lt;param name=&quot;LoadingInfo&quot;&gt;&lt;/param&gt;</span><br><span class="line">    /// &lt;param name=&quot;LoadingProgress&quot;&gt;&lt;/param&gt;</span><br><span class="line">    public void UpdateLoadingInfo(string LoadingInfo, float LoadingProgress)</span><br><span class="line">    &#123;</span><br><span class="line">        txtLoadingInfo.text = LoadingInfo;</span><br><span class="line">        BarMask.fillAmount = LoadingProgress;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>场景切换效果</p>
+<p><img src="/uncategorized/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%83%EF%BC%89%EF%BC%9A%E5%9C%BA%E6%99%AF%E5%88%87%E6%8D%A2%E5%92%8C%E5%86%9C%E7%94%B0%E6%81%A2%E5%A4%8D/%E5%9C%BA%E6%99%AF%E5%88%87%E6%8D%A2.png" alt="场景切换"></p>
+<h1 id="农田恢复"><a href="#农田恢复" class="headerlink" title="农田恢复"></a>农田恢复</h1><p>既然实现了场景切换，当我们切换场景后，原场景的农田就不复存在了，我们此时也应该让他在后台不断地计算每一块农田的生长情况，既然我们之前选择的协程的方式，但由于场景切换后，原有的协程就会被销毁了，所以我们使用在Update中计算每一块农田的情况，但是如此多的Update，由于Unity的调用方式问题，会造成许多的性能消耗，所以要尽可能少的使用Update，如果要使用，最好将Update都写在一个公共的游戏对象中</p>
+<h2 id="公共Mono类"><a href="#公共Mono类" class="headerlink" title="公共Mono类"></a>公共Mono类</h2><p>为此，我们实现一个公共的Mono类来统一执行所有的Update，而需要进行Update的对象，使用事件监听的方式，在公共的Mono对象上Update中执行这些订阅者的回调函数</p>
+<p>MonoController</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">using System;</span><br><span class="line">using UnityEngine;</span><br><span class="line">using UnityEngine.Events;</span><br><span class="line"></span><br><span class="line">/// &lt;summary&gt;</span><br><span class="line">/// Mono的管理者</span><br><span class="line">/// &lt;/summary&gt;</span><br><span class="line">public class MonoController : MonoBehaviour</span><br><span class="line">&#123;</span><br><span class="line">    public event UnityAction updateEvent;</span><br><span class="line">    </span><br><span class="line">    private void Start()</span><br><span class="line">    &#123;</span><br><span class="line">        DontDestroyOnLoad(this.gameObject);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void Update()</span><br><span class="line">    &#123;</span><br><span class="line">        if (updateEvent != null)</span><br><span class="line">            updateEvent();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 给外部提供添加帧更新事件的方法</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    /// &lt;param name=&quot;func&quot;&gt;&lt;/param&gt;</span><br><span class="line">    public void AddUpdateListener(UnityAction func)</span><br><span class="line">    &#123;</span><br><span class="line">        updateEvent += func;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 给外部提供移除帧更新事件的方法</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    /// &lt;param name=&quot;func&quot;&gt;&lt;/param&gt;</span><br><span class="line">    public void RemoveUpdateListener(UnityAction func)</span><br><span class="line">    &#123;</span><br><span class="line">        updateEvent -= func;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Mono管理器</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">using System.Collections;</span><br><span class="line">using UnityEngine;</span><br><span class="line">using UnityEngine.Events;</span><br><span class="line">using UnityEngine.Internal;</span><br><span class="line"></span><br><span class="line">/// &lt;summary&gt;</span><br><span class="line">/// 1.提供给外部添加帧更新事件的方法</span><br><span class="line">/// 2.提供给外部实现协程的方法</span><br><span class="line">/// &lt;/summary&gt;</span><br><span class="line">public class MonoMgr : BaseManager&lt;MonoMgr&gt;</span><br><span class="line">&#123;</span><br><span class="line">    private MonoController controller;</span><br><span class="line"></span><br><span class="line">    public MonoMgr()</span><br><span class="line">    &#123;</span><br><span class="line">        //MonoController对象的唯一性（继承单例基类）</span><br><span class="line">        GameObject obj = new GameObject(&quot;MonoController&quot;);</span><br><span class="line">        controller = obj.AddComponent&lt;MonoController&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 给外部提供添加帧更新事件的方法</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    /// &lt;param name=&quot;func&quot;&gt;&lt;/param&gt;20</span><br><span class="line">    public void AddUpdateListener(UnityAction func)</span><br><span class="line">    &#123;</span><br><span class="line">        controller.AddUpdateListener(func);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 给外部提供移除帧更新事件的方法</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    /// &lt;param name=&quot;func&quot;&gt;&lt;/param&gt;</span><br><span class="line">    public void RemoveUpdateListener(UnityAction func)</span><br><span class="line">    &#123;</span><br><span class="line">        controller.RemoveUpdateListener(func);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    //协程相关</span><br><span class="line">    //使用该重载开启协程</span><br><span class="line">    public Coroutine StartCoroutine(IEnumerator routine)</span><br><span class="line">    &#123;</span><br><span class="line">        return controller.StartCoroutine(routine);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //MonoController之外的脚本不可使用该重载</span><br><span class="line">    public Coroutine StartCoroutine(string methodName, [DefaultValue(&quot;null&quot;)] object value)</span><br><span class="line">    &#123;</span><br><span class="line">        return controller.StartCoroutine(methodName, value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //MonoController之外的脚本不可使用该重载</span><br><span class="line">    public Coroutine StartCoroutine(string methodName)</span><br><span class="line">    &#123;</span><br><span class="line">        return controller.StartCoroutine(methodName);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="事件中心类"><a href="#事件中心类" class="headerlink" title="事件中心类"></a>事件中心类</h2><p>上面的代码使用了这个事件中心，它可以统一的管理所有的事件，发布事件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br></pre></td><td class="code"><pre><span class="line">using System.Collections.Generic;</span><br><span class="line">using UnityEngine;</span><br><span class="line">using UnityEngine.Events;</span><br><span class="line"></span><br><span class="line">/// &lt;summary&gt;</span><br><span class="line">/// 事件信息类空接口</span><br><span class="line">/// &lt;/summary&gt;</span><br><span class="line">public interface IEventInfo &#123; &#125;</span><br><span class="line"></span><br><span class="line">/// &lt;summary&gt;</span><br><span class="line">/// 有传递信息的泛型的事件信息封装类</span><br><span class="line">/// &lt;/summary&gt;</span><br><span class="line">/// &lt;typeparam name=&quot;T&quot;&gt;传递信息的信息类型&lt;/typeparam&gt;</span><br><span class="line">public class EventInfo&lt;T&gt; : IEventInfo</span><br><span class="line">&#123;</span><br><span class="line">    public UnityAction&lt;T&gt; actions;</span><br><span class="line"></span><br><span class="line">    public EventInfo(UnityAction&lt;T&gt; action) =&gt; actions += action;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/// &lt;summary&gt;</span><br><span class="line">/// 无需传递信息的事件信息封装类</span><br><span class="line">/// &lt;/summary&gt;</span><br><span class="line">public class EventInfo : IEventInfo</span><br><span class="line">&#123;</span><br><span class="line">    public UnityAction actions;</span><br><span class="line"></span><br><span class="line">    public EventInfo(UnityAction action) =&gt; actions += action;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class EventCenter</span><br><span class="line">&#123;</span><br><span class="line">    private static EventCenter instance = new EventCenter();</span><br><span class="line">    public static EventCenter Instance =&gt; instance;</span><br><span class="line"></span><br><span class="line">    private Dictionary&lt;string, IEventInfo&gt; eventDic = new Dictionary&lt;string, IEventInfo&gt;();</span><br><span class="line">    </span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 添加事件监听(传递信息)</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    /// &lt;param name=&quot;name&quot;&gt;事件名&lt;/param&gt;</span><br><span class="line">    /// &lt;param name=&quot;action&quot;&gt;准备处理事件的委托函数&lt;/param&gt;</span><br><span class="line">    /// &lt;typeparam name=&quot;T&quot;&gt;消息类型&lt;/typeparam&gt;</span><br><span class="line">    public void AddEventListener&lt;T&gt;(string name, UnityAction&lt;T&gt; action)</span><br><span class="line">    &#123;</span><br><span class="line">        //有没有对应的事件监听</span><br><span class="line">        //有事件监听</span><br><span class="line">        if (eventDic.ContainsKey(name))</span><br><span class="line">            //添加委托函数</span><br><span class="line">            (eventDic[name] as EventInfo&lt;T&gt;).actions += action;</span><br><span class="line">        //没有事件监听</span><br><span class="line">        else</span><br><span class="line">            //添加事件到字典</span><br><span class="line">            eventDic.Add(name,new EventInfo&lt;T&gt;(action));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 添加事件监听(不传递信息)</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    /// &lt;param name=&quot;name&quot;&gt;事件名&lt;/param&gt;</span><br><span class="line">    /// &lt;param name=&quot;action&quot;&gt;准备处理事件的委托函数&lt;/param&gt;</span><br><span class="line">    public void AddEventListener(string name , UnityAction action)</span><br><span class="line">    &#123;</span><br><span class="line">        if (eventDic.ContainsKey(name))</span><br><span class="line">            (eventDic[name] as EventInfo).actions += action;</span><br><span class="line">        else</span><br><span class="line">            eventDic.Add(name,new EventInfo(action));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 移除事件监听(传递信息)</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    /// &lt;param name=&quot;name&quot;&gt;事件名&lt;/param&gt;</span><br><span class="line">    /// &lt;param name=&quot;action&quot;&gt;准备处理事件的委托函数&lt;/param&gt;</span><br><span class="line">    /// &lt;typeparam name=&quot;T&quot;&gt;信息类型&lt;/typeparam&gt;</span><br><span class="line">    public void RemoveEventListener&lt;T&gt;(string name, UnityAction&lt;T&gt; action)</span><br><span class="line">    &#123;</span><br><span class="line">        if (eventDic.ContainsKey(name))</span><br><span class="line">            (eventDic[name] as EventInfo&lt;T&gt;).actions -= action;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 移除事件监听(不传递信息)</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    /// &lt;param name=&quot;name&quot;&gt;事件名&lt;/param&gt;</span><br><span class="line">    /// &lt;param name=&quot;action&quot;&gt;准备处理事件的委托函数&lt;/param&gt;</span><br><span class="line">    public void RemoveEventListener(string name, UnityAction action)</span><br><span class="line">    &#123;</span><br><span class="line">        if (eventDic.ContainsKey(name))</span><br><span class="line">            (eventDic[name] as EventInfo).actions -= action;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 移除一个没有参数传递的事件的所有监听，并删除此事件</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    /// &lt;param name=&quot;name&quot;&gt;事件名&lt;/param&gt;</span><br><span class="line">    public void RemoveEventAllListener(string name)</span><br><span class="line">    &#123;</span><br><span class="line">        if (eventDic.ContainsKey(name))</span><br><span class="line">        &#123;</span><br><span class="line">            (eventDic[name] as EventInfo).actions = null;</span><br><span class="line">            eventDic.Remove(name);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 移除一个带参数传递的事件的所有监听，并删除此事件</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    /// &lt;param name=&quot;name&quot;&gt;事件名&lt;/param&gt;</span><br><span class="line">    public void RemoveEventAllListener&lt;T&gt;(string name)</span><br><span class="line">    &#123;</span><br><span class="line">        if (eventDic.ContainsKey(name))</span><br><span class="line">        &#123;</span><br><span class="line">            (eventDic[name] as EventInfo&lt;T&gt;).actions = null;</span><br><span class="line">            eventDic.Remove(name);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 触发事件(传递信息)</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    /// &lt;param name=&quot;name&quot;&gt;事件名&lt;/param&gt;</span><br><span class="line">    /// &lt;typeparam name=&quot;T&quot;&gt;信息类型&lt;/typeparam&gt;</span><br><span class="line">    public void EventTrigger&lt;T&gt;(string name , T info)</span><br><span class="line">    &#123;</span><br><span class="line">        if(eventDic.ContainsKey(name))</span><br><span class="line">            (eventDic[name] as EventInfo&lt;T&gt;)?.actions.Invoke(info);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 触发事件(传递信息)</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    /// &lt;param name=&quot;name&quot;&gt;事件名&lt;/param&gt;</span><br><span class="line">    public void EventTrigger(string name)</span><br><span class="line">    &#123;</span><br><span class="line">        if(eventDic.ContainsKey(name))</span><br><span class="line">            (eventDic[name] as EventInfo)?.actions.Invoke();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 清除所有事件</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    public void Clear()</span><br><span class="line">    &#123;</span><br><span class="line">        eventDic.Clear();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="农田管理类"><a href="#农田管理类" class="headerlink" title="农田管理类"></a>农田管理类</h2><p>修改玩家信息类，添加农田信息</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">/// &lt;summary&gt;</span><br><span class="line">/// 单个玩家数据</span><br><span class="line">/// &lt;/summary&gt;</span><br><span class="line">[Serializable]</span><br><span class="line">public class PlayerData</span><br><span class="line">&#123;</span><br><span class="line">    public int money;                   //所持金币</span><br><span class="line">    public int stamina;                 //玩家体力</span><br><span class="line">    public List&lt;ItemInfo&gt; inventory;    //背包数据</span><br><span class="line">    public List&lt;ItemInfo&gt; box;          //箱子数据</span><br><span class="line">    public string lastSaveDate;         //上次保存日期</span><br><span class="line">    public string lastSaveTime;         //上次保存时间</span><br><span class="line">    public List&lt;NPCInfo&gt; NPCindex;      //角色对话索引</span><br><span class="line">    public List&lt;int&gt; tasksIds;          //未触发的事件事件</span><br><span class="line">    public string sceneName;            //玩家所处的时的场景名</span><br><span class="line">    public Position position;           //玩家所处的位置</span><br><span class="line">    public Dictionary&lt;string,CropData&gt; cropDataDic;     //农田信息</span><br><span class="line">&#125;   </span><br></pre></td></tr></table></figure>
+
+<p>那么最重要的是能有一个类统一的管理农田，并计算好每一个土地上作物状况，即使切换场景后也能够准确计时，每次种植就会存入字典，然后在公共的Mono的Update中计算时间</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">using System.Collections.Generic;</span><br><span class="line">using UnityEngine;</span><br><span class="line"></span><br><span class="line">public class CropMgr</span><br><span class="line">&#123;</span><br><span class="line">    private static CropMgr instance;</span><br><span class="line">    public static CropMgr Instance =&gt; instance ??= new CropMgr();</span><br><span class="line">    public Dictionary&lt;string,CropData&gt; cropDataDic;</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 构造函数加载/初始化农田字典</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    private CropMgr() =&gt; cropDataDic = GameDataMgr.Instance.currentPlayerData.cropDataDic;</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 种植后将当前地块信息存入字典以持久化数据,并且添加到Mono公共类中计算剩余时间</span><br><span class="line">    /// 使用一个公用的Update,以减少大量作物的Update</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    /// &lt;param name=&quot;cropObjName&quot;&gt;地块的游戏对象名称&lt;/param&gt;</span><br><span class="line">    /// &lt;param name=&quot;cropData&quot;&gt;地块的数据&lt;/param&gt;</span><br><span class="line">    public void AddCropInfo(string cropObjName, ItemData cropData)</span><br><span class="line">    &#123;</span><br><span class="line">        cropDataDic.Add(cropObjName,new CropData()&#123;remainingTime = cropData.time,cropId = cropData.id&#125;);</span><br><span class="line">        MonoMgr.Instance.AddUpdateListener(() =&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            if(cropDataDic.ContainsKey(cropObjName))</span><br><span class="line">                cropDataDic[cropObjName].remainingTime -= Time.deltaTime;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 提供给种植后，作物成熟后从字典移除</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    /// &lt;param name=&quot;cropObjName&quot;&gt;&lt;/param&gt;</span><br><span class="line">    public void RemoveCropInfo(string cropObjName)</span><br><span class="line">    &#123;</span><br><span class="line">        if (cropDataDic.ContainsKey(cropObjName))</span><br><span class="line">            cropDataDic.Remove(cropObjName);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// 从游戏加载后或者切换场景回神社后,重置农田</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    public void RestoringCrop()</span><br><span class="line">    &#123;</span><br><span class="line">        var crops = GameObject.Find(&quot;Farmland/Crops&quot;);</span><br><span class="line">        foreach (var cropData in cropDataDic)</span><br><span class="line">        &#123;</span><br><span class="line">            var cropObj = crops.transform.Find($&quot;&#123;cropData.Key&#125;&quot;);</span><br><span class="line">            //调用cropObj中的</span><br><span class="line">            cropObj.GetComponent&lt;CropObj&gt;().PlantCrop(ItemDataMgr.Instance.GetItemInfo(cropData.Value.cropId),(float) cropData.Value.remainingTime);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于之前的CropObj，我们修改一下</p>
+<p>加入一个函数重载PlantCrop，让其接收到剩余时间，依旧使用协程的方式完成作物剩下的生长阶段</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br></pre></td><td class="code"><pre><span class="line">/// &lt;summary&gt;</span><br><span class="line">/// 提供给CropMgr通过副本还原农田</span><br><span class="line">/// &lt;/summary&gt;</span><br><span class="line">/// &lt;param name=&quot;seedData&quot;&gt;&lt;/param&gt;</span><br><span class="line">/// &lt;param name=&quot;remainingTime&quot;&gt;&lt;/param&gt;</span><br><span class="line">public void PlantCrop(ItemData seedData, float remainingTime)</span><br><span class="line">&#123;</span><br><span class="line">    plantingTime = seedData.time;</span><br><span class="line">    crop = seedData;</span><br><span class="line">    strRes = seedData.imgRes;</span><br><span class="line">    //设置恢复时的作物状态(图片,时间条)</span><br><span class="line">    //如果是成熟</span><br><span class="line">    if (remainingTime &lt;= 0)</span><br><span class="line">    &#123;</span><br><span class="line">        cropImg.sprite = Resources.Load&lt;Sprite&gt;(strRes.Remove(strRes.Length -1) + 4);</span><br><span class="line">        timeBarsSpriteRenderer.sprite = null;</span><br><span class="line">        status = CropStatus.Harvest;</span><br><span class="line">    &#125;</span><br><span class="line">    //未成熟</span><br><span class="line">    else</span><br><span class="line">    &#123;</span><br><span class="line">        status = CropStatus.Growing;</span><br><span class="line">        //阶段变化图片时间间隔</span><br><span class="line">        timeBarPhase = plantingTime / 6;</span><br><span class="line">        GrowingPhase = plantingTime / 4;</span><br><span class="line">        //开启协程</span><br><span class="line">        float curTime = crop.time - remainingTime;</span><br><span class="line">        StartCoroutine(CropGrowingByRecovery(curTime, crop.time));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/// &lt;summary&gt;</span><br><span class="line">/// 恢复农田</span><br><span class="line">/// &lt;/summary&gt;</span><br><span class="line">/// &lt;param name=&quot;curTime&quot;&gt;当前作物成长的时间&lt;/param&gt;</span><br><span class="line">/// &lt;param name=&quot;totalTime&quot;&gt;作物成长所需的总时间&lt;/param&gt;</span><br><span class="line">/// &lt;returns&gt;&lt;/returns&gt;</span><br><span class="line">IEnumerator CropGrowingByRecovery(float curTime,float totalTime)</span><br><span class="line">&#123;</span><br><span class="line">    //确定当前阶段</span><br><span class="line">    //作物图片阶段</span><br><span class="line">    int indexG = Mathf.FloorToInt(curTime/totalTime * 4f);</span><br><span class="line">    //时间条阶段</span><br><span class="line">    int indexT = Mathf.CeilToInt(curTime/totalTime * 6f);</span><br><span class="line">    //设置当前阶段图像</span><br><span class="line">    //时间条</span><br><span class="line">    timeBarsSpriteRenderer.sprite = timeBar.GetSprite($&quot;&#123;indexT&#125;&quot;);</span><br><span class="line">    //作物图片</span><br><span class="line">    string strResTarget = strRes.Remove(strRes.Length - 1,1) + indexG;</span><br><span class="line">    cropImg.sprite = Resources.Load&lt;Sprite&gt;(strResTarget);</span><br><span class="line">    float intervalTime;     //此次更新间隔时间</span><br><span class="line">    float lastMinTime;     //上次更新阶段时间</span><br><span class="line">    //计算第一次更新间隔</span><br><span class="line">    if ((indexG + 1) * GrowingPhase &lt; indexT  * timeBarPhase)</span><br><span class="line">    &#123;</span><br><span class="line">        //间隔时间等于下次阶段时间 - 当前时间</span><br><span class="line">        intervalTime = (indexG + 1) * GrowingPhase - curTime;</span><br><span class="line">        lastMinTime = (indexG + 1) * GrowingPhase;</span><br><span class="line">        indexG++;</span><br><span class="line">    &#125;</span><br><span class="line">    else</span><br><span class="line">    &#123;</span><br><span class="line">        intervalTime = indexT * timeBarPhase - curTime;</span><br><span class="line">        lastMinTime = indexT * timeBarPhase;</span><br><span class="line">        indexT++;</span><br><span class="line">    &#125;        </span><br><span class="line">    //第一次更新等待时间</span><br><span class="line">    yield return new WaitForSeconds(intervalTime);</span><br><span class="line">    //更新时间条</span><br><span class="line">    timeBarsSpriteRenderer.sprite = timeBar.GetSprite($&quot;&#123;indexT&#125;&quot;);</span><br><span class="line">    //更新作物图片</span><br><span class="line">    strResTarget = strRes.Remove(strRes.Length - 1,1) + indexG;</span><br><span class="line">    cropImg.sprite = Resources.Load&lt;Sprite&gt;(strResTarget);</span><br><span class="line">    //</span><br><span class="line">    while (indexG &lt; 4 &amp;&amp; indexT &lt; 7)</span><br><span class="line">    &#123;</span><br><span class="line">        float minTime;</span><br><span class="line">        if (timeBarPhase * indexT &lt; GrowingPhase * (indexG + 1))</span><br><span class="line">        &#123;</span><br><span class="line">            minTime = timeBarPhase * indexT;</span><br><span class="line">            indexT++;</span><br><span class="line">        &#125;</span><br><span class="line">        else</span><br><span class="line">        &#123;</span><br><span class="line">            minTime = GrowingPhase * (indexG +1);</span><br><span class="line">            indexG++;</span><br><span class="line">        &#125;</span><br><span class="line">        intervalTime = minTime - lastMinTime;</span><br><span class="line">        lastMinTime = minTime;</span><br><span class="line">        yield return new WaitForSeconds(intervalTime);</span><br><span class="line">        //print($&quot;当前时间条阶段&#123;indexT&#125;__当前作物阶段&#123;indexG&#125;__当前剩余时间&#123;CropMgr.Instance.cropDataDic[gameObject.name].remainingTime&#125;&quot;);</span><br><span class="line">        //更新时间条</span><br><span class="line">        timeBarsSpriteRenderer.sprite = timeBar.GetSprite($&quot;&#123;indexT&#125;&quot;);</span><br><span class="line">        //更新作物图片</span><br><span class="line">        strResTarget = strRes.Remove(strRes.Length - 1,1) + indexG;</span><br><span class="line">        cropImg.sprite = Resources.Load&lt;Sprite&gt;(strResTarget);</span><br><span class="line">    &#125;</span><br><span class="line">    //成熟就置空时间条、更新状态</span><br><span class="line">    timeBarsSpriteRenderer.sprite = null;</span><br><span class="line">    status = CropStatus.Harvest;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="场景切换后的恢复"><a href="#场景切换后的恢复" class="headerlink" title="场景切换后的恢复"></a>场景切换后的恢复</h2><p>切换回神社场景时，在场景切换中就执行恢复的方法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">//不同的场景的预加载</span><br><span class="line">private void SceneConfig(string name)</span><br><span class="line">&#123;</span><br><span class="line">	// ...</span><br><span class="line">    //分场景配置</span><br><span class="line">    switch (name)</span><br><span class="line">    &#123;</span><br><span class="line">        //如果是神社则恢复农田</span><br><span class="line">        case &quot;HakureiShrine&quot;:</span><br><span class="line">            CropMgr.Instance.RestoringCrop();</span><br><span class="line">            break;</span><br><span class="line">        //</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="重进游戏后的恢复"><a href="#重进游戏后的恢复" class="headerlink" title="重进游戏后的恢复"></a>重进游戏后的恢复</h2><p>多存档的博客留给下一期</p>
+<p><img src="/uncategorized/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%83%EF%BC%89%EF%BC%9A%E5%9C%BA%E6%99%AF%E5%88%87%E6%8D%A2%E5%92%8C%E5%86%9C%E7%94%B0%E6%81%A2%E5%A4%8D/%E9%80%89%E6%8B%A9%E5%AD%98%E6%A1%A3.png" alt="选择存档"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">private void Start()</span><br><span class="line">&#123;</span><br><span class="line">    // 添加点击存档加载游戏的监听</span><br><span class="line">    btnThisData.onClick.AddListener(() =&gt;</span><br><span class="line">    &#123;</span><br><span class="line">        // 再加载游戏</span><br><span class="line">        GameDataMgr.Instance.GetPlayerDataInfo(dataIndex);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在游戏数据管理器中，选择了存档后就会加载进指定的存档，根据玩家数据来恢复农田</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">/// &lt;summary&gt;</span><br><span class="line">/// 获取指定的玩家数据，用于初始化游戏</span><br><span class="line">/// &lt;/summary&gt;</span><br><span class="line">/// &lt;param name=&quot;index&quot;&gt;存档索引&lt;/param&gt;</span><br><span class="line">public void GetPlayerDataInfo(int index)</span><br><span class="line">&#123;</span><br><span class="line">    currentPlayerData = playerDataInfo.playerDatas[index];</span><br><span class="line">    // 加载对话文件</span><br><span class="line">    DialogMgr.GetInstance();</span><br><span class="line">    // 加载游戏</span><br><span class="line">    LoadGame();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/// &lt;summary&gt;</span><br><span class="line">/// 加载游戏</span><br><span class="line">/// &lt;/summary&gt;</span><br><span class="line">public void LoadGame()</span><br><span class="line">&#123;</span><br><span class="line">    // 先加载加载场景panel</span><br><span class="line">    if (SceneLoadingPanel.Instance == null)</span><br><span class="line">        GameObject.Instantiate(Resources.Load&lt;GameObject&gt;(&quot;UI/SceneLoadingPanel&quot;),</span><br><span class="line">            GameObject.Find(&quot;Canvas&quot;).transform);</span><br><span class="line">    // 加载场景</span><br><span class="line">    ScenesMgr.Instance.LoadSceneAsync(currentPlayerData.sceneName, () =&gt;</span><br><span class="line">    &#123;</span><br><span class="line">        //设置位置</span><br><span class="line">        GameObject.Find(&quot;Mako&quot;).transform.position = new Vector3()</span><br><span class="line">        &#123;</span><br><span class="line">            x = (float) currentPlayerData.position.x,</span><br><span class="line">            y = (float) currentPlayerData.position.y,</span><br><span class="line">            z = 0</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+        </div>
+        
+            <div class="kratos-copyright text-center clearfix">
+                <h5>本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</h5>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+                <div class="post-like-donate text-center clearfix" id="post-like-donate">
+                
+                
+                    <a class="share" href="javascript:;"><i class="fa fa-share-alt"></i> 分享</a>
+                    <div class="share-wrap" style="display: none;">
+    <div class="share-group">
+        <a href="javascript:;" class="share-plain qq" onclick="share('qq');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-qq"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain qzone" onclick="share('qzone');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-star"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weixin pop style-plain" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weixin"></i>
+            </div>
+            <div class="share-int">
+                <div class="qrcode" id="wechat-qr"></div>
+                <p>打开微信“扫一扫”，打开网页后点击屏幕右上角分享按钮</p>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weibo" onclick="share('weibo');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weibo"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain facebook style-plain" onclick="share('facebook');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-facebook"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain twitter style-plain" onclick="share('twitter');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-twitter"></i>
+            </div>
+        </a>
+    </div>
+    <script type="text/javascript">
+        $(()=>{
+            new QRCode("wechat-qr", {
+                text: "https://moewolf.me/uncategorized/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%83%EF%BC%89%EF%BC%9A%E5%9C%BA%E6%99%AF%E5%88%87%E6%8D%A2%E5%92%8C%E5%86%9C%E7%94%B0%E6%81%A2%E5%A4%8D/",
+                width: 150,
+                height: 150,
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        });
+        function share(dest) {
+            const qqBase        = "https://connect.qq.com/widget/shareqq/index.html?";
+            const weiboBase     = "https://service.weibo.com/share/share.php?";
+            const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
+            const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
+            const twitterBase   = "https://twitter.com/intent/tweet?";
+            const hostUrl       = "https://moewolf.me/uncategorized/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%83%EF%BC%89%EF%BC%9A%E5%9C%BA%E6%99%AF%E5%88%87%E6%8D%A2%E5%92%8C%E5%86%9C%E7%94%B0%E6%81%A2%E5%A4%8D/";
+            const title         = "「茉子的幻想乡奇遇（七）：场景切换和农田恢复」";
+            const excerpt       = `实现一个场景切换管理类，使用异步加载的方式进行更加方便的封装，并实现切换场景，显示过场景Loading条面板，对重启游戏&amp;回到神社场景后进行农田的恢复`;
+            let _URL;
+            switch (dest) {
+                case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
+                case "weibo"    : _URL = weiboBase+"url="+hostUrl+"&title="+title+excerpt;                                 break;
+                case "qzone"    : _URL = qzoneBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";  break;
+                case "facebook" : _URL = facebookBase+"u="+hostUrl;                                                        break;
+                case "twitter"  : _URL = twitterBase+"text="+title+excerpt+"&url="+hostUrl;                                break;
+            }
+            window.open(_URL);
+        };
+    </script>
+</div>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/%E5%BC%80%E5%8F%91%E6%97%A5%E5%BF%97/" rel="tag">开发日志</a>
+                </div>
+                <div class="pull-date">
+                <span>最后编辑：2022-12-28</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" 茉子的幻想乡奇遇（六）：种田功能的实现" href="/茉子的幻想乡奇遇/茉子的幻想乡奇遇（六）：种田功能的实现/">&lt; 上一篇</a>
+            </div>
+            
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+        
+
+                
+            
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/holo_avatar.png" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">生如夏花之绚烂，死如秋叶之静美</p>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix">
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar"></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF%E7%AE%A1%E7%90%86%E5%99%A8"><span class="toc-text">场景管理器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E4%BA%A4%E4%BA%92%E5%AF%B9%E8%B1%A1"><span class="toc-text">可交互对象</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF%E5%88%87%E6%8D%A2%E7%9A%84%E7%9B%AE%E6%A0%87%E7%82%B9"><span class="toc-text">场景切换的目标点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Loading%E9%9D%A2%E6%9D%BF"><span class="toc-text">Loading面板</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%86%9C%E7%94%B0%E6%81%A2%E5%A4%8D"><span class="toc-text">农田恢复</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AC%E5%85%B1Mono%E7%B1%BB"><span class="toc-text">公共Mono类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8B%E4%BB%B6%E4%B8%AD%E5%BF%83%E7%B1%BB"><span class="toc-text">事件中心类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%9C%E7%94%B0%E7%AE%A1%E7%90%86%E7%B1%BB"><span class="toc-text">农田管理类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF%E5%88%87%E6%8D%A2%E5%90%8E%E7%9A%84%E6%81%A2%E5%A4%8D"><span class="toc-text">场景切换后的恢复</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E8%BF%9B%E6%B8%B8%E6%88%8F%E5%90%8E%E7%9A%84%E6%81%A2%E5%A4%8D"><span class="toc-text">重进游戏后的恢复</span></a></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类目录</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C#</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0/">功能实现</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E5%B8%B8/">日常</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/">茉子的幻想乡奇遇</a><span class="category-list-count">6</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/C-%E9%AB%98%E9%98%B6/" style="font-size: 0.7em;">C#高阶</a> <a href="/tags/Unity/" style="font-size: 0.7em;">Unity</a> <a href="/tags/%E5%BC%80%E5%8F%91%E6%97%A5%E5%BF%97/" style="font-size: 0.8em;">开发日志</a> <a href="/tags/%E6%97%A5%E5%B8%B8/" style="font-size: 0.6em;">日常</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/uncategorized/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%83%EF%BC%89%EF%BC%9A%E5%9C%BA%E6%99%AF%E5%88%87%E6%8D%A2%E5%92%8C%E5%86%9C%E7%94%B0%E6%81%A2%E5%A4%8D/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（七）：场景切换和农田恢复</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E5%85%AD%EF%BC%89%EF%BC%9A%E7%A7%8D%E7%94%B0%E5%8A%9F%E8%83%BD%E7%9A%84%E5%AE%9E%E7%8E%B0/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（六）：种田功能的实现</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9A%E7%8E%A9%E5%AE%B6%E6%8E%A7%E5%88%B6%E5%92%8C2d%E6%B7%B7%E5%90%88%E6%A0%91/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（五）：玩家控制和2D混合树</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9A%E6%9C%A8%E7%AE%B1%E5%92%8C%E8%83%8C%E5%8C%85%E7%89%A9%E5%93%81%E7%9A%84%E4%BA%92%E6%8D%A2/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（四）：木箱和背包物品的互换</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87/%E8%8C%89%E5%AD%90%E7%9A%84%E5%B9%BB%E6%83%B3%E4%B9%A1%E5%A5%87%E9%81%87%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9Aexcel%E8%A1%A8%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E5%92%8C%E8%83%8C%E5%8C%85%E7%B3%BB%E7%BB%9F/"><i class="fa  fa-book"></i> 茉子的幻想乡奇遇（三）：Excel表配置数据和背包系统</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+        
+        </div>
+    </div>
+</div>
+<footer>
+    <div id="footer"  >
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://t.me/LittleWolfHouse"><i class="fa fa-telegram"></i></a></li>
+                        
+                        
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://github.com/Dai-MoeWolf"><i class="fa fa-github"></i></a></li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2022 MoeWolf的博客 版权所有.</li>
+                            <li>本站已运行<span id="span_dt">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>Theme <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a></li>
+                            <li>Site built with&nbsp;<i class="fa fa-heart throb" style="color:#d43f57"></i>&nbsp;by MoeWolf.</li>
+                        </div>
+                        <div>
+                            <li>Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a></li>
+                            
+                        </div>
+                        <div>
+                            
+                            
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search/">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="box theme-box" id="darkmode-switch">
+                        <span class="fa fa-adjust"></span>
+                    </div>
+                
+                
+            </div>
+            <div class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.4/dist/js/bootstrap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js"></script>
+<script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+    <script async src="/js/candy.min.js"></script>
+
+
+
+
+    <script defer src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script>
+<script defer src="/js/kratosr.min.js"></script>
+<script defer src="/js/pjax.min.js"></script>
+
+
+    <script defer src="/js/kr-dark.min.js"></script>
+
+
+
+<!-- Extra support for third-party plguins  -->
+
+
+    </body>
+</html>
